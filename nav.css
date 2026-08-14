@@ -1,0 +1,49 @@
+@font-face {
+    font-family: 'Tamrin';
+    src: url('fuentes/tamrin.ttf') format('truetype');
+}
+
+.contenedor {
+    display: flex;
+    height: 55px;
+    justify-content: center;
+}
+
+.barra {
+    background-color: rgba(184, 185, 187, 0.2);
+    border-radius: 999px;
+    width: 700px;
+}
+
+.lista {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+li {
+    margin-top: 5px;
+    margin-right: 15px;
+    margin-left: 15px;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    font-family: 'Tamrin';
+    font-size: 12px;
+    font-style: black;
+}
+
+.activo{
+    font-style: #2b51e7;
+}
+
+.usuarios {
+    height: 45px;
+    width: 45px;
+}
