@@ -55,7 +55,7 @@ else { echo "Error: ".mysqli_error($conexion); } } }
              <div class="campo"> 
                 <label>TIPO DE SOCIO</label>
                  <select name="socio" required>
-                     <option value="">Seleccione socio</option> 
+                     <option value="" >Eres socio o voluntario?</option> 
                      <option value="1">Alumno</option> 
                      <option value="2">Voluntario</option> 
                      <option value="3">Administrador</option> 
