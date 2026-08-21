@@ -25,25 +25,23 @@
     <div class="ContenedorFormulario">
         <form class="formulario" action="iniciarSesion.php" method="POST">
             <h2 class="titulo">INICIAR SESIÓN</h2>
-
             <div class="grupoInput">
                 <label for="dni" class="label">DNI</label>
                 <input type="text" maxlength="8" placeholder="Ingrese su DNI" class="input">
             </div>
-            
             <div class="grupoInput">
                 <label for="contraseña" class="label">CONTRASEÑA</label>
                 <div class="contra">
-                    <input type="password" placeholder="Ingrese su contraseña" class="input">
-                    <i class="fa-solid fa-eye toggle-icon" id="iconoOjo" onclick="verClave()"></i>
+                    <input type="password" placeholder="Ingrese su contraseña" class="input input-password">
+                    <i class="fa-solid fa-eye toggle-icon" onclick="verClave(this)"><img id="iconoOjo" src="iconos/ojo.png" alt=""></i>
                 </div>
                 <p class="linkOlvido"><a href="olvideContrasena">Olvidé mi contraseña</a></p>
             </div>
-
             <button class="btn">Iniciar sesión</button>
             <p class="linkRegistro">¿No tienes una cuenta?<a href="registrarse.php">¡Registrate!</a></p>
         </form>
     </div>
 </div>
+<script src="script.js"></script>
 </body>
 </html> 

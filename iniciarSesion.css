@@ -133,8 +133,10 @@ body {
     width: 100%;
 }
 
-.toggle-icon {
+.toggle-icon img{
     position: absolute;
+    width: 10px;
+    height: 10px;
     right: 15px;
     top: 50%;
     transform: translateY(-50%);
