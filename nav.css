@@ -23,27 +23,63 @@
     list-style-type: none;
     padding: 0;
     margin: 0;
+    height: 100%; 
 }
 
 li {
-    margin-top: 5px;
     margin-right: 15px;
     margin-left: 15px;
+    display: flex;
+    align-items: center;
+    height: 100%;
 }
 
 a {
+    display: inline-block; 
+    position: relative;        
     text-decoration: none;
-    color: inherit;
+    color: black;
     font-family: 'Tamrin';
     font-size: 12px;
-    font-style: black;
+    font-weight: 900;
+    padding-bottom: 4px;    
+    z-index: 1;
+}
+
+a::after{
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px; 
+    background-color: #0076ff; 
+    transform: scaleX(0); 
+    transform-origin: right;
+    transition: transform 0.3s ease-in-out; 
+    z-index: 2;
+}
+
+a:hover::after{
+    transform: scaleX(1); 
+    transform-origin: left;
 }
 
 .activo{
-    font-style: #2b51e7;
+    color: #2b51e7;
+}
+
+.icono-nav {
+    display: flex;
+    align-items: center;
+}
+
+.icono-nav::after {
+    display: none !important; 
 }
 
 .usuarios {
-    height: 45px;
-    width: 45px;
+    height: 35px; 
+    width: 35px;
+    object-fit: contain;
 }
