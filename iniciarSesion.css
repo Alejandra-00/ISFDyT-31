@@ -1,0 +1,212 @@
+@font-face {
+    font-family: 'Tamrin';
+    src: url('fuentes/tamrin.ttf') format('truetype');
+}
+
+body {
+    margin: 0;
+    background-color: #8aae70;
+}
+
+.EsquinaCirculo {
+    position: absolute;
+    height: 213px;
+    width: 238px;
+    border-top-right-radius: 100%;
+    background-color: #4d70bc;
+    left: 0;
+    bottom: 0;
+}
+
+.EsquinaCurva {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 210px;
+    width: 200px;
+}
+
+.FondoVerde {
+    position: absolute;
+    border-radius: 6%;
+    background-color: #a9cd46;
+    width: 782px;
+    height: 435px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.fondoAzul {    
+    position: absolute;
+    height: 436px;
+    width: 445px;
+    top: 50%;
+    left: 36.8%;
+    transform: translate(-50%, -50%);
+}
+
+.ContenedorLogo {    
+    position: absolute;
+    height: 75px;
+    width: 75px;
+    top: 24.8%;
+    left: 23.7%;
+    transform: translate(-50%, -50%);
+}
+
+.Logo {
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+}
+
+.Cooperadora {
+    position: absolute;
+    font-size: 5.6px;
+    top: 22%;
+    left: 26.9%;
+    font-family: 'Tamrin';
+    
+}
+
+.Verde {
+    color: #a9cd46;
+}
+
+.Instituto {
+    font-family: 'Tamrin';
+    font-size: 3.6px;
+    position: absolute;
+    top: 24.6%;
+    left: 27%
+}
+
+.ContenedorLogoNegro {
+    position: absolute;
+    height: 170px;
+    width: 287px;
+    top: 35%;
+    left: 22.5%;
+}
+
+.LogoNegro {
+    height: 100%;
+    width: 100%;
+}
+
+.ISFDYT {
+    position: absolute;
+    font-family: 'Tamrin';
+    font-size: 12px;
+    top: 60%;
+    left: 30.2%;
+}
+
+.Necochea {
+    position: absolute;
+    font-family: 'Tamrin';
+    font-size: 6px;
+    top: 62.2%;
+    left: 32.3%;
+}
+
+.ContenedorFormulario {
+    position: absolute;
+    width: 300px; 
+    top: 52.5%;     
+    left: 65%;    
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+}
+
+.formulario {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    width: 100%;
+}
+
+.contra {
+    position: relative;
+    width: 100%;
+}
+
+.toggle-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+}
+
+.titulo {
+    font-family: 'Tamrin';
+    font-size: 16.5px;
+    margin: 0 0 25px 0;
+}
+
+.grupoInput {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 180px;
+    margin-bottom: 7px;
+}
+
+.input {
+    border-radius: 25px;
+    padding: 10px;
+    width: 180px;
+    height: 25px;
+    box-sizing: border-box;
+    border: none;
+    outline: none;
+}
+
+.label {
+    font-family: 'Tamrin';
+    font-size: 7px;
+    margin-bottom: 4px;
+}
+
+input::placeholder {
+    font-size: 8px;
+}
+
+.linkOlvido {
+    margin: 1px 0 0 0;
+    align-self: flex-start;
+    font-size: 6px;
+    font-family: sans-serif;
+    font-weight: bold;
+}
+
+.linkOlvido a {
+    text-decoration: none;
+}
+
+.btn {
+    background-color: #ffffff;
+    color: #000000;
+    border: none;
+    padding: 6px 18px;
+    border-radius: 25px;
+    font-family: 'Tamrin';
+    font-size: 7px;
+    box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
+    margin-top: -2px;
+}
+
+.linkRegistro {
+    font-family: sans-serif;
+    margin: 1px 0 0 0;
+    font-size: 6px;
+    font-weight: bold;
+    color: #666666;
+}
+
+.linkRegistro a {
+    text-decoration: none;
+}
