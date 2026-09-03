@@ -1,32 +1,3 @@
-<?php 
-session_start();
-include ('conexion.php'); 
-$msjemail = ""; //Verifica los campos vacios
-if ($_SERVER["REQUEST_METHOD"] == "POST"){
-    $dni = trim($_POST["dni"]); 
-    $nombre = trim($_POST["nombre_completo"]); 
-    $email = trim($_POST["email"]); 
-    $telefono = trim($_POST["telefono"]); 
-    $contrasena = trim($_POST["contrasena"]);
-    $activo = 1; // Establece el valor de activo en 1 (activo) 
-    $socio = trim($_POST["socio"]); 
-    $carrera = trim($_POST["carrera"]); 
-
-if (empty($dni) || empty($nombre) || empty($email) || empty($telefono) || empty($contrasena)) { die("Todos los campos son obligatorios"); } //Verifica el correo 
-
-$resultado = $conexion -> query("SELECT * FROM usuarios WHERE email='$email'"); 
-if (mysqli_num_rows($resultado)>0) { $msjemail = "El correo ya esta registrado."; } 
-else { // Encripta la contraseña e inserta usuarios 
-$contraEncriptada = password_hash($contrasena, PASSWORD_DEFAULT); 
-$sql_insert= "INSERT INTO usuarios(dni, nombre, email, telefono, contra, activo, socio, carrera) VALUES ('$dni','$nombre','$email','$telefono','$contraEncriptada', $activo, '$socio', '$carrera')";
-
-if ($conexion->query($sql_insert) === TRUE) { // Iniciar sesión automáticamente 
-    $_SESSION['usuario'] = $nombre; header("location: index.php"); 
-} 
-else { echo "Error: ".mysqli_error($conexion); } } } 
-?> 
-
-
 <!DOCTYPE html> 
 <html lang="en"> 
     <head> 
@@ -83,7 +54,6 @@ else { echo "Error: ".mysqli_error($conexion); } } }
                     <label>TELÉFONO</label> 
                     <input type="tel" name="telefono" placeholder="Ingrese su teléfono" required> 
                 </div> 
-                
             <button type="submit">CREAR CUENTA</button> 
             
             <p class="login"> ¿Ya tienes una cuenta? <a href="iniciarSesion.php">¡Inicia sesión!</a> </p>
