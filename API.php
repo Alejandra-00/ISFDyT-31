@@ -33,7 +33,7 @@
                     if ($resultado) {
                         echo json_encode(["mensaje" => "Ok."]);
                     } else {
-                        http_response_code(500);
+                        http_response_code(502);
                         echo json_encode(["error" => "Error de lectura."]);
                     }
                 break;
@@ -54,7 +54,7 @@
                     if ($resultado) {
                         echo json_encode(["mensaje" => "Pago almacenado con exito."]);
                     } else {
-                        http_response_code(500);
+                        http_response_code(402);
                         echo json_encode(["error" => "Pago rechazado."]);
                     }
                 break;
@@ -66,23 +66,21 @@
                     if ($resultado) {
                         echo json_encode(["mensaje" => "Actualizado correctamente."]);
                     } else {
-                        http_response_code(500);
+                        http_response_code(502);
                         echo json_encode(["error" => "Error de actualización."]);
                     }
                 break;
                         
                 default:
                     http_response_code(400);
-                    echo json_encode(["error" => "Método no válido"]);
+                    echo json_encode(["error" => "Consulta no válida"]);
                 break;
             }
         break; 
+        
         case "usuarios":
-                
-            switch ($consulta)
-            {
-                case "read"
-                     
+            switch ($consulta) {
+                case "Read"  
                     $sql = "SELECT
                         usuario.id,
                         usuario.nombre_completo,
@@ -95,25 +93,20 @@
                         FROM usuarios 
                         INNER JOIN socio ON usuarios.id_socio = socio.id
                         INNER JOIN carreras ON usuarios.id_carreras = carreras.id";
-                     
-                    $resultado = mysqli_query(
-                        $conexion,
-                        $sql
-                    );
-
-                    $usuarios = [];
-
-                    while ($fila = mysqli_fetch_assoc($resultado)) {
-
-                        $usuarios[] = $fila;
-                    }
-
+                    $resultado = mysqli_query($conexion, $sql);
+                    if ($resultado) {
+                        $usuarios = [];
+                        while ($fila = mysqli_fetch_assoc($resultado)) {
+                            $usuarios[] = $fila;
+                        }
                     echo json_encode($usuarios);
-
+                    } else {
+                        http_response_code(502);
+                        echo json_encode(["error" => "Error de lectura."]);
+                    }
                 break;
 
-
-                case "create"
+                case "Create"
                     $DNI = $datos["DNI"];
                     $nombre_completo = $datos["nombre_completo"]; 
                     $email = $datos["email"];
@@ -122,107 +115,74 @@
                     $activo = $datos["activo"];
                     $id_socio = $datos["id_socio"];
                     $id_carreras = $datos["id_carreras"];
-                 
                     $sql_check = "SELECT * FROM usuarios WHERE email = '$email'";
-                    $resultado_check = mysqli_query(
-                        $conexion,
-                        $sql_check
-                    );
-
+                    $resultado_check = mysqli_query($conexion, $sql_check);
                     if (mysqli_num_rows($resultado_check) > 0) {
-
                         http_response_code(409);
-
                         echo json_encode([
-                            "error" => "El email ya está en uso"
+                            "error" => "Este email se encuetra registrado."
                         ]);
-
                         exit;
                     }
-
                     $sql = "INSERT INTO usuarios
                             (DNI, nombre_completo, email, telefono, contrasena, activo, id_socio, id_carreras)
                             VALUES
                             ('$DNI', '$nombre_completo', '$email', '$telefono', '$contrasena', $activo, $id_socio, $id_carreras)";
-
-
-                    $resultado = mysqli_query(
-                        $conexion,
-                        $sql
-                    );
-
+                    $resultado = mysqli_query($conexion, $sql);
                     if ($resultado) {
-
                         echo json_encode([
-                            "mensaje" => "Usuario creado correctamente"
+                            "mensaje" => "Usuario creado correctamente."
                         ]);
-
                     } else {
-
                         http_response_code(500);
-
                         echo json_encode([
-                            "error" => "No se pudo crear el usuario"
+                            "error" => "No se pudo crear el usuario."
                         ]);
                     }
-
                 break;
 
-            
-                case "update"
+                case "Update"
                     $id = $datos["id"];
                     $DNI = $datos["DNI"];
                     $nombre_completo = $datos["nombre_completo"];
                     $email = $datos["email"];
                     $telefono = $datos["telefono"];
                     $contrasena = $datos["contrasena"];
-                    $activo = $datos["activo"];
                     $id_socio = $datos["id_socio"];
                     $id_carreras = $datos["id_carreras"];
-
                     $sql = "UPDATE usuarios
                             SET DNI = '$DNI',
                                 nombre_completo = '$nombre_completo',
                                 email = '$email',
                                 telefono = '$telefono',
                                 contrasena = '$contrasena',
-                                activo = $activo,
                                 id_socio = $id_socio,
                                 id_carreras = $id_carreras
                             WHERE id = $id";
-
                     $resultado = mysqli_query(
                         $conexion,
                         $sql
                     );
-
                     echo json_encode([
-                        "mensaje" => "Usuario actualizado correctamente"
+                        "mensaje" => "Usuario actualizado correctamente."
                     ]);
-
                 break;
 
-
-            case "inactivate"
-            
+                case "Inactivate"
                     $id = $datos["id"];
-
                     $sql = "UPDATE usuarios
                             SET activo = 0
                             WHERE id = $id";
-
-                    $resultado = mysqli_query(
-                        $conexion,
-                        $sql
-                    );
-
+                    $resultado = mysqli_query($conexion, $sql);
                     echo json_encode([
-                        "mensaje" => "Usuario inactivado correctamente"
+                        "mensaje" => "Usuario inactivo."
                     ]);
-
                 break;
+
+                //Default
             }
         break;
+
         case 'carreras':
             switch ($consulta) {
                 case 'Update':
@@ -239,7 +199,7 @@
                         
                 default:
                     http_response_code(400);
-                    echo json_encode(["error" => "Método no válido"]);
+                    echo json_encode(["error" => "Consulta no válido"]);
                 break;
             }
         break;
@@ -249,10 +209,4 @@
             echo json_encode(["error" => "Recurso no válido"]);
         break;
     }
-        break;
-
-        default:
-            http_response_code(405);
-            echo json_encode(["error" => "Método no permitido"]);
-        break;
 ?>
