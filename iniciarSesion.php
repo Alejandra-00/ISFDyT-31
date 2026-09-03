@@ -23,7 +23,7 @@
     <div class="ISFDYT"><span class="Verde">ISFDYT N°31</span></div>
     <div class="Necochea">Necochea</div>
     <div class="ContenedorFormulario">
-        <form class="formulario" action="iniciarSesion.php" method="POST">
+        <form class="formulario" action="API.php/iniciarSesion" method="POST">
             <h2 class="titulo">INICIAR SESIÓN</h2>
             <div class="grupoInput">
                 <label for="dni" class="label">DNI</label>
@@ -37,6 +37,9 @@
                 </div>
                 <p class="linkOlvido"><a href="olvideContrasena">Olvidé mi contraseña</a></p>
             </div>
+
+            <!--<input type="text" hidden id="recurso" value="registroPagos">-->
+            <!--<input type="text" hidden id="consulta" value="Update"-->
             <button class="btn">Iniciar sesión</button>
             <p class="linkRegistro">¿No tienes una cuenta?<a href="registrarse.php">¡Registrate!</a></p>
         </form>
