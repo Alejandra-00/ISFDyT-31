@@ -5,8 +5,7 @@
          <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
          <title>Registrarse</title>
           <link rel="stylesheet" href="registrarse.css"> 
-          </head> 
-          
+    </head> 
 <body> 
     <div class="container"> 
         <form method="POST" action="registrarse.php" class="form">
@@ -25,27 +24,26 @@
                  </div>
              <div class="campo"> 
                 <label>TIPO DE SOCIO</label>
-                 <select name="socio" required>
+                 <select id="socio" name="socio" required onchange="mostrarCarrera()">
                      <option value="" >Eres socio o voluntario?</option> 
                      <option value="1">Alumno</option> 
                      <option value="2">Voluntario</option> 
-                     <option value="3">Administrador</option> 
                      </select> 
                      </div> 
                 <div class="campo"> 
                     <label>CARRERA</label>
-                     <select name="carrera" required> 
+                     <select id="carrera" name="carrera" required> 
                         <option value="">Seleccione carrera</option> 
                         <option value="1">Tecnica/o Superior en Administracion de PyMES</option> 
                         <option value="2">Tecnica/o Superior en Acompañamiento Terapeutico</option> 
                         <option value="3">Tecnica/o Superior en Produccion Agricola Ganadera</option> 
                         <option value="4">Profesor/a de Educacion Inicial</option>
-                         <option value="5">Profesor/a de Educacion Primaria</option> 
-                         <option value="6">Profesor/a de Educacion Fisica</option> 
-                         <option value="7">Tecnica/o Superior en Psicopedagogia</option> 
-                         <option value="8">Tecnica/o Superior en Trabajo Social</option> 
-                         <option value="9">Enfermero/a</option> 
-                         </select> 
+                        <option value="5">Profesor/a de Educacion Primaria</option> 
+                        <option value="6">Profesor/a de Educacion Fisica</option> 
+                        <option value="7">Tecnica/o Superior en Psicopedagogia</option> 
+                        <option value="8">Tecnica/o Superior en Trabajo Social</option> 
+                        <option value="9">Enfermero/a</option> 
+                    </select> 
                     </div> 
                 <div class="campo"> 
                     <label>CONTRASEÑA</label> 
@@ -60,7 +58,5 @@
         </form> 
     </div> 
 </body> 
+<script src="script.js"></script>
 </html> 
-<?php 
-$conexion->close(); 
-?>
