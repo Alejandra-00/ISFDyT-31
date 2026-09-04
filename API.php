@@ -163,9 +163,16 @@
                         $conexion,
                         $sql
                     );
-                    echo json_encode([
-                        "mensaje" => "Usuario actualizado correctamente."
-                    ]);
+                    if ($resultado) {
+                        echo json_encode([
+                            "mensaje" => "Usuario actualizado correctamente."
+                        ]);
+                    } else {
+                        http_response_code(500);
+                        echo json_encode([
+                            "error" => "No se pudo actualizar el usuario."
+                        ]);
+                    }
                 break;
 
                 case "Inactivate"
@@ -174,12 +181,21 @@
                             SET activo = 0
                             WHERE id = $id";
                     $resultado = mysqli_query($conexion, $sql);
-                    echo json_encode([
-                        "mensaje" => "Usuario inactivo."
-                    ]);
+                    if ($resultado) {
+                        echo json_encode([
+                            "mensaje" => "Usuario inactivo."
+                        ]);
+                    } else {
+                        http_response_code(500);
+                        echo json_encode([
+                            "error" => "No se pudo inactivar el usuario."
+                        ]);
+                    }
                 break;
 
-                //Default
+                default:
+                    http_response_code(400);
+                    echo json_encode(["error" => "Consulta no válida"]);
             }
         break;
 
@@ -196,10 +212,20 @@
                         echo json_encode(["error" => "Error de actualización."]);
                     }
                 break;
-                        
+
+                case 'read'
+                    $sql = "SELECT * FROM carreras";
+                    $resultado = mysqli_query($conexion, $sql);
+                    if ($resultado) {
+                        echo json_encode(["mensaje" => "Ok."]);
+                    } else {
+                        http_response_code(502);
+                        echo json_encode(["error" => "Error de lectura."]);
+                    }
+                break;    
                 default:
                     http_response_code(400);
-                    echo json_encode(["error" => "Consulta no válido"]);
+                    echo json_encode(["error" => "Consulta no válida"]);
                 break;
             }
         break;
