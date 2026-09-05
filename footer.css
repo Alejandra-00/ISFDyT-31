@@ -1,0 +1,158 @@
+/* Registra la fuente personalizada Tamrin. */
+@font-face {
+    font-family: 'Tamrin'; /* Define el nombre que se usara en el CSS. */
+    src: url('fuentes/tamrin.ttf') format('truetype'); /* Carga el archivo de la fuente. */
+    font-weight: normal; /* Usa el grosor normal de la fuente. */
+}
+
+/* Elimina los estilos de espaciado predeterminados del navegador. */
+* {
+    margin: 0; /* Elimina el margen externo predeterminado. */
+    padding: 0; /* Elimina el relleno interno predeterminado. */
+    box-sizing: border-box; /* Incluye padding y borde dentro del tamaño total. */
+    
+}
+
+/* Configura la apariencia y el posicionamiento general del footer. */
+.footer {
+    background-image: url("fondo/fondot.png"); /* Usa la imagen como fondo. */
+    background-repeat: repeat-x; /* Repite el fondo solamente en el eje horizontal. */
+    background-size: 100%; /* Ajusta el fondo al ancho disponible. */
+    background-position: bottom; /* Coloca el fondo en la parte inferior. */
+    width: 100%; /* Ocupa todo el ancho de la ventana. */
+    min-height: 100vh; /* Asegura una altura minima igual a la ventana. */
+    display: flex; /* Activa Flexbox. */
+    flex-direction: column; /* Ordena los elementos en columna. */
+    justify-content: flex-end; /* Coloca el contenido hacia abajo. */
+    align-items: center; /* Centra el contenido horizontalmente. */
+}
+/* Distribuye horizontalmente los contenidos principales del footer. */
+.section {
+    /* Activa Flexbox para organizar los elementos de la seccion. */
+    display: flex;
+    /* Coloca el bloque logo y los iconos uno debajo del otro. */
+    flex-direction: column;
+    /* Centra horizontalmente los elementos hijos. */
+    align-items: center;
+    justify-content: space-between; /* Distribuye espacio entre logo/texto y contacto */
+    gap: 20px; /* Separa verticalmente el logo y los iconos. */
+    padding: 40px; /* Deja espacio interno alrededor de la seccion. */
+    width: 100%; /* Permite que la seccion ocupe todo el ancho disponible. */
+    flex: 1; /* Hace que la seccion pueda crecer dentro del footer. */
+    justify-content: flex-end; /* Coloca el contenido hacia abajo. */
+}
+
+/* Aplica la fuente Tamrin a todo el contenido del footer. */
+.footer,
+.footer * {
+    font-family: 'Tamrin', sans-serif; /* Usa Tamrin y deja sans-serif como respaldo. */
+}
+
+/* Agrupa el logo y el texto en una fila. */
+.logo {
+    display: flex; /* Activa Flexbox dentro del bloque. */
+    align-items: center; /* Centra verticalmente logo y texto. */
+    justify-content: space-between; /* Distribuye logo, textos y contacto horizontalmente. */
+    gap: 30px; /* Separa el logo del texto. */
+    width: 100%; /* Hace que el bloque ocupe todo el ancho disponible. */
+    position: relative; /* Permite mover el bloque respecto a su posicion normal. */
+    top: 25px; /* Desplaza el bloque 25 pixeles hacia abajo. */
+}
+
+/* Define el tamaño del contenedor circular del logo. */
+.ContenedorLogo {    
+    height: 100px; /* Establece la altura del contenedor. */
+    width: 100px; /* Establece el ancho del contenedor. */
+    flex-shrink: 0; /* Evita que el contenedor se comprima. */
+}
+
+/* Ajusta la imagen para ocupar completamente su contenedor. */
+.Logo {
+    border-radius: 50%; /* Convierte la imagen en circular. */
+    width: 100%; /* Ocupa todo el ancho del contenedor. */
+    height: 100%; /* Ocupa toda la altura del contenedor. */
+}
+
+/* Configura el bloque del nombre de la cooperadora. */
+.Cooperadora {
+    font-size: 14px; /* Define el tamaño base del texto. */
+}
+
+/* Estiliza el titulo principal de la cooperadora. */
+.Cooperadora h1 {
+    margin: 0; /* Elimina el margen predeterminado del titulo. */
+    padding: 0; /* Elimina el relleno predeterminado del titulo. */
+    font-size: 18px; /* Define el tamaño del titulo. */
+    line-height: 1.2; /* Controla la altura de cada linea. */
+}
+
+/* Configura el bloque con el nombre del instituto. */
+.Instituto {
+    font-size: 10px; /* Define el tamaño base del texto. */
+}
+
+/* Estiliza el subtitulo del instituto. */
+.Instituto h2 {
+    margin: 0; /* Elimina el margen predeterminado. */
+    padding: 0; /* Elimina el relleno predeterminado. */
+    font-size: 12px; /* Define el tamaño del subtitulo. */
+    line-height: 1.5; /* Controla la separacion entre lineas. */
+}
+
+/* Organiza verticalmente los elementos del texto del logo. */
+.logo-text-wrapper {
+    display: flex; /* Activa Flexbox. */
+    flex-direction: column; /* Apila los textos verticalmente. */
+    justify-content: center; /* Centra el contenido en su eje vertical. */
+}
+
+/* Alinea la informacion de contacto a la derecha. */
+.footer-content {
+    text-align: right; /* Alinea el texto a la derecha. */
+    white-space: nowrap; /* Evita que los datos de contacto se dividan en varias lineas. */
+}
+
+/* Estiliza el titulo de contacto. */
+.footer-content h3 {
+    margin: 0 0 10px 0; /* Deja diez pixeles debajo del titulo. */
+    font-size: 20px; /* Define el tamaño del titulo. */
+}
+
+/* Estiliza los datos de contacto. */
+.footer-content h4 {
+    font-size: 14px; /* Define el tamaño de los datos. */
+    font-weight: normal; /* Mantiene un grosor de texto normal. */
+    margin: 0; /* Elimina el margen predeterminado. */
+    line-height: 1.9; /* Mejora la separacion entre lineas. */
+    white-space: nowrap; /* Evita que cada dato se divida en varias lineas. */
+}
+
+
+/* Organiza horizontalmente los iconos de redes sociales. */
+.social-icons {
+    display: flex; /* Activa Flexbox para organizar los iconos. */
+    flex-direction: row; /* Coloca los iconos uno junto al otro. */
+    gap: 10px; /* Deja diez pixeles entre los iconos. */
+    justify-content: center; /* Centra los iconos horizontalmente. */
+}
+
+/* Define la apariencia de cada enlace social. */
+.social-icons .social-icon {
+    width: 35px; /* Define el ancho del boton circular. */
+    height: 35px; /* Define la altura del boton circular. */
+    border-radius: 50%; /* Convierte el enlace en un circulo. */
+    background: rgba(255, 255, 255, 0.3); /* Aplica un fondo blanco semitransparente. */
+    display: flex; /* Activa Flexbox para centrar el icono. */
+    align-items: center; /* Centra el icono verticalmente. */
+    justify-content: center; /* Centra el icono horizontalmente. */
+    font-size: 16px; /* Define el tamaño del icono. */
+    color: #1a3a52; /* Define el color del icono. */
+    text-decoration: none; /* Elimina el subrayado del enlace. */
+    transition: all 0.3s ease; /* Suaviza los cambios al interactuar. */
+}
+
+/* Cambia el aspecto de los iconos cuando el cursor pasa sobre ellos. */
+.social-icons .social-icon:hover {
+    background: rgba(255, 255, 255, 0.6); /* Aumenta la opacidad del fondo. */
+    transform: scale(1.1); /* Agranda ligeramente el icono. */
+}

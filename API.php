@@ -223,9 +223,50 @@
                         echo json_encode(["error" => "Error de lectura."]);
                     }
                 break;    
+
+                case 'Delete':
+                    $id = $datos["id"] ;
+                    $sql = "DELETE FROM carrera WHERE id_carrera = $id";
+                    $resultado = mysqli_query($conexion, $sql);
+                    if ($resultado) {
+                        echo json_encode(["mensaje" => "Carrera eliminada con éxito."]);
+                    } else {
+                        http_response_code(502);
+                        echo json_encode(["error" => "Error: Carrera no eliminada."]);
+                    }
+                break;
+
                 default:
                     http_response_code(400);
                     echo json_encode(["error" => "Consulta no válida"]);
+                break;
+            }
+        break;
+
+        case 'comprobantes':
+            switch ($consulta) {
+                case 'Read':
+                    $sql = "SELECT * FROM comprobante";
+                    //INNER JOIN SIRVE PARA OBTENER ATRAVEZ DE CLAVES FORANEAS, LOS DATOS DE OTRAS TABLAS RELACIONADAS
+                    $resultado = mysqli_query($conexion, $sql);
+                    if ($resultado) {
+                        echo json_encode(["mensaje" => "Ok."]);
+                    } else {
+                        http_response_code(502);
+                        echo json_encode(["error" => "Error de lectura."]);
+                    }
+                break;
+
+                case 'Create':
+                    $foto = $datos["foto"] ?? "";
+                    $sql = "INSERT INTO comprobante (foto) VALUES ('$foto')";
+                    $resultado = mysqli_query($conexion, $sql);
+                    if ($resultado) {
+                        echo json_encode(["mensaje" => "Comprobante almacenado con éxito."]);
+                    } else {
+                        http_response_code(502);
+                        echo json_encode(["error" => "Comprobante no almacenado."]);
+                    }
                 break;
             }
         break;
@@ -234,5 +275,7 @@
             http_response_code(400);
             echo json_encode(["error" => "Recurso no válido"]);
         break;
+
+        
     }
 ?>
