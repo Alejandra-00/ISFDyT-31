@@ -1,19 +1,6 @@
-/*@font-face {
+@font-face {
     font-family: 'Tamrin';
     src: url('fuentes/tamrin.ttf') format('truetype');
-}
-
-@media(min-width:768px){ /*se utiliza normalmente en celulares
-    .container{
-        flex-direction: row;
-        background-color: rgb(19, 150, 93)
-    }
-    
-    .card{
-        flex: 1;
-        margin: 10px;
-        background-color: rgb(206, 206, 206);
-    }
 }
 
 body {
@@ -41,13 +28,13 @@ body {
 
 .FondoVerde {
     position: absolute;
-    border-radius: 6%;
-    background-color: #a9cd46;
     width: 782px;
     height: 435px;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    border-radius: 6%;
+    background-color: #a9cd46;
 }
 
 .fondoAzul {    
@@ -146,7 +133,7 @@ body {
     width: 100%;
 }
 
-.toggle-icon img{
+.ojo img{
     position: absolute;
     width: 10px;
     height: 10px;
@@ -224,245 +211,73 @@ input::placeholder {
 
 .linkRegistro a {
     text-decoration: none;
-} */
-
-@font-face {
-    font-family: 'Tamrin';
-    src: url('fuentes/tamrin.ttf') format('truetype');
 }
 
-* {
-    box-sizing: border-box;
-}
+@media (max-width: 767px) {
+    body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 15px;
+    }
 
-body {
-    margin: 0;
-    background-color: #8aae70;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    font-family: 'Tamrin', sans-serif;
-}
-
-/* Esquinas decorativas */
-.EsquinaCirculo {
-    position: fixed;
-    height: 120px;
-    width: 120px;
-    border-top-right-radius: 100%;
-    background-color: #4d70bc;
-    left: 0;
-    bottom: 0;
-    z-index: 0;
-}
-
-.EsquinaCurva {
-    position: fixed;
-    right: 0;
-    top: 0;
-    height: 120px;
-    width: 120px;
-    z-index: 0;
-}
-
-/* Contenedor principal: apila logo y formulario en vertical */
-.FondoVerde {
-    position: relative;
-    background-color: #a9cd46;
-    border-radius: 6%;
-    width: 100%;
-    max-width: 380px;
-    padding: 30px 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    z-index: 1;
-    overflow: hidden;
-}
-
-.fondoAzul {
-    position: absolute;
-    width: 100%;
-    height: 45%;
-    top: 0;
-    left: 0;
-    background-color: #4d70bc;
-    border-radius: 6% 6% 0 0;
-    z-index: 0;
-}
-
-/* Logo y textos (arriba) */
-.ContenedorLogo {
-    position: relative;
-    width: 75px;
-    height: 75px;
-    margin: 0 auto 10px;
-    z-index: 1;
-}
-
-.Logo {
-    border-radius: 50%;
-    width: 100%;
-    height: 100%;
-}
-
-.Cooperadora {
-    font-size: 16px;
-    margin: 0;
-    text-align: center;
-    z-index: 1;
-}
-
-.Verde { color: #a9cd46; }
-
-.Instituto {
-    font-size: 13px;
-    margin: 0;
-    text-align: center;
-    z-index: 1;
-}
-
-.ContenedorLogoNegro {
-    width: 180px;
-    margin: 15px auto 5px;
-    z-index: 1;
-}
-
-.LogoNegro {
-    width: 100%;
-    height: auto;
-}
-
-.ISFDYT {
-    font-size: 22px;
-    margin: 5px 0 0;
-    text-align: center;
-    z-index: 1;
-}
-
-.Necochea {
-    font-size: 14px;
-    margin: 0;
-    text-align: center;
-    z-index: 1;
-}
-
-/* Formulario */
-.ContenedorFormulario {
-    width: 100%;
-    max-width: 300px;
-    margin-top: 25px;
-    z-index: 1;
-}
-
-.formulario {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-}
-
-.contra { position: relative; width: 100%; }
-
-.toggle-icon img {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
-.titulo {
-    font-size: 24px;
-    margin: 0 0 20px;
-}
-
-.grupoInput {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    width: 100%;
-    margin-bottom: 12px;
-}
-
-.input {
-    border-radius: 25px;
-    padding: 12px 15px;
-    width: 100%;
-    height: auto;
-    border: none;
-    outline: none;
-    font-size: 16px; /* evita el zoom automático del celular al enfocar */
-}
-
-.label {
-    font-size: 14px;
-    margin-bottom: 5px;
-}
-
-input::placeholder { font-size: 14px; }
-
-.linkOlvido {
-    margin: 2px 0 10px;
-    align-self: flex-start;
-    font-size: 13px;
-    font-family: sans-serif;
-    font-weight: bold;
-}
-
-.linkOlvido a { text-decoration: none; }
-
-.btn {
-    background-color: #ffffff;
-    color: #000000;
-    border: none;
-    padding: 12px 30px;
-    border-radius: 25px;
-    font-family: 'Tamrin';
-    font-size: 16px;
-    box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
-    width: 100%;
-    cursor: pointer;
-}
-
-.linkRegistro {
-    font-family: sans-serif;
-    margin: 10px 0 0;
-    font-size: 13px;
-    font-weight: bold;
-    color: #666666;
-}
-
-.linkRegistro a { text-decoration: none; }
-
-/* ---------- Pantallas grandes (tablet y desktop) ---------- */
-@media (min-width: 768px) {
+    /* La tarjeta verde deja de estar clavada en px y se adapta */
     .FondoVerde {
-        max-width: 900px;
-        padding: 40px 50px;
+        position: relative;
+        width: 100%;
+        max-width: 360px;
+        height: auto;
+        min-height: 600px;
+        top: auto;
+        left: auto;
+        transform: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 25px 15px;
     }
 
+    /* El bloque azul pasa arriba y en ancho completo */
     .fondoAzul {
-        width: 45%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        border-radius: 6% 0 0 6%;
+        position: relative;
+        top: auto;
+        left: auto;
+        transform: none;
+        width: 100%;
+        height: auto;
+        min-height: 280px;
+        border-radius: 12px;
+        margin-bottom: 20px;
     }
 
-    /* En desktop: logo a la izquierda, formulario a la derecha */
-    .ContenedorLogoNegro { width: 250px; }
+    /* Logo y textos del panel azul: se centran y fluyen */
+    .ContenedorLogo, .Cooperadora, .Instituto,
+    .ContenedorLogoNegro, .ISFDYT, .Necochea {
+        position: relative;
+        top: auto;
+        left: auto;
+        transform: none;
+        text-align: center;
+        margin: 5px auto;
+    }
+    .ContenedorLogo { width: 80px; height: 80px; }
+    .ContenedorLogoNegro { width: 180px; height: auto; }
+    .Cooperadora { font-size: 14px; }
+    .Instituto { font-size: 11px; }
+    .ISFDYT { font-size: 20px; }
+    .Necochea { font-size: 14px; }
 
-    .ISFDYT { font-size: 30px; }
-    .Necochea { font-size: 18px; }
-    .Cooperadora { font-size: 20px; }
-    .Instituto { font-size: 16px; }
-
+    /* Formulario: ancho completo, abajo */
     .ContenedorFormulario {
-        margin-top: 0;
-        max-width: 340px;
+        position: relative;
+        top: auto;
+        left: auto;
+        transform: none;
+        width: 100%;
+        margin-top: 20px;
     }
+
+    .grupoInput, .input { width: 100%; }
+    .titulo { font-size: 20px; }
+    .btn { width: 100%; }
 }
