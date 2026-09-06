@@ -14,7 +14,6 @@
     $recurso = $_POST["recurso"] ?? "";
     $datos = json_encode(file_get_contents("php://input"), true);
 
-    
     switch ($recurso) {
         case 'registroPagos':
             switch ($consulta) {
@@ -55,7 +54,7 @@
                         echo json_encode(["mensaje" => "Pago almacenado con exito."]);
                     } else {
                         http_response_code(402);
-                        echo json_encode(["error" => "Pago rechazado."]);
+                        echo json_encode(["error" => "Error: Pago rechazado."]);
                     }
                 break;
 
@@ -67,7 +66,7 @@
                         echo json_encode(["mensaje" => "Actualizado correctamente."]);
                     } else {
                         http_response_code(502);
-                        echo json_encode(["error" => "Error de actualización."]);
+                        echo json_encode(["error" => "Error: Estado no actualizado."]);
                     }
                 break;
                         
@@ -136,7 +135,7 @@
                     } else {
                         http_response_code(500);
                         echo json_encode([
-                            "error" => "No se pudo crear el usuario."
+                            "error" => "Error: Cuenta no registrado."
                         ]);
                     }
                 break;
@@ -159,10 +158,7 @@
                                 id_socio = $id_socio,
                                 id_carreras = $id_carreras
                             WHERE id = $id";
-                    $resultado = mysqli_query(
-                        $conexion,
-                        $sql
-                    );
+                    $resultado = mysqli_query($conexion, $sql);
                     if ($resultado) {
                         echo json_encode([
                             "mensaje" => "Usuario actualizado correctamente."
@@ -170,7 +166,7 @@
                     } else {
                         http_response_code(500);
                         echo json_encode([
-                            "error" => "No se pudo actualizar el usuario."
+                            "error" => "Error: Usuario no actualizado."
                         ]);
                     }
                 break;
@@ -188,7 +184,7 @@
                     } else {
                         http_response_code(500);
                         echo json_encode([
-                            "error" => "No se pudo inactivar el usuario."
+                            "error" => "Error: Usuario no inactivo."
                         ]);
                     }
                 break;
@@ -196,24 +192,12 @@
                 default:
                     http_response_code(400);
                     echo json_encode(["error" => "Consulta no válida"]);
+                break;
             }
-        break;
 
         case 'carreras':
             switch ($consulta) {
-                case 'Update':
-                    $id = $datos["nombre"];
-                    $sql = "UPDATE carreras SET nombre = $id";
-                    $resultado = mysqli_query($conexion, $sql);
-                    if ($resultado) {
-                        echo json_encode(["mensaje" => "Actualizado correctamente."]);
-                    } else {
-                        http_response_code(500);
-                        echo json_encode(["error" => "Error de actualización."]);
-                    }
-                break;
-
-                case 'read'
+                case 'Read'
                     $sql = "SELECT * FROM carreras";
                     $resultado = mysqli_query($conexion, $sql);
                     if ($resultado) {
@@ -233,6 +217,18 @@
                     } else {
                         http_response_code(502);
                         echo json_encode(["error" => "Error: Carrera no eliminada."]);
+                    }
+                break;
+
+                case 'Update':
+                    $id = $datos["nombre"];
+                    $sql = "UPDATE carreras SET nombre = $id";
+                    $resultado = mysqli_query($conexion, $sql);
+                    if ($resultado) {
+                        echo json_encode(["mensaje" => "Actualizado correctamente."]);
+                    } else {
+                        http_response_code(500);
+                        echo json_encode(["error" => "Error: Carrera no actualizada."]);
                     }
                 break;
 
@@ -265,7 +261,7 @@
                         echo json_encode(["mensaje" => "Comprobante almacenado con éxito."]);
                     } else {
                         http_response_code(502);
-                        echo json_encode(["error" => "Comprobante no almacenado."]);
+                        echo json_encode(["error" => "Error: Comprobante no almacenado."]);
                     }
                 break;
             }
@@ -275,7 +271,5 @@
             http_response_code(400);
             echo json_encode(["error" => "Recurso no válido"]);
         break;
-
-        
     }
 ?>
