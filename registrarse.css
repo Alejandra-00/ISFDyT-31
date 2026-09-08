@@ -4,12 +4,12 @@
 }
 
 body {
-    height: 100vh;
+    height: auto;
     margin: 0;
-     background-image: url('fondo/fondo1.png'); 
-     background-repeat: no-repeat;
-      background-size: cover; 
-      background-position: center; 
+    background-image: url('fondo/fondo1.png'); 
+    background-repeat: no-repeat;
+    background-size: cover; 
+    background-position: center; 
     } 
 
 .container { 
