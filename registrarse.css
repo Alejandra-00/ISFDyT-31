@@ -4,11 +4,12 @@
 }
 
 body {
-     margin: 0; 
-     background-image: url('fondo/fondo1.png'); 
-     background-repeat: no-repeat;
-      background-size: cover; 
-      background-position: center; 
+    height: auto;
+    margin: 0;
+    background-image: url('fondo/fondo1.png'); 
+    background-repeat: no-repeat;
+    background-size: cover; 
+    background-position: center; 
     } 
 
 .container { 
@@ -24,17 +25,17 @@ body {
     display: flex;
     justify-content: flex-end; 
     align-items: center; 
-    padding-right: 10%; 
+    padding-right: 50px; 
     box-sizing: border-box; 
 } 
 
 .form { 
     width: 350px;
-    transform: translate( 60px, 20px);
+    /*transform: translate( 60px, 20px); */
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 7px 15px;
-    margin-left: 40px;
+    /*margin-left: 40px;*/
 }
 
 
