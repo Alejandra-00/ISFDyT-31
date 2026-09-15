@@ -29,7 +29,7 @@ body {
     gap: 20px;
 }
 .card {
-    width: 200px;
+    width: 220px;
     min-height: 150px;
     display: flex;
     justify-content: center;
@@ -45,23 +45,22 @@ body {
     font-size: 15px;
 }
 .card strong {
-    font-size: 24px;
+    font-size: 20px;
 }
 .preguntas {
-    min-height: 100vh;
     background-color: #5272bd;
-    /*poner el footer abajo*/
     display: flex;
     flex-direction: column;
     padding-top: 100px;
 }
 .preguntas_contenido {
-    flex: 1;
+    flex: none;
+    flex-shrink: 0;
 }
 .preguntas h1 {
     margin: 0;
     text-align: center;
-    font-size: 55px;
+    font-size: 50px;
     color: black;
 }
 .preguntas_contenedor {
@@ -72,27 +71,18 @@ body {
     margin-top: 100px;
 }
 .pregunta {
-    width: 420px;
-    min-height: 190px;
+    width: 400px;
+    min-height: 180px;
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
-    background-color: #acd63e;
+    background-color: #a9cd46;
     border-radius: 20px;
     padding: 20px;
     font-size: 18px;
     font-weight: bold;
 }
-.footer {
-    width: 100%;
-    min-height: 150px;
-    background-color: #acd63e;
-    /*el footer se vaya hasta el final del section*/
-    margin-top: auto;
-    /*parte blanca que separa lo azul del footer*/
-    border-top: 35px solid white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.footer_separacion {
+    margin-top: -70px;
 }

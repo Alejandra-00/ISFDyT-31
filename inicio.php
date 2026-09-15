@@ -46,9 +46,9 @@
                 </div>
             </div>
         </div>
-        <footer class="footer">
-        <!-- -->
-        </footer>
+        <div class="footer_separacion">
+            <?php include 'footer.php'; ?>
+        </div>
     </section>
 </body>
 </html>
