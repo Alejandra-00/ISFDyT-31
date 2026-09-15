@@ -197,6 +197,19 @@
 
         case 'carreras':
             switch ($consulta) {
+                case 'Create':
+                    $nombre = $datos["nombre"];
+                    $sql = "INSERT INTO carreras (nombre) VALUES ('$nombre')";
+                    $resultado = mysqli_query($conexion, $sql);
+                    if ($resultado) {
+                        echo json_encode([ "mensaje" => "Carrera creada correctamente."
+                    ]);
+                    } else {
+                        http_response_code(500);
+                        echo json_encode(["error" => "No se pudo crear la carrera."]);
+                        }
+                    break;
+
                 case 'Read'
                     $sql = "SELECT * FROM carreras";
                     $resultado = mysqli_query($conexion, $sql);
