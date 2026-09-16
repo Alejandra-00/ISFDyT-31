@@ -4,7 +4,7 @@
 
     //Conexión y error "500"
     $conexion = mysqli_connect("localhost", "root", "", "isfdyt-31");
-    if(!conexion){
+    if(!$conexion){
         http_response_code(500);
         echo json_encode(["error" => "Error de conexión"]);
         exit;
@@ -12,22 +12,23 @@
     mysqli_set_charset($conexion, "UTF8");
 
     $recurso = $_POST["recurso"] ?? "";
+    $consulta = $_POST["consulta"] ?? "";
     $datos = json_encode(file_get_contents("php://input"), true);
 
     switch ($recurso) {
         case 'registroPagos':
             switch ($consulta) {
                 case 'Read':
-                    $sql = "SELECT registro_pagos.id_pago, usuarios.id_usuarios, monto.importe, estado.nombre AS estado, comprobante.foto
-                    FROM registro_pagos
+                    $sql = "SELECT registropagos.id_pago, usuarios.id_usuarios, monto.importe, estado.nombre AS estado, comprobante.foto
+                    FROM registropagos
                     INNER JOIN usuarios
-                        ON registro_pagos.id_usuario = usuarios.id_usuarios
+                        ON registropagos.id_usuario = usuarios.id_usuarios
                     INNER JOIN monto
-                        ON registro_pagos.id_monto = monto.id_monto
+                        ON registropagos.id_monto = monto.id_monto
                     INNER JOIN estado
-                        ON registro_pagos.id_estado = estado.id_estado
+                        ON registropagos.id_estado = estado.id_estado
                     INNER JOIN comprobante
-                        ON registro_pagos.id_comprobante = comprobante.id_comprobante";
+                        ON registropagos.id_comprobante = comprobante.id_comprobante";
                     $resultado = mysqli_query($conexion, $sql);
                     if ($resultado) {
                         echo json_encode(["mensaje" => "Ok."]);
@@ -38,17 +39,17 @@
                 break;
 
                 case 'Create':
-                    $select = "SELECT registro_pagos.id_pago, usuarios.id_usuarios, monto.importe, estado.nombre AS estado, comprobante.foto
-                        FROM registro_pagos
+                    $select = "SELECT registropagos.id_pago, usuarios.id_usuarios, monto.importe, estado.nombre AS estado, comprobante.foto
+                        FROM registropagos
                         INNER JOIN usuarios
-                            ON registro_pagos.id_usuario = usuarios.id_usuarios
+                            ON registropagos.id_usuario = usuarios.id_usuarios
                         INNER JOIN monto
-                            ON registro_pagos.id_monto = monto.id_monto
+                            ON registropagos.id_monto = monto.id_monto
                         INNER JOIN estado
-                            ON registro_pagos.id_estado = estado.id_estado
+                            ON registropagos.id_estado = estado.id_estado
                         INNER JOIN comprobante
-                            ON registro_pagos.id_comprobante = comprobante.id_comprobante";
-                    $sql = "INSERT INTO registro_pagos ("registro_pagos.id_usuario, registro_pagos.id_monto, registro_pagos.id_estado, registro_pagos.id_comprobante")";
+                            ON registropagos.id_comprobante = comprobante.id_comprobante";
+                    $sql = "INSERT INTO registropagos (registropagos.id_usuario, registropagos.id_monto, registropagos.id_estado, registropagos.id_comprobante) VALUES ('$id_usuario', '$id_monto', '$id_estado', '$id_comprobante')";
                     $resultado = mysqli_query($conexion, $sql);
                     if ($resultado) {
                         echo json_encode(["mensaje" => "Pago almacenado con exito."]);
@@ -60,7 +61,7 @@
 
                 case 'Update':
                     $id = $datos["estado"];
-                    $sql = "UPDATE registro_pago SET estado = $id";
+                    $sql = "UPDATE registropago SET estado = $id";
                     $resultado = mysqli_query($conexion, $sql);
                     if ($resultado) {
                         echo json_encode(["mensaje" => "Actualizado correctamente."]);
@@ -79,7 +80,7 @@
         
         case "usuarios":
             switch ($consulta) {
-                case "Read"  
+                case "Read":
                     $sql = "SELECT
                         usuario.id,
                         usuario.nombre_completo,
@@ -105,15 +106,15 @@
                     }
                 break;
 
-                case "Create"
-                    $DNI = $datos["DNI"];
-                    $nombre_completo = $datos["nombre_completo"]; 
+                case "Create":
+                    $DNI = $datos["dni"];
+                    $nombre_completo = $datos["nombre_completo"];
                     $email = $datos["email"];
                     $telefono = $datos["telefono"];
-                    $contrasena= $datos["contrasena"];
-                    $activo = $datos["activo"];
-                    $id_socio = $datos["id_socio"];
-                    $id_carreras = $datos["id_carreras"];
+                    $contrasena = $datos["contrasena"];
+                    $id_socio = $datos["socio"];
+                    $id_carrera = $datos["carrera"];
+                    $activo = 1; 
                     $sql_check = "SELECT * FROM usuarios WHERE email = '$email'";
                     $resultado_check = mysqli_query($conexion, $sql_check);
                     if (mysqli_num_rows($resultado_check) > 0) {
@@ -124,14 +125,12 @@
                         exit;
                     }
                     $sql = "INSERT INTO usuarios
-                            (DNI, nombre_completo, email, telefono, contrasena, activo, id_socio, id_carreras)
+                            (DNI, nombre_completo, email, telefono, contrasena, activo, id_socio, id_carrera)
                             VALUES
-                            ('$DNI', '$nombre_completo', '$email', '$telefono', '$contrasena', $activo, $id_socio, $id_carreras)";
+                            ('$DNI', '$nombre_completo', '$email', '$telefono', '$contrasena', $activo, $id_socio, $id_carrera)";
                     $resultado = mysqli_query($conexion, $sql);
                     if ($resultado) {
-                        echo json_encode([
-                            "mensaje" => "Usuario creado correctamente."
-                        ]);
+                        header("Location: inicio.php");
                     } else {
                         http_response_code(500);
                         echo json_encode([
@@ -140,23 +139,23 @@
                     }
                 break;
 
-                case "Update"
+                case "Update":
                     $id = $datos["id"];
-                    $DNI = $datos["DNI"];
+                    $DNI = $datos["dni"];
                     $nombre_completo = $datos["nombre_completo"];
                     $email = $datos["email"];
                     $telefono = $datos["telefono"];
                     $contrasena = $datos["contrasena"];
-                    $id_socio = $datos["id_socio"];
-                    $id_carreras = $datos["id_carreras"];
+                    $id_socio = $datos["socio"];
+                    $id_carrera = $datos["carrera"];
                     $sql = "UPDATE usuarios
                             SET DNI = '$DNI',
                                 nombre_completo = '$nombre_completo',
                                 email = '$email',
                                 telefono = '$telefono',
                                 contrasena = '$contrasena',
-                                id_socio = $id_socio,
-                                id_carreras = $id_carreras
+                                socio = $id_socio,
+                                carrera = $id_carrera
                             WHERE id = $id";
                     $resultado = mysqli_query($conexion, $sql);
                     if ($resultado) {
@@ -171,7 +170,7 @@
                     }
                 break;
 
-                case "Inactivate"
+                case "Inactivate":
                     $id = $datos["id"];
                     $sql = "UPDATE usuarios
                             SET activo = 0
@@ -194,6 +193,7 @@
                     echo json_encode(["error" => "Consulta no válida"]);
                 break;
             }
+        break;
 
         case 'carreras':
             switch ($consulta) {
@@ -210,7 +210,7 @@
                         }
                     break;
 
-                case 'Read'
+                case 'Read':
                     $sql = "SELECT * FROM carreras";
                     $resultado = mysqli_query($conexion, $sql);
                     if ($resultado) {

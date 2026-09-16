@@ -8,7 +8,7 @@
     </head> 
 <body> 
     <div class="container"> 
-        <form method="POST" action="registrarse.php" class="form">
+        <form method="POST" action="API.php" class="form">
              <h2>REGISTRARSE</h2> 
              <div class="campo"> 
                 <label>DNI</label>
@@ -24,25 +24,32 @@
                  </div>
              <div class="campo"> 
                 <label>TIPO DE SOCIO</label>
-                 <select id="socio" name="socio" required onchange="mostrarCarrera()">
-                     <option value="" >Eres socio o voluntario?</option> 
-                     <option value="1">Alumno</option> 
-                     <option value="2">Voluntario</option> 
+                 <select id="socio" name="socio" required onchange="mostrarCarrera()" >
+                     <option disabled selected hidden>¿Qué tipo de voluntario sos?</option>
+                      <?php 
+                            session_start();
+                            include ('conexion.php');
+                            $sql_socio = "SELECT * FROM socio";
+                            $resultadosocio = mysqli_query($conexion, $sql_socio);
+                            while ($row = $resultadosocio->fetch_assoc()): ?>
+                            <option value="<?= $row['id']?>"><?= $row['nombre']?></option>
+                         <?php endwhile; 
+                           $conexion->close();?>
                      </select> 
                      </div> 
                 <div class="campo"> 
                     <label>CARRERA</label>
                      <select id="carrera" name="carrera" required> 
-                        <option value="">Seleccione carrera</option> 
-                        <option value="1">Tecnica/o Superior en Administracion de PyMES</option> 
-                        <option value="2">Tecnica/o Superior en Acompañamiento Terapeutico</option> 
-                        <option value="3">Tecnica/o Superior en Produccion Agricola Ganadera</option> 
-                        <option value="4">Profesor/a de Educacion Inicial</option>
-                        <option value="5">Profesor/a de Educacion Primaria</option> 
-                        <option value="6">Profesor/a de Educacion Fisica</option> 
-                        <option value="7">Tecnica/o Superior en Psicopedagogia</option> 
-                        <option value="8">Tecnica/o Superior en Trabajo Social</option> 
-                        <option value="9">Enfermero/a</option> 
+                        <option class="op" disabled selected hidden>Seleccione su carrera</option>
+                        <?php 
+                            session_start();
+                            include ('conexion.php');
+                            $sql_carrera = "SELECT * FROM carrera";
+                            $resultadoCarrera = mysqli_query($conexion, $sql_carrera);
+                            while ($row = $resultadoCarrera->fetch_assoc()): ?>
+                            <option value="<?= $row['id']?>"><?= $row['nombre']?></option>
+                         <?php endwhile; 
+                           $conexion->close();?>
                     </select> 
                     </div> 
                 <div class="campo"> 
@@ -52,7 +59,9 @@
                     <label>TELÉFONO</label> 
                     <input type="tel" name="telefono" placeholder="Ingrese su teléfono" required> 
                 </div> 
-            <button type="submit">CREAR CUENTA</button> 
+             <input type="text" hidden name="recurso" value="usuarios">
+            <input type="text" hidden name="consulta" value="Create">
+           <button type="submit">CREAR CUENTA</button> 
             
             <p class="login"> ¿Ya tienes una cuenta? <a href="iniciarSesion.php">¡Inicia sesión!</a> </p>
         </form> 
