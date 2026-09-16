@@ -207,8 +207,8 @@
                     } else {
                         http_response_code(500);
                         echo json_encode(["error" => "No se pudo crear la carrera."]);
-                        }
-                    break;
+                    }
+                break;
 
                 case 'Read':
                     $sql = "SELECT * FROM carreras";
