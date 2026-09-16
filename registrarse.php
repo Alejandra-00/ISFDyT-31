@@ -1,3 +1,7 @@
+<?php
+    session_start();
+    include ('conexion.php');
+?>
 <!DOCTYPE html> 
 <html lang="en"> 
     <head> 
@@ -27,14 +31,11 @@
                  <select id="socio" name="socio" required onchange="mostrarCarrera()" >
                      <option disabled selected hidden>¿Qué tipo de voluntario sos?</option>
                       <?php 
-                            session_start();
-                            include ('conexion.php');
                             $sql_socio = "SELECT * FROM socio";
                             $resultadosocio = mysqli_query($conexion, $sql_socio);
                             while ($row = $resultadosocio->fetch_assoc()): ?>
                             <option value="<?= $row['id']?>"><?= $row['nombre']?></option>
-                         <?php endwhile; 
-                           $conexion->close();?>
+                         <?php endwhile; ?>
                      </select> 
                      </div> 
                 <div class="campo"> 
@@ -42,14 +43,11 @@
                      <select id="carrera" name="carrera" required> 
                         <option class="op" disabled selected hidden>Seleccione su carrera</option>
                         <?php 
-                            session_start();
-                            include ('conexion.php');
                             $sql_carrera = "SELECT * FROM carrera";
                             $resultadoCarrera = mysqli_query($conexion, $sql_carrera);
                             while ($row = $resultadoCarrera->fetch_assoc()): ?>
                             <option value="<?= $row['id']?>"><?= $row['nombre']?></option>
-                         <?php endwhile; 
-                           $conexion->close();?>
+                         <?php endwhile; ?>
                     </select> 
                     </div> 
                 <div class="campo"> 
@@ -69,3 +67,6 @@
 </body> 
 <script src="script.js"></script>
 </html> 
+<?php
+ $conexion->close();
+?>
