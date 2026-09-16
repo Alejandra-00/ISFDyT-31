@@ -1,4 +1,19 @@
 <?php
+    /*<?php
+    $servername = "localhost";
+    $username = "root";
+    $password = "";
+    $dbname = "isfdyt-31";
+
+    $conexion = new mysqli($servername, $username, $password, $dbname);
+
+    // Check connection
+    if ($conexion -> connect_error) {
+    echo "Failed to connect to MySQL: " . $conexion -> connect_error;
+    exit();
+    }
+
+    ?>*/
 
     header("Content-Type: application/json");
 
@@ -19,16 +34,16 @@
         case 'registroPagos':
             switch ($consulta) {
                 case 'Read':
-                    $sql = "SELECT registropagos.id_pago, usuarios.id_usuarios, monto.importe, estado.nombre AS estado, comprobante.foto
-                    FROM registropagos
+                    $sql = "SELECT registroPagos.id_pago, usuarios.id_usuarios, monto.importe, estado.nombre AS estado, comprobante.foto
+                    FROM registroPagos
                     INNER JOIN usuarios
-                        ON registropagos.id_usuario = usuarios.id_usuarios
+                        ON registroPagos.id_usuario = usuarios.id_usuarios
                     INNER JOIN monto
-                        ON registropagos.id_monto = monto.id_monto
+                        ON registroPagos.id_monto = monto.id_monto
                     INNER JOIN estado
-                        ON registropagos.id_estado = estado.id_estado
+                        ON registroPagos.id_estado = estado.id_estado
                     INNER JOIN comprobante
-                        ON registropagos.id_comprobante = comprobante.id_comprobante";
+                        ON registroPagos.id_comprobante = comprobante.id_comprobante";
                     $resultado = mysqli_query($conexion, $sql);
                     if ($resultado) {
                         echo json_encode(["mensaje" => "Ok."]);
@@ -39,17 +54,17 @@
                 break;
 
                 case 'Create':
-                    $select = "SELECT registropagos.id_pago, usuarios.id_usuarios, monto.importe, estado.nombre AS estado, comprobante.foto
-                        FROM registropagos
+                    $select = "SELECT registroPagos.id_pago, usuarios.id_usuarios, monto.importe, estado.nombre AS estado, comprobante.foto
+                        FROM registroPagos
                         INNER JOIN usuarios
-                            ON registropagos.id_usuario = usuarios.id_usuarios
+                            ON registroPagos.id_usuario = usuarios.id_usuarios
                         INNER JOIN monto
-                            ON registropagos.id_monto = monto.id_monto
+                            ON registroPagos.id_monto = monto.id_monto
                         INNER JOIN estado
-                            ON registropagos.id_estado = estado.id_estado
+                            ON registroPagos.id_estado = estado.id_estado
                         INNER JOIN comprobante
-                            ON registropagos.id_comprobante = comprobante.id_comprobante";
-                    $sql = "INSERT INTO registropagos (registropagos.id_usuario, registropagos.id_monto, registropagos.id_estado, registropagos.id_comprobante) VALUES ('$id_usuario', '$id_monto', '$id_estado', '$id_comprobante')";
+                            ON registroPagos.id_comprobante = comprobante.id_comprobante";
+                    $sql = "INSERT INTO registroPagos (registroPagos.id_usuario, registroPagos.id_monto, registroPagos.id_estado, registroPagos.id_comprobante) VALUES ('$id_usuario', '$id_monto', '$id_estado', '$id_comprobante')";
                     $resultado = mysqli_query($conexion, $sql);
                     if ($resultado) {
                         echo json_encode(["mensaje" => "Pago almacenado con exito."]);
@@ -61,7 +76,7 @@
 
                 case 'Update':
                     $id = $datos["estado"];
-                    $sql = "UPDATE registropago SET estado = $id";
+                    $sql = "UPDATE registroPagos SET estado = $id";
                     $resultado = mysqli_query($conexion, $sql);
                     if ($resultado) {
                         echo json_encode(["mensaje" => "Actualizado correctamente."]);
