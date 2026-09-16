@@ -1,15 +1,18 @@
 * {
     box-sizing: border-box;
 }
+
 @font-face {
     font-family: 'Tamrin';
     src: url('fuentes/tamrin.ttf') format('truetype');
 }
+
 body {
     margin: 0;
     padding: 0;
     font-family: 'Tamrin';
 }
+
 .inicio {
     min-height: 100vh;
     background-image: url('fondo/fondo.jpg');
@@ -18,9 +21,7 @@ body {
     background-repeat: no-repeat;
     position: relative;
 }
-.nav-inicio {
-    padding-top: 20px;
-}
+
 .montos {
     position: absolute;
     left: 6%;

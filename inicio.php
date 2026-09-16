@@ -11,9 +11,7 @@
 
 <body>
     <section class="inicio">
-        <div class="nav-inicio">
-            <?php include 'nav.php' ?>
-        </div>
+        <?php include 'nav.php' ?>
         <div class="montos">
             <section class="card">
                 <p>
