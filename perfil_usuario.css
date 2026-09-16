@@ -30,19 +30,19 @@ body {
 }
 
 .fila {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.4); /* O usa un color sólido como #ffffff */
-  padding-bottom: 12px;
-  padding-top: 12px;
-  display: flex;
-  justify-content: space-between; /* Empuja el texto a la izquierda y el botón a la derecha */
-  align-items: center;            /* Centra verticalmente el contenido */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.4); /* O usa un color sólido como #ffffff */
+    padding-bottom: 12px;
+    padding-top: 12px;
+    display: flex;
+    justify-content: space-between; /* Empuja el texto a la izquierda y el botón a la derecha */
+    align-items: center;            /* Centra verticalmente el contenido */
     gap: 28px;                      /* Separa la información de los botones */
-  width: 100%;                     /* Asegura que ocupe todo el ancho disponible */
+    width: 100%;                    /* Asegura que ocupe todo el ancho disponible */
 }
 
 .fila:not(.perfil) .informacion {
-        flex: 1;
-        min-width: 0;
+    flex: 1;
+    min-width: 0;
 }
 .fila-perfil{
     display: inline-block;
@@ -51,7 +51,7 @@ body {
 }
 
 .fila:last-child {
-  border-bottom: none;
+    border-bottom: none;
 }
 
 .fila.perfil {
