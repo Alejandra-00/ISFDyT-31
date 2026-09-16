@@ -49,8 +49,6 @@
                 <p class="linkOlvido"><a href="olvideContrasena">Olvidé mi contraseña</a></p>
             </div>
 
-            <!--<input type="text" hidden id="recurso" value="registroPagos">-->
-            <!--<input type="text" hidden id="consulta" value="Update"-->
             <button class="btn">Iniciar sesión</button>
             <p class="linkRegistro">¿No tienes una cuenta?<a href="registrarse.php">¡Registrate!</a></p>
         </form>
