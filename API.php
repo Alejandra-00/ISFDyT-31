@@ -107,7 +107,7 @@
                         carrera.nombre AS nombre_carrera
                         FROM usuarios 
                         INNER JOIN socio ON usuarios.id_socio = socio.id
-                        INNER JOIN carreras ON usuarios.id_carreras = carreras.id";
+                        INNER JOIN carrera ON usuarios.id_carrera = carrera.id";
                     $resultado = mysqli_query($conexion, $sql);
                     if ($resultado) {
                         $usuarios = [];
@@ -214,7 +214,7 @@
             switch ($consulta) {
                 case 'Create':
                     $nombre = $datos["nombre"];
-                    $sql = "INSERT INTO carreras (nombre) VALUES ('$nombre')";
+                    $sql = "INSERT INTO carrera (nombre) VALUES ('$nombre')";
                     $resultado = mysqli_query($conexion, $sql);
                     if ($resultado) {
                         echo json_encode([ "mensaje" => "Carrera creada correctamente."
@@ -226,7 +226,7 @@
                 break;
 
                 case 'Read':
-                    $sql = "SELECT * FROM carreras";
+                    $sql = "SELECT * FROM carrera";
                     $resultado = mysqli_query($conexion, $sql);
                     if ($resultado) {
                         echo json_encode(["mensaje" => "Ok."]);
@@ -249,8 +249,9 @@
                 break;
 
                 case 'Update':
-                    $id = $datos["nombre"];
-                    $sql = "UPDATE carreras SET nombre = $id";
+                    $id = $datos["id"];
+                    $nombre = $datos["nombre"];
+                    $sql = "UPDATE carrera SET nombre = '$nombre' WHERE id_carrera = $id";
                     $resultado = mysqli_query($conexion, $sql);
                     if ($resultado) {
                         echo json_encode(["mensaje" => "Actualizado correctamente."]);
