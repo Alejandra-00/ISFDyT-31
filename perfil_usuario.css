@@ -1,0 +1,163 @@
+@font-face {
+    font-family: "Tamrin";
+    src: url("fuentes/tamrin.ttf") format("truetype");
+}
+        
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    font-family: "Tamrin";
+    background-image: url(fondo/fondo.jpg);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    padding: 40px;
+}
+
+
+
+.contenedor-usuario {
+    width: 90%;
+    max-width: 900px;
+    margin: auto;
+    background-color: rgba(107, 160, 86, 0.85);
+    padding: 25px;
+    border-radius: 25px;
+    margin-bottom: 30px;
+    margin-top: 30px;
+}
+
+.fila {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.4); /* O usa un color sólido como #ffffff */
+  padding-bottom: 12px;
+  padding-top: 12px;
+  display: flex;
+  justify-content: space-between; /* Empuja el texto a la izquierda y el botón a la derecha */
+  align-items: center;            /* Centra verticalmente el contenido */
+    gap: 28px;                      /* Separa la información de los botones */
+  width: 100%;                     /* Asegura que ocupe todo el ancho disponible */
+}
+
+.fila:not(.perfil) .informacion {
+        flex: 1;
+        min-width: 0;
+}
+.fila-perfil{
+    display: inline-block;
+    align-items: center; /* Centra el texto verticalmente con la imagen */
+    gap: 15px;           /* Espacio horizontal entre la imagen y el texto */
+}
+
+.fila:last-child {
+  border-bottom: none;
+}
+
+.fila.perfil {
+    justify-content: flex-start;
+
+}
+
+.fila.perfil .informacion {
+    width: 100%;
+}
+
+.foto-perfil {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 15px;
+}
+
+.foto-perfil img {
+    margin-top: none; 
+    width: 90px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+    border: 3px solid white;
+    
+}
+
+.foto-perfil h2 {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+    color: white;
+    font-size: 21px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.informacion h3 {
+    margin-top: 1;
+    font-size: 12px;
+    margin-bottom: 0;
+    line-height: 1.2;
+}
+
+.informacion p {
+    font-size: 14px;
+    margin: 0;
+    line-height: 1.9;
+    font-family:Arial, sans-serif;
+}
+
+.campo-edicion {
+    margin-top: 8px;
+}
+
+.editar-btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: blue;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    border-radius: 25px;
+}
+
+.campo-edicion,
+.acciones-edicion {
+    display: none;
+}
+
+.acciones-edicion {
+    gap: 8px;
+    align-items: center;
+}
+
+.guardar-btn {
+    margin-top: 10px;
+    padding: 10px 20px;
+    border: 0;
+    border-radius: 25px;
+    background-color: #365f2d;
+    color: white;
+    cursor: pointer;
+}
+
+.cancelar-btn {
+    margin-top: 10px;
+    padding: 10px 20px;
+    border: 0;
+    border-radius: 25px;
+    background-color: #8b3d35;
+    color: white;
+    cursor: pointer;
+}
+
+.guardar-btn:hover,
+.cancelar-btn:hover,
+.editar-btn:hover {
+    opacity: 0.85;
+}
