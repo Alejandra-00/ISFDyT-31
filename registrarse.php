@@ -1,7 +1,3 @@
-<?php
-    session_start();
-    include ('conexion.php');
-?>
 <!DOCTYPE html> 
 <html lang="en"> 
     <head> 
@@ -68,5 +64,4 @@
 <script src="script.js"></script>
 </html> 
 <?php
- $conexion->close();
 ?>
