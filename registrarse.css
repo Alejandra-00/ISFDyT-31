@@ -6,15 +6,30 @@
 body {
     height: 85vh;
     margin: 0;
-    background-image: url('fondo/fondo1.png'); 
-    background-repeat: no-repeat;
-    background-size: cover; 
-    background-position: center; 
+     background-color: #8aae70;
     } 
+ 
+.EsquinaCirculo {
+    position: absolute;
+    height: 213px;
+    width: 238px;
+    border-top-right-radius: 100%;
+    background-color: #4d70bc;
+    left: 0;
+    bottom: 0;
+}
+
+.EsquinaCurva {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 210px;
+    width: 200px;
+}
 
 .container { 
-    width: 900px; 
-    height: 550px;
+    width: 850px; 
+    height: 500px;
     margin: 60px auto; 
     margin-top: 110px; 
     background-image: url("fondo/fondo2.png");

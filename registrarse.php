@@ -11,6 +11,9 @@
           <link rel="stylesheet" href="registrarse.css"> 
     </head> 
 <body> 
+    <div class="EsquinaCirculo"></div>
+    <img src="curvas/curva.png" alt="" class="EsquinaCurva">
+    
     <div class="container"> 
         <form method="POST" action="API.php" class="form">
              <h2>REGISTRARSE</h2> 
