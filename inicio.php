@@ -8,7 +8,6 @@
 
     <link rel="stylesheet" href="inicio.css">
 </head>
-
 <body>
     <section class="inicio">
         <?php include 'nav.php' ?>
@@ -19,7 +18,6 @@
                     <strong>$$$$</strong>
                 </p>
             </section>
-
             <section class="card">
                 <p>
                     Monto anterior<br>

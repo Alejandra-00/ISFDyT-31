@@ -295,6 +295,53 @@
             }
         break;
 
+            case 'monto':
+                switch ($consulta) {
+                    case 'Read':
+                        $sql = "SELECT id, id_usuarios, importe, importe_anterior, fecha_guardado, fecha_efecto FROM monto";
+                        $resultado = mysqli_query($conexion, $sql);
+                        $montos = [];
+                        if ($resultado) {
+                            while ($fila = mysqli_fetch_assoc($resultado)) {
+                                $montos[] = $fila;
+                            }
+                            echo json_encode($montos);
+                        } else {
+                            http_response_code(500);
+                            echo json_encode(["error" => "Error de lectura."]);
+                        }
+                    break;
+
+                    case 'Update':
+                        $id = $datos["id"];
+                        $importe = $datos["importe"];
+                        $importeAnterior = $datos["importe_anterior"];
+                        $fechaGuardado = $datos["fecha_guardado"];
+                        $fechaEfecto = $datos["fecha_efecto"];
+
+                        $sql = "UPDATE monto
+                                SET importe = '$importe',
+                                    importe_anterior = '$importeAnterior',
+                                    fecha_guardado = '$fechaGuardado',
+                                    fecha_efecto = '$fechaEfecto'
+                                WHERE id = $id";
+
+                        $resultado = mysqli_query($conexion, $sql);
+                        if ($resultado) {
+                            echo json_encode(["mensaje" => "Monto actualizado correctamente."]);
+                        } else {
+                            http_response_code(500);
+                            echo json_encode(["error" => "Error de actualización."]);
+                        }
+                    break;
+
+                    default:
+                        http_response_code(400);
+                        echo json_encode(["error" => "Consulta no válida"]);
+                    break;
+                }
+            break;
+
         default:
             http_response_code(400);
             echo json_encode(["error" => "Recurso no válido"]);
