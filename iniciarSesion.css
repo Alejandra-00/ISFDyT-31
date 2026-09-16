@@ -177,10 +177,14 @@ input::placeholder {
     font-size: 8px;
 }
 
+input[type="text"] {
+    font-size: 8px;
+}
+
 .linkOlvido {
     margin: 1px 0 0 0;
     align-self: flex-start;
-    font-size: 6px;
+    font-size: 7px;
     font-family: sans-serif;
     font-weight: bold;
 }
