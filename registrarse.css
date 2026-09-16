@@ -4,7 +4,7 @@
 }
 
 body {
-    height: auto;
+    height: 85vh;
     margin: 0;
     background-image: url('fondo/fondo1.png'); 
     background-repeat: no-repeat;
