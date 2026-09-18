@@ -9,6 +9,18 @@ function CambioColor(apartado) {
    apartado.classList.add('activo');
 }
 
+function toggleMenu(event) {
+   event.preventDefault();
+   event.stopPropagation();
+   document.querySelector('.dropdown-menu').classList.toggle('mostrar');
+}
+
+document.addEventListener('click', function(event) {
+   if (!event.target.closest('.dropdown')) {
+      document.querySelector('.dropdown-menu').classList.remove('mostrar');
+   }
+});
+
 function verClave(boton) {
    // Selecciona la imagen dentro del botón que recibió el clic
    const icono = boton.querySelector("img");

@@ -114,7 +114,7 @@ $carreras = [
 </head>
 <body>
 
-<?php include 'nav.php'; ?>
+<?php include 'nav.php' ?>
 
 <div class="contenedor-usuario">
 
