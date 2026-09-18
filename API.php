@@ -12,6 +12,7 @@
 
         // Verificar si se decodificó correctamente
         if (json_last_error() === JSON_ERROR_NONE) {
+
             $recurso = $datos['recurso'] ?? ''; //Si existe $datos['recurso'], lo usa, sino la variable queda vacía.
             $consulta = $datos['consulta'] ?? '';
             
@@ -115,7 +116,26 @@
                             $contrasena = $datos["contrasena"];
                             $id_socio = $datos["socio"];
                             $id_carrera = $datos["carrera"];
-                            $activo = 1; 
+                            
+                            //Array de campos que no pueden estar vacíos
+                            $camposObligatorios = ['dni', 'nombre_completo', 'email', 'socio', 'carrera', 'contrasena', 'telefono'];
+                            //Array de campos vaciós
+                            $errores = [];
+                            
+                            foreach ($camposObligatorios as $campo) { // Recorre cada campo de la lista
+                                //trim elimina espacios en blanco
+                                if (trim($datos[$campo] ?? '') === '') { // Si queda vacío es error
+                                    $errores[] = $campo; // Agrega el mensaje de error
+                                }
+                            }
+                                    
+                            if (!empty($errores)) { // Si hubo al menos un error
+                                http_response_code(400);
+                                echo json_encode(['error' => implode(' ', $errores)]);
+                                exit;
+                            }
+                                        
+                            $activo = 1;
                             $sql_check = "SELECT * FROM usuarios WHERE email = '$email'";
                             $resultado_check = mysqli_query($conexion, $sql_check);
                             if (mysqli_num_rows($resultado_check) > 0) {

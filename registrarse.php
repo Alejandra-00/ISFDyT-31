@@ -2,12 +2,14 @@
     include("conexion.php");
     session_start();
 
+    $mensajeError = '';
+
     if($_SERVER["REQUEST_METHOD"] === "POST") {
         $dni = $_POST["dni"];
         $nombreCompleto = $_POST["nombre_completo"];
         $mail = $_POST["email"];
-        $socio = $_POST["socio"];
-        $carrera = $_POST["carrera"];
+        $socio = $_POST["socio"] ?? ''; 
+        $carrera = $_POST["carrera"] ?? '';
         $contrasena = $_POST["contrasena"];
         $telefono = $_POST["telefono"];
         $recurso = $_POST["recurso"];
@@ -49,7 +51,7 @@
             header("Location: inicio.php");
             exit;
         } else {
-            echo "Error: " . ($respuesta['error'] ?? 'Desconocido');
+            $mensajeError = "Todos los campos son obligatorios.";
         }
     }
 ?>
@@ -70,19 +72,19 @@
             <h2>REGISTRARSE</h2> 
             <div class="campo"> 
                 <label>DNI</label>
-                <input type="text" name="dni" placeholder="Ingrese su DNI" required> 
+                <input type="text" name="dni" placeholder="Ingrese su DNI"> 
             </div> 
             <div class="campo">
                 <label>NOMBRE COMPLETO</label> 
-                <input type="text" name="nombre_completo" placeholder="Ingrese su nombre completo" required> 
+                <input type="text" name="nombre_completo" placeholder="Ingrese su nombre completo"> 
             </div> 
             <div class="campo email"> 
                 <label>E-MAIL</label> 
-                <input type="email" name="email" placeholder="Ingrese su e-mail" required>
+                <input type="email" name="email" placeholder="Ingrese su e-mail">
             </div>
             <div class="campo"> 
                 <label>TIPO DE SOCIO</label>
-                <select id="socio" name="socio" required onchange="mostrarCarrera()" >
+                <select id="socio" name="socio" onchange="mostrarCarrera()" >
                     <option disabled selected hidden>¿Qué tipo de voluntario sos?</option>
                         <?php 
                             $sql_socio = "SELECT * FROM socio";
@@ -94,7 +96,7 @@
                     </div> 
                 <div class="campo"> 
                     <label>CARRERA</label>
-                        <select id="carrera" name="carrera" required> 
+                        <select id="carrera" name="carrera"> 
                             <option class="op" disabled selected hidden>Seleccione su carrera</option>
                             <?php 
                                 $sql_carrera = "SELECT * FROM carrera";
@@ -106,12 +108,17 @@
                 </div> 
                 <div class="campo"> 
                     <label>CONTRASEÑA</label> 
-                    <input type="password" name="contrasena" placeholder="Ingrese su contraseña" required>
+                    <input type="password" name="contrasena" placeholder="Ingrese su contraseña">
                 </div> 
                 <div class="campo"> 
                     <label>TELÉFONO</label> 
-                    <input type="tel" name="telefono" placeholder="Ingrese su teléfono" required> 
+                    <input type="tel" name="telefono" placeholder="Ingrese su teléfono"> 
                 </div> 
+
+                <?php if (!empty($mensajeError)): ?>
+                <div class="error"><?= htmlspecialchars($mensajeError) ?></div>
+                <?php endif; ?>
+
                 <input type="text" hidden name="recurso" value="usuarios">
                 <input type="text" hidden name="consulta" value="Create">
                 <button type="submit">CREAR CUENTA</button> 
