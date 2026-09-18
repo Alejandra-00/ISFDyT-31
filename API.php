@@ -131,7 +131,7 @@
                                     
                             if (!empty($errores)) { // Si hubo al menos un error
                                 http_response_code(400);
-                                echo json_encode(['error' => implode(' ', $errores)]);
+                                echo json_encode(['error' => "Campos obligatorios: " . implode(' ', $errores)]);
                                 exit;
                             }
                                         

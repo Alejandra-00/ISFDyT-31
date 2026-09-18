@@ -51,7 +51,7 @@
             header("Location: inicio.php");
             exit;
         } else {
-            $mensajeError = "Todos los campos son obligatorios.";
+            $mensajeError = $respuesta['error'] ?? "Ocurrió un error inesperado.";
         }
     }
 ?>
