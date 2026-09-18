@@ -8,8 +8,8 @@
         $dni = $_POST["dni"];
         $nombreCompleto = $_POST["nombre_completo"];
         $mail = $_POST["email"];
-        $socio = $_POST["socio"] ?? ''; 
-        $carrera = $_POST["carrera"] ?? '';
+        $socio = $_POST["socio"] ?? '1'; 
+        $carrera = $_POST["carrera"] ?? '10';
         $contrasena = $_POST["contrasena"];
         $telefono = $_POST["telefono"];
         $recurso = $_POST["recurso"];
