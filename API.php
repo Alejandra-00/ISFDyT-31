@@ -149,7 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             echo json_encode(["error" => "Error: Cuenta no registrada."]);
                         }
                         $stmt->close();
-                        break;
+                    break;
 
                     case "Login":
                         $dni = trim($datos["dni"] ?? '');

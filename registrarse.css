@@ -104,7 +104,6 @@ body {
     font-weight: bold;
     align-self: flex-start;
     margin: 0;
-    white-space: nowrap; /* evita que se parta en dos líneas */
 }
 
 .form button { 
