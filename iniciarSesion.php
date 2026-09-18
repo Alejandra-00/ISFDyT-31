@@ -66,7 +66,7 @@
     </div>
 
     <div class="Instituto">
-        <h2>instituto superior de formación docente y técnica n°31</h2>
+        <h2>Instituto Superior de Formación Docente y Técnica N°31</h2>
     </div>
 
     <div class="ContenedorLogoNegro">

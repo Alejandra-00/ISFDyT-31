@@ -174,17 +174,17 @@ body {
 }
 
 input::placeholder {
-    font-size: 8px;
+    font-size: 9px;
 }
 
 input[type="text"] {
-    font-size: 8px;
+    font-size: 9px;
 }
 
 .linkOlvido {
     margin: 1px 0 0 0;
     align-self: flex-start;
-    font-size: 7px;
+    font-size: 9px;
     font-family: sans-serif;
     font-weight: bold;
 }
@@ -217,7 +217,7 @@ input[type="text"] {
 .linkRegistro {
     font-family: sans-serif;
     margin: 1px 0 0 0;
-    font-size: 7px;
+    font-size: 9px;
     font-weight: bold;
     color: #666666;
 }
