@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             http_response_code(502);
                             echo json_encode(["error" => "Error de lectura."]);
                         }
-                        break;
+                    break;
 
                     case 'Create':
                         // Extraemos y casteamos los IDs necesarios desde $datos
@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             echo json_encode(["error" => "Error: No se pudo registrar el pago."]);
                         }
                         $stmt->close();
-                        break;
+                    break;
 
                     case 'Update':
                         $id_pago = (int)($datos["id_pago"] ?? 0);
@@ -73,14 +73,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             echo json_encode(["error" => "Error: Estado no actualizado."]);
                         }
                         $stmt->close();
-                        break;
+                    break;
                         
                     default:
                         http_response_code(400);
                         echo json_encode(["error" => "Consulta no válida"]);
-                        break;
+                    break;
                 }
-                break; 
+            break; 
                 
             case "usuarios":
                 switch ($consulta) {
@@ -97,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             http_response_code(502);
                             echo json_encode(["error" => "Error de lectura."]);
                         }
-                        break;
+                    break;
 
                     case "Create":
                         $camposObligatorios = ['dni', 'nombre_completo', 'email', 'socio', 'carrera', 'contrasena', 'telefono'];
@@ -151,6 +151,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $stmt->close();
                     break;
 
+                    case "Update":
+                        $id = $datos["id"];
+                        $DNI = $datos["dni"];
+                        $nombre_completo = $datos["nombre_completo"];
+                        $email = $datos["email"];
+                        $telefono = $datos["telefono"];
+                        $contrasena = $datos["contrasena"];
+                        $id_socio = $datos["socio"];
+                        $id_carrera = $datos["carrera"];
+                        $sql = "UPDATE usuarios
+                                SET DNI = '$DNI',
+                                    nombre_completo = '$nombre_completo',
+                                    email = '$email',
+                                    telefono = '$telefono',
+                                    contrasena = '$contrasena',
+                                    id_socio = $id_socio,
+                                    id_carrera = $id_carrera
+                                WHERE id = $id";
+                        $resultado = mysqli_query($conexion, $sql);
+                        if ($resultado) {
+                            echo json_encode([
+                                "mensaje" => "Usuario actualizado correctamente."
+                            ]);
+                        } else {
+                            http_response_code(500);
+                            echo json_encode([
+                                "error" => "Error: Usuario no actualizado."
+                            ]);
+                        }
+                    break;
+
                     case "Login":
                         $dni = trim($datos["dni"] ?? '');
                         $contrasena = $datos["contrasena"] ?? '';
@@ -177,19 +208,165 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             echo json_encode(["error" => "Usuario no encontrado o inactivo."]);
                         }
                         $stmt->close();
-                        break;
+                    break;
+
+                    case "Iactivate":
+                        $id = $datos["id"];
+                        $sql = "UPDATE usuarios
+                                SET activo = 0
+                                WHERE id = $id";
+                        $resultado = mysqli_query($conexion, $sql);
+                        if ($resultado) {
+                            echo json_encode([
+                                "mensaje" => "Usuario inactivo."
+                            ]);
+                        } else {
+                            http_response_code(500);
+                        }
+                    break;
+                }
+            break;
+
+            case 'carreras':
+                switch ($consulta) {
+                    case 'Create':
+                        $nombre = $datos["nombre"];
+                        $sql = "INSERT INTO carrera (nombre) VALUES ('$nombre')";
+                        $resultado = mysqli_query($conexion, $sql);
+                        if ($resultado) {
+                            echo json_encode([ "mensaje" => "Carrera creada correctamente."
+                        ]);
+                        } else {
+                            http_response_code(500);
+                            echo json_encode(["error" => "No se pudo crear la carrera."]);
+                        }
+                    break
+
+                    case 'Read':
+                        $sql = "SELECT * FROM carrera";
+                        $resultado = mysqli_query($conexion, $sql);
+                        if ($resultado) {
+                            echo json_encode(["mensaje" => "Ok."]);
+                        } else {
+                            http_response_code(502);
+                            echo json_encode(["error" => "Error de lectura."]);
+                        }
+                    break;  
+
+                    case 'Delete':
+                        $id = $datos["id"] ;
+                        $sql = "DELETE FROM carrera WHERE id_carrera = $id";
+                        $resultado = mysqli_query($conexion, $sql);
+                        if ($resultado) {
+                            echo json_encode(["mensaje" => "Carrera eliminada con éxito."]);
+                        } else {
+                            http_response_code(502);
+                            echo json_encode(["error" => "Error: Carrera no eliminada."]);
+                        }
+                    break
+
+                    case 'Update':
+                        $id = $datos["id"];
+                        $nombre = $datos["nombre"];
+                        $sql = "UPDATE carrera SET nombre = '$nombre' WHERE id_carrera = $id";
+                        $resultado = mysqli_query($conexion, $sql);
+                        if ($resultado) {
+                            echo json_encode(["mensaje" => "Actualizado correctamente."]);
+                        } else {
+                            http_response_code(500);
+                            echo json_encode(["error" => "Error: Carrera no actualizada."]);
+                        }
+                    break;
+                    
+                    default:
+                        http_response_code(400);
+                        echo json_encode(["error" => "Consulta no válida"]);
+                    break;
+                }
+            break;
+
+            case 'comprobantes':
+                switch ($consulta) {
+                    case 'Read':
+                        $sql = "SELECT * FROM comprobante";
+                        //INNER JOIN SIRVE PARA OBTENER ATRAVEZ DE CLAVES FORANEAS, LOS DATOS DE OTRAS TABLAS RELACIONADAS
+                        $resultado = mysqli_query($conexion, $sql);
+                        if ($resultado) {
+                            echo json_encode(["mensaje" => "Ok."]);
+                        } else {
+                            http_response_code(502);
+                            echo json_encode(["error" => "Error de lectura."]);
+                        }
+                    break;
+
+                    case 'Create':
+                        $foto = $datos["foto"] ?? "";
+                        $sql = "INSERT INTO comprobante (foto) VALUES ('$foto')";
+                        $resultado = mysqli_query($conexion, $sql);
+                        if ($resultado) {
+                            echo json_encode(["mensaje" => "Comprobante almacenado con éxito."]);
+                        } else {
+                            http_response_code(502);
+                            echo json_encode(["error" => "Error: Comprobante no almacenado."]);
+                        }
+                    break;
 
                     default:
                         http_response_code(400);
                         echo json_encode(["error" => "Consulta no válida"]);
-                        break;
+                    break;
                 }
-                break;
+            break;
 
+            case 'monto':
+                switch ($consulta) {
+                    case 'Read':
+                        $sql = "SELECT id, id_usuarios, importe, importe_anterior, fecha_guardado, fecha_efecto FROM monto";
+                        $resultado = mysqli_query($conexion, $sql);
+                        $montos = [];
+                        if ($resultado) {
+                            while ($fila = mysqli_fetch_assoc($resultado)) {
+                                $montos[] = $fila;
+                            }
+                        echo json_encode($montos);
+                        } else {
+                            http_response_code(500);
+                            echo json_encode(["error" => "Error de lectura."]);
+                        }
+                    break;
+
+                    case 'Update':
+                        $id = $datos["id"];
+                        $importe = $datos["importe"];
+                        $importeAnterior = $datos["importe_anterior"];
+                        $fechaGuardado = $datos["fecha_guardado"];
+                        $fechaEfecto = $datos["fecha_efecto"];
+                        $sql = "UPDATE monto
+                                SET importe = '$importe',
+                                    importe_anterior = '$importeAnterior',
+                                    fecha_guardado = '$fechaGuardado',
+                                    fecha_efecto = '$fechaEfecto'
+                                WHERE id = $id";
+                        $resultado = mysqli_query($conexion, $sql);
+                        if ($resultado) {
+                            echo json_encode(["mensaje" => "Monto actualizado correctamente."]);
+                        } else {
+                            http_response_code(500);
+                            echo json_encode(["error" => "Error de actualización."]);
+                        }
+                    break;
+
+                    default:
+                        http_response_code(400);
+                        echo json_encode(["error" => "Consulta no válida"]);
+                    break;
+                }
+            break;
+            
             default:
                 http_response_code(400);
                 echo json_encode(["error" => "Recurso no válido"]);
-                break;
+            break;
         }
     } else {
         http_response_code(400);
