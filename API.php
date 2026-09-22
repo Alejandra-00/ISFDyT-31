@@ -210,7 +210,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $stmt->close();
                     break;
 
-                    case "Inactivate":
+                    case "Iactivate":
                         $id = $datos["id"];
                         $sql = "UPDATE usuarios
                                 SET activo = 0
@@ -240,7 +240,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             http_response_code(500);
                             echo json_encode(["error" => "No se pudo crear la carrera."]);
                         }
-                    break;
+                    break
 
                     case 'Read':
                         $sql = "SELECT * FROM carrera";
@@ -263,7 +263,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             http_response_code(502);
                             echo json_encode(["error" => "Error: Carrera no eliminada."]);
                         }
-                    break;
+                    break
 
                     case 'Update':
                         $id = $datos["id"];
