@@ -1,0 +1,215 @@
+@font-face {
+    font-family: 'Tamrin';
+    src: url('fuentes/tamrin.ttf') format('truetype');
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-image: url('fondo/fondoISFDyT31.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.fuente {
+    font-family: 'Tamrin', sans-serif;
+    color: white;
+}
+
+.seccionPagos {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 30px; /* Separación entre contenedores */
+    width: 100%;
+}
+
+.contenedor {
+    width: 600px;
+    height: auto;
+    background: #0049ac; 
+    border-radius: 20px;
+    box-sizing: border-box;
+    padding: 25px 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    margin-top: 5%;
+    align-self: center;
+    display: none;
+}
+
+/* Muestra únicamente los contenedores que tienen la clase .activo */
+.contenedor.activo {
+    display: flex;
+}
+
+.titulo {
+    width: 100%;
+    font-size: 24px;
+    margin: 0 0 15px 0;
+    text-align: center;
+    color: white;
+}
+
+.info {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.datos {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.datos p {
+    margin: 0;
+    font-size: 16px;
+    color: white;
+}
+
+#alias, #cvu {
+    cursor: pointer;
+    color: #8ce4ff; 
+    text-decoration: underline;
+}
+
+.estado p {
+    margin: 0;
+    background-color: #ff3131; 
+    color: white;
+    padding: 4px 14px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.linea {
+    width: 100%;
+    border-top: 1.5px solid #b8d46e; 
+    margin: 12px 0;
+}
+
+.descargar, .enviar {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.descargar button, .enviar button:not(.btn) {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 17px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    cursor: pointer;
+    padding: 5px 0;
+    text-align: left;
+}
+
+.descargar button img, .enviar button:not(.btn) img {
+    width: 24px;
+    height: 24px;
+    margin-right: 12px;
+}
+
+.descargar button::after, .enviar button:not(.btn)::after {
+    content: ">";
+    font-size: 18px;
+    color: white;
+    font-weight: bold;
+    margin-left: auto;
+}
+
+.enviar .btn {
+    background-color: #b8d46e; 
+    color: #000;
+    border: none;
+    padding: 8px 24px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    align-self: center;
+    margin-top: 10px;
+    transition: background-color 0.2s ease;
+}
+
+.enviar .btn:hover {
+    background-color: #b8d46e;
+}
+
+.cargar {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 15px 0;
+}
+
+.cargarImagen {
+    background-color: #b8d46e; 
+    width: 250px;
+    height: 150px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    gap: 10px;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.cargarImagen:hover {
+    background-color: #b8d46e;
+    transform: scale(1.02);
+}
+
+.cargarImagen img {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+}
+
+.texto {
+    color: #000000;
+    font-size: 13px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.cargarImagen input[type="file"] {
+    display: none;
+}
+
+.btnEnviar {
+    background-color: #b8d46e; 
+    color: #000000;
+    border: none;
+    padding: 6px 30px;
+    border-radius: 10px;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+    align-self: center;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    margin-top: 10%;
+}
+
+.btnEnviar:hover {
+    background-color: #b8d46e;
+}
+
+.btnEnviar:active {
+    transform: scale(0.97);
+}
