@@ -45,7 +45,7 @@
 
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="perfil_usuarios.php" onclick=CambioColor(this)>
+                            <a href="perfil_usuarios.php">
                                 Mi perfil
                             </a>
                         </li>
