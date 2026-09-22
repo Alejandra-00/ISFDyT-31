@@ -27,30 +27,106 @@ body {
     width: 200px;
 }
 
-.container { 
-    width: 850px; 
-    height: 500px;
-    margin: 60px auto; 
-    margin-top: 110px; 
-    background-image: url("fondo/fondo2.png");
-    background-repeat: no-repeat;
-    background-size: 100% 100%; 
-    background-position: center; 
-    border-radius: 35px; 
+.FondoVerde {
+    position: absolute;
+    width: 782px;
+    height: 456px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 6%;
+    background-color: #a9cd46;
+}
+
+.fondoAzul {
+    position: absolute;
+    height: 456px;
+    width: 450px;
+    top: 50%;
+    left: 36.8%;
+    transform: translate(-50%, -50%);
+}
+
+.ContenedorLogo {
+    position: absolute;
+    height: 75px;
+    width: 75px;
+    top: 26.8%;
+    left: 25.7%;
+    transform: translate(-50%, -50%);
+}
+
+.Logo {
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+}
+
+.Cooperadora {
+    position: absolute;
+    font-size: 5.6px;
+    top: 24%;
+    left: 28.5%;
+    font-family: 'Tamrin';
+}
+
+.Verde {
+    color: #a9cd46;
+}
+
+.Instituto {
+    font-family: 'Tamrin';
+    font-size: 3.6px;
+    position: absolute;
+    top: 26.6%;
+    left: 28.4%;
+}
+
+.ContenedorLogoNegro {
+    position: absolute;
+    height: 170px;
+    width: 287px;
+    top: 36%;
+    left: 23.5%;
+}
+
+.LogoNegro {
+    height: 100%;
+    width: 100%;
+}
+
+.ISFDYT {
+    position: absolute;
+    font-family: 'Tamrin';
+    font-size: 12px;
+    top: 60%;
+    left: 30.2%;
+}
+
+.Necochea {
+    position: absolute;
+    font-family: 'Tamrin';
+    font-size: 6px;
+    top: 62.2%;
+    left: 32.3%;
+}
+
+.Contenedor {
+    position: absolute;
+    width: 400px;         
+    top: 50%;
+    left: 65%;
+    transform: translate(-70%, -50%);
     display: flex;
-    justify-content: flex-end; 
-    align-items: center; 
-    padding-right: 50px; 
-    box-sizing: border-box; 
-} 
+    flex-direction: column;
+}
 
 .form { 
     width: 350px;
-    /*transform: translate( 60px, 20px); */
+    transform: translate( 60px, 20px);
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 7px 15px;
-    /*margin-left: 40px;*/
 }
 
 
@@ -133,4 +209,69 @@ body {
 .op{
     color: #d6d6d6;
     
+}
+
+@media (max-width: 767px) {
+    body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 15px;
+    }
+
+    .FondoVerde {
+        position: relative;
+        width: 100%;
+        max-width: 360px;
+        height: auto;
+        min-height: 600px;
+        top: auto;
+        left: auto;
+        transform: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 25px 15px;
+    }
+
+    .fondoAzul {
+        position: relative;
+        top: auto;
+        left: auto;
+        transform: none;
+        width: 100%;
+        height: auto;
+        min-height: 280px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+    }
+
+    .ContenedorLogo, .Cooperadora, .Instituto,
+    .ContenedorLogoNegro, .ISFDYT, .Necochea {
+        position: relative;
+        top: auto;
+        left: auto;
+        transform: none;
+        text-align: center;
+        margin: 5px auto;
+    }
+    .ContenedorLogo { width: 80px; height: 80px; }
+    .ContenedorLogoNegro { width: 180px; height: auto; }
+    .Cooperadora { font-size: 14px; }
+    .Instituto { font-size: 11px; }
+    .ISFDYT { font-size: 20px; }
+    .Necochea { font-size: 14px; }
+
+    .ContenedorFormulario {
+        position: relative;
+        top: auto;
+        left: auto;
+        transform: none;
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    .grupoInput, .input { width: 100%; }
+    .titulo { font-size: 20px; }
+    .btn { width: 100%; }
 }

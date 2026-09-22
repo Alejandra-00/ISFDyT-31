@@ -79,7 +79,28 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <div class="EsquinaCirculo"></div>
     <img src="curvas/curva.png" alt="" class="EsquinaCurva">
     
-    <div class="container"> 
+     <div class="FondoVerde"></div>
+    <img src="curvas/curva2.png" alt="" class="fondoAzul">
+    
+    <div class="ContenedorLogo">
+    <img src="iconos/logo.jpg" alt="" class="Logo">
+    </div>
+    <div class="Cooperadora">
+    <h1><span class="Verde">A</span>SOCIACIÓN <span class="Verde">C</span>OOPERADORA</h1>
+    </div>
+
+    <div class="Instituto">
+    <h2>instituto superior de formación docente y técnica n°31</h2>
+    </div>
+
+    <div class="ContenedorLogoNegro">
+    <img src="iconos/logoNegro.png" alt="" class="LogoNegro">
+    </div>
+
+    <div class="ISFDYT"><span class="Verde">ISFDYT N°31</span></div>
+    <div class="Necochea">Necochea</div>
+
+    <div class="Contenedor"> 
         <form method="POST" action="" class="form">
             <h2>REGISTRARSE</h2> 
 
