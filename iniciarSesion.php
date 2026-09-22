@@ -3,12 +3,13 @@
     session_start();
 
     if($_SERVER["REQUEST_METHOD"] === "POST" ) {
-        $dni = $_POST["dni"];
-        $contrasena = $_POST['contrasena'];
-        $recurso = $_POST["recurso"];
-        $consulta = $_POST["consulta"];
+        $dni = trim($_POST["dni"] ?? '');
+        $contrasena = $_POST["contrasena"] ?? '';
+        $recurso = $_POST["recurso"] ?? 'usuarios';
+        $consulta = $_POST["consulta"] ?? 'Login';
 
-        $datos = [
+        $datos = [ //declarar los datos a enviar a la API
+            "mensaje" => "Usuario recibido correctamente",
             "dni" => $dni,
             "contrasena" => $contrasena,
             "recurso" => $recurso,
@@ -17,6 +18,12 @@
 
          // Convertir a JSON
         $payload = json_encode($datos);
+
+        // Construir la URL codificando correctamente espacios y caracteres especiales
+        $protocolo = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";
+        $host = $_SERVER['HTTP_HOST'];
+        $rutaLimpia = implode('/', array_map('rawurlencode', explode('/', dirname($_SERVER['PHP_SELF']))));
+        $urlApi = $protocolo . $host . $rutaLimpia . "/API.php";
 
         // Configurar la petición HTTP hacia el otro archivo local
         $opciones = [
@@ -29,17 +36,20 @@
         ];
 
         $contexto = stream_context_create($opciones);
-        // URL del archivo que va a recibir (ajusta la ruta según tu proyecto), enviar los datos y obtener la respuesta
-        $resultado = file_get_contents("http://localhost/ISFDyT-31/API.php", false, $contexto);
-        $respuesta = json_decode($resultado, true);
+        $resultado = @file_get_contents($urlApi, false, $contexto);
 
-        if (isset($respuesta['mensaje'])) {
-            $_SESSION['usuario'] = $respuesta['usuario'];
-            $_SESSION['admin'] = $respuesta['admin'] ?? 0;
-            header('Location: inicio.php');
-            exit;
+        if ($resultado !== false) {
+            $respuesta = json_decode($resultado, true);
+
+            if (isset($respuesta['mensaje'])) {
+                $_SESSION['usuario'] = $respuesta['usuario'];
+                header('Location: inicio.php');
+                exit;
+            } else {
+                $mensajeError = $respuesta['error'] ?? "Respuesta de la API: " . htmlspecialchars($resultado);
+            }
         } else {
-            $error = $respuesta['error'] ?? 'Error desconocido';
+            $mensajeError = "No se pudo realizar la llamada HTTP a la API.";
         }
     }
 ?>
