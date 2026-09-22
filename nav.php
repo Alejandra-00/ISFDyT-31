@@ -66,4 +66,4 @@
         </ul>
     </nav>
 </div>
-<script src="script.js"></script>
+<script src="nav.js"></script>
