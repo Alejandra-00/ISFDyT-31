@@ -84,6 +84,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
             case "usuarios":
                 switch ($consulta) {
+                    case "usuario":
+                        $sql = "SELECT * FROM usuarios WHERE id = ".$_SESSION["id"];
+                        $resultado = mysqli_query($conexion, $sql);
+                        if ($resultado) {
+                            $usuarios = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
+                            echo json_encode($usuarios);
+                        } else {
+                            http_response_code(502);
+                            echo json_encode(["error" => "Error de lectura."]);
+                        }
+                    break;
+
                     case "Read":
                         $sql = "SELECT usuarios.id, usuarios.nombre_completo, usuarios.email, usuarios.telefono, usuarios.DNI, usuarios.activo, socio.nombre AS nombre_socio, carrera.nombre AS nombre_carrera
                                 FROM usuarios 

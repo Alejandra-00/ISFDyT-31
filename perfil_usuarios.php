@@ -1,100 +1,44 @@
 <?php
-// Modo demostración: no se consulta ni se modifica la base de datos.
-// include("conexion.php");
+    if($_SERVER["REQUEST_METHOD"] === "POST" ) {
+        $dni = $_POST["dni"];
+        $contrasena = $_POST['contrasena'];
+        $recurso = $_POST["recurso"];
+        $consulta = $_POST["consulta"];
 
-/*
-if (!isset($_SESSION['id_usuarios'])) {
-    header("Location: ../registrarse.php");
-    exit();
-}
+        $datos = [
+            "dni" => $dni,
+            "contrasena" => $contrasena,
+            "recurso" => $recurso,
+            "consulta" => $consulta
+        ];
 
-$id_usuario = (int) $_SESSION['id_usuarios'];
-*/
+         // Convertir a JSON
+        $payload = json_encode($datos);
 
-// Datos de ejemplo para poder visualizar el perfil sin usar la base de datos.
-$usuario = [
-    'nombre_completo' => 'María González',
-    'numero_documento' => '12345678',
-    'email' => 'maria.gonzalez@ejemplo.com',
-    'telefono' => '11 4567-8901',
-    'id_carrera' => 1,
-    'nombre_carrera' => 'Tecnicatura en Desarrollo de Software'
-];
+        // Configurar la petición HTTP hacia el otro archivo local
+        $opciones = [
+            "http" => [
+                "header"  => "Content-Type: application/json\r\n",
+                "method"  => "POST",
+                "content"  => $payload,
+                "ignore_errors" => true
+            ]
+        ];
 
-/*
-$id_usuario = 1;
+        $contexto = stream_context_create($opciones);
+        // URL del archivo que va a recibir (ajusta la ruta según tu proyecto), enviar los datos y obtener la respuesta
+        $resultado = file_get_contents("http://localhost/ISFDyT-31/API.php", false, $contexto);
+        $respuesta = json_decode($resultado, true);
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $campo = $_POST['campo'] ?? '';
-
-    $camposPermitidos = [
-        'nombre_completo',
-        'numero_documento',
-        'email',
-        'telefono',
-        'id_carrera'
-    ];
-
-    if (in_array($campo, $camposPermitidos, true)) {
-        $valor = trim($_POST['valor'] ?? '');
-
-        if ($campo === 'id_carrera') {
-            $valor = (int) $valor;
-            $sql = "UPDATE usuarios SET id_carrera = ? WHERE id = ?";
-            $stmt = $conexion->prepare($sql);
-            $stmt->bind_param("ii", $valor, $id_usuario);
+        if (isset($respuesta['mensaje'])) {
+            $_SESSION['usuario'] = $respuesta['usuario'];
+            $_SESSION['admin'] = $respuesta['admin'] ?? 0;
+            header('Location: inicio.php');
+            exit;
         } else {
-            $sql = "UPDATE usuarios SET `$campo` = ? WHERE id = ?";
-            $stmt = $conexion->prepare($sql);
-            $stmt->bind_param("si", $valor, $id_usuario);
-        }
-
-        $stmt->execute();
-        $stmt->close();
-    }
-
-    if ($campo === 'contrasena') {
-        $contrasena = trim($_POST['valor'] ?? '');
-
-        if ($contrasena !== '') {
-            $hash = password_hash($contrasena, PASSWORD_DEFAULT);
-
-            $stmt = $conexion->prepare(
-                "UPDATE usuarios SET contrasena = ? WHERE id = ?"
-            );
-            $stmt->bind_param("si", $hash, $id_usuario);
-            $stmt->execute();
-            $stmt->close();
+            $error = $respuesta['error'] ?? 'Error desconocido';
         }
     }
-
-    header("Location: perfil_usuarios.php?actualizado=1");
-    exit();
-}
-
-$stmt = $conexion->prepare("\n    SELECT \n        u.*,\n        c.nombre AS nombre_carrera\n    FROM usuarios u\n    LEFT JOIN carrera c ON u.id_carrera = c.id\n    WHERE u.id = ?\n");
-
-$stmt->bind_param("i", $id_usuario);
-$stmt->execute();
-
-$resultado = $stmt->get_result();
-$usuario = $resultado->fetch_assoc();
-$stmt->close();
-
-if (!$usuario) {
-    session_destroy();
-    header("Location: ../perfil_usuarios.php");
-    exit();
-}
-
-$carreras = $conexion->query("SELECT id, nombre FROM carrera ORDER BY nombre");
-*/
-
-// Opciones de ejemplo para que el selector también pueda demostrarse.
-$carreras = [
-    ['id' => 1, 'nombre' => 'Tecnicatura en Desarrollo de Software'],
-    ['id' => 2, 'nombre' => 'Tecnicatura en Administración']
-];
 ?>
 
 <!DOCTYPE html>
