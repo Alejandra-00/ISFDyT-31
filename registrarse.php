@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $recurso = $_POST["recurso"] ?? 'usuarios';
     $consulta = $_POST["consulta"] ?? 'Create';
 
-    $datos = [
+    $datos = [  //declarar los datos a enviar a la API
         "mensaje" => "Usuario recibido correctamente",
         "dni" => $dni,
         "nombre_completo" => $nombreCompleto,
