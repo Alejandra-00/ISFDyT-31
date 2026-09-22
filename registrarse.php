@@ -167,7 +167,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <p class="login"> ¿Ya tienes una cuenta? <a href="iniciarSesion.php">¡Inicia sesión!</a> </p>
         </form> 
     </div> 
-    <script src="script.js"></script>
+    <script src="registrarse.js"></script>
 </body> 
 </html> 
 <?php

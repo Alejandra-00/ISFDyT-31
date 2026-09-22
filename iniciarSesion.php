@@ -104,7 +104,7 @@
             <p class="linkRegistro">¿No tienes una cuenta?<a href="registrarse.php">¡Registrate!</a></p>
         </form>
     </div>
-    <script src="script.js"></script>
+    <script src="iniciarSesion.js"></script>
 </body>
 </html>
 <?php 

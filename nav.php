@@ -9,9 +9,9 @@
 ?>
 
 <link rel="stylesheet" href="nav.css">
-<div class="contenedor">
-    <nav class="barra">
-        <ul class="lista">
+<div class="nav-contenedor">
+    <nav class="nav-barra">
+        <ul class="nav-lista">
             <?php if (isset($_SESSION['admin']) && $_SESSION['admin'] == 1): ?>
                 <li><a href="panel.php" class="icono-nav">
                         <img src="iconos/admin.png" alt="Admin" class="usuarios">
