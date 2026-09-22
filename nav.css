@@ -8,12 +8,14 @@
     padding: 0;
 }
 
-.contenedor {
+.nav-contenedor {
     display: flex;
     justify-content: center;
+    width: 100%;
+    padding-top: 8px;
 }
 
-.barra {
+.nav-barra {
     height: 55px;
     width: 700px;
     margin-top: 8px;
@@ -21,7 +23,7 @@
     border-radius: 999px;
 }
 
-.lista {
+.nav-lista {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -32,7 +34,7 @@
     height: 100%; 
 }
 
-li {
+.nav-lista li {
     margin-right: 15px;
     margin-left: 15px;
     display: flex;
@@ -40,7 +42,7 @@ li {
     height: 100%;
 }
 
-a {
+.nav-lista a {
     display: inline-block; 
     position: relative;        
     text-decoration: none;
@@ -52,7 +54,7 @@ a {
     z-index: 1;
 }
 
-a::after{
+.nav-lista a::after{
     content: "";
     position: absolute;
     left: 0;
@@ -66,12 +68,12 @@ a::after{
     z-index: 2;
 }
 
-a:hover::after{
+.nav-lista a:hover::after{
     transform: scaleX(1); 
     transform-origin: left;
 }
 
-.activo{
+.nav-lista a.activo{
     color: #2b51e7;
 }
 
@@ -88,10 +90,6 @@ a:hover::after{
     height: 35px; 
     width: 35px;
     object-fit: contain;
-}
-
-.usuarios a::after{
-    display: none !important; 
 }
 
 .dropdown {
@@ -111,16 +109,16 @@ a:hover::after{
     padding: 8px 0;
     margin: 0;
     min-width: 170px;
-    z-index:  ́1000;
+    z-index: 1000;
 }
 
 .dropdown-menu li {
-    margin:  ́0;
+    margin: 0;
 }
 
 .dropdown-menu a {
     display: block;
-    padding:  ́10px 16px;
+    padding: 10px 16px;
     color: #333;
     text-decoration: none;
     font-size: 12px;
