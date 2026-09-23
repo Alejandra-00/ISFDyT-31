@@ -93,7 +93,7 @@
 
             <div class="grupoInput">
                 <label for="dni" class="label">DNI</label>
-                <input type="text" name="dni" maxlength="8" placeholder="Ingrese su DNI" class="input">
+                <input type="text" name="dni" maxlength="8" minlength="8" placeholder="Ingrese su DNI" class="input">
             </div>
             
             <div class="grupoInput">
