@@ -38,7 +38,7 @@
                     <!-- Abre el bloque del nombre del instituto. -->
                     <div class="Instituto">
                         <!-- Muestra el nombre del instituto. -->
-                        <h2>instituto superior de formación docente y técnica n°31</h2>
+                        <h2>Instituto Superior de Formación Docente y Técnica n°31</h2>
                     <!-- Cierra el bloque del instituto. -->
                     </div>
                 <!-- Cierra el bloque de textos identificativos. -->

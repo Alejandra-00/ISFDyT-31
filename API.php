@@ -333,7 +333,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             case 'monto':
                 switch ($consulta) {
                     case 'Read':
-                        $sql = "SELECT id, id_usuarios, importe, importe_anterior, fecha_guardado, fecha_efecto FROM monto";
+                        $sql = "SELECT id, importe, importe_anterior, fecha_guardado, fecha_efecto FROM monto";
                         $resultado = mysqli_query($conexion, $sql);
                         $montos = [];
                         if ($resultado) {

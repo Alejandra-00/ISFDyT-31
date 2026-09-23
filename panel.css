@@ -1,0 +1,150 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+@font-face {
+    font-family: 'Tamrin';
+    src: url('fuentes/tamrin.ttf') format('truetype');
+}
+body {
+    font-family: 'Tamrin';
+    min-height: 100vh;
+}
+.contenedor {
+    display: flex;
+}
+.sideBar {
+    width: 300px;
+    min-height: 100vh;
+    padding: 20px 15px;
+    background: #a9cd46b1;
+    font-family: 'Tamrin';
+    display: flex;
+    flex-direction: column;
+}
+.sideBar h1 {
+    text-align: center;
+    font-size: 1.2rem;
+    font-family: 'Tamrin';
+    margin-bottom: 20px;
+    color: #1217a7;
+}
+.sideBar .logo {
+    text-align: center;
+    margin-bottom: 25px;
+}
+.sideBar .logo img {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: #fff;
+    object-fit: cover;
+}
+.sideBar nav {
+    flex: 1;
+}
+.sideBar nav button {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 5px;
+    background: transparent;
+    border: none;
+    color: #1217a7;
+    font-family: 'Tamrin';
+    font-size: 0.90rem;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+.sideBar nav button:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+.contenido {
+    flex: 1;
+    padding: 30px;
+    background-image: url("fondo/fondoISFDyT31.jpeg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100% auto;
+}
+
+/* apartados del panel */
+.formulario {
+    display: none;
+}
+.formulario.activo {
+    display: block;
+}
+
+.cards {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+}
+
+.card-chica {
+    margin-top: 5%;
+    flex: 1;
+    min-width: 180px;
+    background: #1217a7d7;
+    color: #a9cd46;
+    bottom: 5px;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.card-numero {
+    font-size: 1.rem;
+    color: #a9cd46;
+}
+
+.listados {
+    margin-top: 15%;
+    width: 100%;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.card-listado {
+    flex: 1;
+    min-width: 280px;
+    background: #1217a7d7;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.listado-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.listado-header h4 {
+    color: #a9cd46;
+    margin: 0;
+}
+
+.item-email {
+    color: #a9cd46;
+    font-size: 0.7rem;
+}
+
+.ver-todos {
+    color: #a9cd46;
+    text-decoration: none;
+    font-size: 0.8rem;
+}
+
+.ver-todos:hover {
+    text-decoration: underline;
+}
