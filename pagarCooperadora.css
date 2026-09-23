@@ -31,7 +31,7 @@ body {
 .contenedor {
     width: 600px;
     height: auto;
-    background: #0049ac; 
+    background: #0048acda; 
     border-radius: 20px;
     box-sizing: border-box;
     padding: 25px 30px;
@@ -131,6 +131,12 @@ body {
     margin-left: auto;
 }
 
+.formulario {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
 .enviar .btn {
     background-color: #b8d46e; 
     color: #000;
@@ -143,6 +149,7 @@ body {
     align-self: center;
     margin-top: 10px;
     transition: background-color 0.2s ease;
+    display: block;
 }
 
 .enviar .btn:hover {

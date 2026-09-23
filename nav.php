@@ -1,6 +1,8 @@
 <?php
-    session_start();
     include 'conexion.php';
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
     
     $usuario = $_SESSION['usuario'] ?? null;  
     $admin = $_SESSION['admin'] ?? 0;

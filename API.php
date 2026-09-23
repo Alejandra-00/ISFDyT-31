@@ -22,8 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 INNER JOIN usuarios ON registroPagos.id_usuario = usuarios.id_usuarios
                                 INNER JOIN monto ON registroPagos.id_monto = monto.id_monto
                                 INNER JOIN estado ON registroPagos.id_estado = estado.id_estado
-                                INNER JOIN comprobante ON registroPagos.id_comprobante = comprobante.id_comprobante";
-                        
+                                INNER JOIN comprobante ON registroPagos.id_comprobante = comprobante.id_comprobante"; 
                         $resultado = mysqli_query($conexion, $sql);
                         if ($resultado) {
                             $pagos = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
@@ -208,6 +207,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             if (password_verify($contrasena, $fila['contrasena']) || $contrasena === $fila['contrasena']) { 
                                 echo json_encode([
                                     "mensaje" => "Ok",
+                                    "idUsuario" => $fila['id'],
                                     "usuario" => $fila['nombre_completo'],
                                     "admin" => $fila['admin'] ?? 0
                                 ]);
@@ -365,6 +365,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         } else {
                             http_response_code(500);
                             echo json_encode(["error" => "Error de actualización."]);
+                        }
+                    break;
+
+                    default:
+                        http_response_code(400);
+                        echo json_encode(["error" => "Consulta no válida"]);
+                    break;
+                }
+            break;
+
+            case 'meses';
+                switch($consulta) {
+                    case "Read":
+                        $sql = "SELECT nombre FROM meses";
+                        $resultado = mysqli_query($conexion, $sql);
+                        if ($resultado) {
+                            $nombres = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
+                            echo json_encode($nombres);
+                        } else {
+                            http_response_code(502);
+                            echo json_encode(["error" => "Error de lectura."]);
                         }
                     break;
 

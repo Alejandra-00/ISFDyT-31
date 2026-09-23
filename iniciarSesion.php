@@ -42,6 +42,7 @@
             $respuesta = json_decode($resultado, true);
 
             if (isset($respuesta['mensaje'])) {
+                $_SESSION['id'] = $respuesta['idUsuario'];
                 $_SESSION['usuario'] = $respuesta['usuario'];
                 header('Location: inicio.php');
                 exit;
