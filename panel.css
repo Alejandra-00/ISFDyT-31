@@ -140,11 +140,17 @@ body {
 }
 
 .ver-todos {
+    background: transparent;
+    border: none;
+    padding: 0;
+    font-family: 'Tamrin';
     color: #a9cd46;
     text-decoration: none;
     font-size: 0.8rem;
+    cursor: pointer;
 }
 
 .ver-todos:hover {
     text-decoration: underline;
+    background: transparent;
 }
