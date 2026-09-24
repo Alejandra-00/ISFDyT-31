@@ -15,7 +15,7 @@
             <table>
                 <tr>
                     <tbody id="tablapagos" onload="cargarPagos()">
-                     
+                      
                     </tbody>
                 </tr>
             </table>

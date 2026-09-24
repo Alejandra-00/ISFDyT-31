@@ -17,12 +17,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             case 'registroPagos':
                 switch ($consulta) {
                     case 'Readusuarios':
-                        $id_usuarios = (int)($datos['id_usuarios'] ?? 0);
+                        $id_usuarios = (int)($datos['id_usuario'] ?? 0);
 
                         // 1. Validar solo los campos requeridos
                         if ($id_usuarios === 0) {
                             http_response_code(400);
-                            echo json_encode(["error" => "El campo id_usuarios es requerido."]);
+                            echo json_encode(["error" => "El usuario no se encontró."]);
                             break;
                         }
 

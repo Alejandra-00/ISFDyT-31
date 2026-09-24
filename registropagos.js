@@ -2,7 +2,7 @@
             fetch('API.php', { 
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ recurso: 'registroPagos', consulta: 'Readusuarios', id_usuarios: document.getElementById('usuario').value })
+                body: JSON.stringify({ recurso: 'registroPagos', consulta: 'Readusuarios', id_usuario: document.getElementById('usuario').value })
             })
             .then(response => response.json())
             .then(data => {
