@@ -16,6 +16,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             case 'registroPagos':
                 switch ($consulta) {
+                    case 'Readusuarios':
+                        $id_usuarios = (int)($datos['id_usuarios'] ?? 0);
+
+                        // 1. Validar solo los campos requeridos
+                        if ($id_usuarios === 0) {
+                            http_response_code(400);
+                            echo json_encode(["error" => "El campo id_usuarios es requerido."]);
+                            break;
+                        }
+
+                        // 2. Consulta SQL con cláusula WHERE y Sentencia Preparada
+                        $sql = "SELECT 
+                                        registropagos.id, 
+                                        registropagos.fecha, 
+                                        usuarios.id AS id_usuario, 
+                                        monto.importe AS monto, 
+                                        estadopago.nombre AS estadopago, 
+                                        comprobante.foto, 
+                                        meses.nombre AS meses
+                                    FROM registropagos
+                                    LEFT JOIN usuarios ON registropagos.id_usuarios = usuarios.id
+                                    LEFT JOIN monto ON registropagos.id_monto = monto.id
+                                    LEFT JOIN estadopago ON registropagos.id_estado = estadopago.id
+                                    LEFT JOIN comprobante ON registropagos.id_comprobante = comprobante.id
+                                    LEFT JOIN meses ON registropagos.id_mes = meses.id_mes
+                                    WHERE registropagos.id_usuarios = ?";
+
+                        $stmt = mysqli_prepare($conexion, $sql);
+
+                        if ($stmt) {
+                            mysqli_stmt_bind_param($stmt, "i", $id_usuarios);
+                            mysqli_stmt_execute($stmt);
+                            $resultado = mysqli_stmt_get_result($stmt);
+
+                            $pagos = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
+                            
+                            http_response_code(200);
+                            echo json_encode($pagos);
+                            
+                            mysqli_stmt_close($stmt);
+                        } else {
+                            http_response_code(500); // 500 Es más adecuado para error interno/consulta
+                            echo json_encode(["error" => "Error al ejecutar la consulta SQL."]);
+                        }
+                    break;
+                    
                     case 'Read':
                         $sql = "SELECT registroPagos.id_pago, usuarios.id_usuarios, monto.importe, estado.nombre AS estado, comprobante.foto
                                 FROM registroPagos

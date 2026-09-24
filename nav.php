@@ -11,6 +11,7 @@
 ?>
 
 <link rel="stylesheet" href="nav.css">
+<input type="hidden" id="usuario" value="<?php echo $_SESSION['id'] ?? ''; ?>">
 <div class="nav-contenedor">
     <nav class="nav-barra">
         <ul class="nav-lista">
@@ -28,7 +29,7 @@
             </li>
 
             <li>
-                <a href="registroPagos.php" onclick=CambioColor(this) class="<?= $pagina_actual == 'registroPagos.php' ? 'activo' : '' ?>">
+                <a href="registropagos.php" onclick=CambioColor(this) class="<?= $pagina_actual == 'registropagos.php' ? 'activo' : '' ?>">
                     Registro de pagos
                 </a>
             </li>
