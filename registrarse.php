@@ -55,7 +55,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $respuesta = json_decode($resultado, true);
 
         if (isset($respuesta['mensaje'])) {
-            $_SESSION['usuario'] = $dni;
+            $_SESSION['id'] = $respuesta['idUsuario'];
+            $_SESSION['usuario'] = $respuesta['usuario'];
             header("Location: inicio.php");
             exit;
         } else {
