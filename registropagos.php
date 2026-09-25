@@ -15,7 +15,7 @@
         <button class="registro">
             <table>
                 <tr>
-                    <tbody id="tablapagos" onload="cargarPagos()" onclick="obtenerDatos()">
+                    <tbody id="tablapagos" onload="cargarPagos()">
                       
                     </tbody>
                 </tr>
