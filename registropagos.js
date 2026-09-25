@@ -1,4 +1,8 @@
-  function cargarPagos() {
+  // Se ejecuta cuando todo el HTML y el nav.php han sido cargados en la pantalla
+document.addEventListener('DOMContentLoaded', () => {
+    cargarPagos();
+});
+function cargarPagos() {
             fetch('API.php', { 
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
