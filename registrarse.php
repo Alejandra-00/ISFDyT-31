@@ -1,72 +1,75 @@
 <?php
-include("conexion.php");
-session_start();
-
-$mensajeError = '';
-
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    // Validar y asignar valores por defecto en caso de venir vacíos
-    $dni = trim($_POST["dni"] ?? '');
-    $nombreCompleto = trim($_POST["nombre_completo"] ?? '');
-    $mail = trim($_POST["email"] ?? '');
-    $socio = !empty($_POST["socio"]) ? $_POST["socio"] : '1'; 
-    $carrera = !empty($_POST["carrera"]) ? $_POST["carrera"] : '10';
-    $contrasena = $_POST["contrasena"] ?? '';
-    $telefono = trim($_POST["telefono"] ?? '');
-    $recurso = $_POST["recurso"] ?? 'usuarios';
-    $consulta = $_POST["consulta"] ?? 'Create';
-
-    $datos = [  //declarar los datos a enviar a la API
-        "mensaje" => "Usuario recibido correctamente",
-        "dni" => $dni,
-        "nombre_completo" => $nombreCompleto,
-        "email" => $mail,
-        "socio" => $socio,
-        "carrera" => $carrera,
-        "contrasena" => $contrasena,
-        "telefono" => $telefono,
-        "recurso" => $recurso,
-        "consulta" => $consulta
-    ];
-
-    // Convertir a JSON
-    $payload = json_encode($datos);
-
-    // Construir la URL codificando correctamente espacios y caracteres especiales
-    $protocolo = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";
-    $host = $_SERVER['HTTP_HOST'];
-    $rutaLimpia = implode('/', array_map('rawurlencode', explode('/', dirname($_SERVER['PHP_SELF']))));
-    $urlApi = $protocolo . $host . $rutaLimpia . "/API.php";
-
-    // Configurar la petición HTTP hacia la API
-    $opciones = [
-        "http" => [
-            "header"  => "Content-Type: application/json\r\n",
-            "method"  => "POST",
-            "content" => $payload,
-            "ignore_errors" => true
-        ]
-    ];
-
-    $contexto = stream_context_create($opciones);
-    $resultado = @file_get_contents($urlApi, false, $contexto);
-
-    if ($resultado !== false) {
-        $respuesta = json_decode($resultado, true);
-
-        if (isset($respuesta['mensaje'])) {
-            $_SESSION['id'] = $respuesta['idUsuario'];
-            $_SESSION['usuario'] = $respuesta['usuario'];
-            header("Location: inicio.php");
-            exit;
-        } else {
-            $mensajeError = $respuesta['error'] ?? "Respuesta de la API: " . htmlspecialchars($resultado);
-        }
-    } else {
-        $mensajeError = "No se pudo realizar la llamada HTTP a la API.";
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
     }
-    
-}
+    include("conexion.php");
+
+    $mensajeError = '';
+
+    if ($_SERVER["REQUEST_METHOD"] === "POST") {
+        // Validar y asignar valores por defecto en caso de venir vacíos
+        $dni = trim($_POST["dni"] ?? '');
+        $nombreCompleto = trim($_POST["nombre_completo"] ?? '');
+        $mail = trim($_POST["email"] ?? '');
+        $socio = !empty($_POST["socio"]) ? $_POST["socio"] : '1'; 
+        $carrera = !empty($_POST["carrera"]) ? $_POST["carrera"] : '10';
+        $contrasena = $_POST["contrasena"] ?? '';
+        $telefono = trim($_POST["telefono"] ?? '');
+        $recurso = $_POST["recurso"] ?? 'usuarios';
+        $consulta = $_POST["consulta"] ?? 'Create';
+
+        $datos = [  //declarar los datos a enviar a la API
+            "mensaje" => "Usuario recibido correctamente",
+            "dni" => $dni,
+            "nombre_completo" => $nombreCompleto,
+            "email" => $mail,
+            "socio" => $socio,
+            "carrera" => $carrera,
+            "contrasena" => $contrasena,
+            "telefono" => $telefono,
+            "recurso" => $recurso,
+            "consulta" => $consulta
+        ];
+
+        // Convertir a JSON
+        $payload = json_encode($datos);
+
+        // Construir la URL codificando correctamente espacios y caracteres especiales
+        $protocolo = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";
+        $host = $_SERVER['HTTP_HOST'];
+        $rutaLimpia = implode('/', array_map('rawurlencode', explode('/', dirname($_SERVER['PHP_SELF']))));
+        $urlApi = $protocolo . $host . $rutaLimpia . "/API.php";
+
+        // Configurar la petición HTTP hacia la API
+        $opciones = [
+            "http" => [
+                "header"  => "Content-Type: application/json\r\n",
+                "method"  => "POST",
+                "content" => $payload,
+                "ignore_errors" => true
+            ]
+        ];
+
+        $contexto = stream_context_create($opciones);
+        $resultado = @file_get_contents($urlApi, false, $contexto);
+
+        if ($resultado !== false) {
+            $respuesta = json_decode($resultado, true);
+
+            if (isset($respuesta['mensaje'])) {
+                $_SESSION['id'] = $respuesta['idUsuario'];
+                $_SESSION['usuario'] = $respuesta['usuario'];
+                $_SESSION['admin'] = $respuesta['admin'] ?? 0;
+                header("Location: inicio.php");
+                exit;
+            } else {
+                $mensajeError = $respuesta['error'] ?? "Respuesta de la API: " . htmlspecialchars($resultado);
+            }
+        } else {
+            $mensajeError = "No se pudo realizar la llamada HTTP a la API.";
+        }
+        
+    }
 ?>
 <!DOCTYPE html> 
 <html lang="es"> 

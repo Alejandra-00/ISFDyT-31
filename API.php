@@ -200,7 +200,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $stmt->bind_param("sssssiii", $DNI, $nombre_completo, $email, $telefono, $contrasena, $activo, $id_socio, $id_carrera);
 
                         if ($stmt->execute()) {
-                            echo json_encode(["mensaje" => "Usuario registrado correctamente."]);
+                            $nuevoId = $stmt->insert_id;
+
+                            echo json_encode([
+                                "mensaje" => "Usuario registrado correctamente.",
+                                "idUsuario" => $nuevoId,
+                                "usuario" => $nombre_completo,
+                                "admin" => 0
+                            ]);
                         } else {
                             http_response_code(500);
                             echo json_encode(["error" => "Error: Cuenta no registrada."]);

@@ -1,6 +1,8 @@
 <?php
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
     include('conexion.php');
-    session_start();
 
     if($_SERVER["REQUEST_METHOD"] === "POST" ) {
         $dni = trim($_POST["dni"] ?? '');
@@ -44,6 +46,7 @@
             if (isset($respuesta['mensaje'])) {
                 $_SESSION['id'] = $respuesta['idUsuario'];
                 $_SESSION['usuario'] = $respuesta['usuario'];
+                $_SESSION['admin'] = $respuesta['admin'] ?? 0;
                 header('Location: inicio.php');
                 exit;
             } else {
@@ -103,8 +106,8 @@
                     <i class="ojo" onclick="verClave(this)"><img id="iconoOjo" src="iconos/ojo.png" alt=""></i>
                 </div>
                 <p class="linkOlvido"><a href="olvideContrasena">Olvidé mi contraseña</a></p>
-                <?php if (isset($error)): ?>
-                    <p class="error"><?= $error ?></p>
+                <?php if (isset($mensajeError)): ?>
+                    <p class="error"><?= $mensajeError ?></p>
                 <?php endif; ?>
             </div>
 
