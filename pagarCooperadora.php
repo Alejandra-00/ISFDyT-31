@@ -11,10 +11,7 @@
     }
     $id_usuario = $_SESSION['id'];
 
-    /*$nombre_mes = $_POST['nombre_mes'] ?? 'Marzo';
-    $monto      = $_POST['monto'] ?? '0';
-    $estado   = (int)($_POST['estado'] ?? 2); 
-    $nombre_estado = $_POST['estado'] ?? 'Impaga'; */
+    $idPago = $_POST['id_pago'];
 
     $mensajeExito = '';
     $errorAPI = '';
@@ -32,23 +29,25 @@
     <div class="seccionPagos">
         <!-- Contenedor pasarela -->
         <div class="contenedor activo" id="pasarela">
-            <h1 class="fuente titulo"><?php /*htmlspecialchars($nombre_mes);*/?></h1>
+            <h1 class="fuente titulo" id="verMes">Cargando...</h1>
 
             <div class="info">
                 <div class="datos">
                     <p class="fuente">Monto a pagar</p>
-                    <p class="fuente"><?php /*htmlspecialchars($monto); */?></p>
+                    <p class="fuente" id="verMonto">0</p>
                     <p id="alias" onclick="copiarElemento('alias')" class="fuente">Cooperadora.31</p>
                     <p id="cvu" onclick="copiarElemento('cvu')" class="fuente">0140354901617701138618</p>
                 </div>
                 <div class="estado">
-                    <p class="fuente" id="estado">Estado</p>
+                    <p class="fuente" id="verEstado"></p>
                 </div>
             </div>
 
+            <input type="hidden" id="idPagoActual" value="<?php echo htmlspecialchars($idPago); ?>">
+
             <div class="linea"></div>
             <div class="descargar">
-                <button type="button" <?php /*if ($id_estado !== 1) echo 'disabled'; */?>>
+                <button type="button" id="BtnDescargarFactura">
                     <span class="fuente" style="display: flex; align-items: center;">
                         <img src="iconos/descargar.png" alt="Descarga">
                         Descargar factura
@@ -58,7 +57,7 @@
 
             <div class="linea"></div>
             <div class="enviar">
-                <button type="button" onclick="mostrar('enviarComprobante')" <?php /*if ($id_estado === 1) echo 'disabled'; */?>>
+                <button type="button" onclick="mostrar('enviarComprobante')" id="BtnEnviarComprobante">
                     <span class="fuente" style="display: flex; align-items: center;">
                         <img src="iconos/enviar.png" alt="Enviar">
                         Enviar comprobante de pago
@@ -67,12 +66,8 @@
                 <!-- Formulario POST que incluye el input del comprobante -->
                 <form action="pagarCooperadora.php" method="POST" enctype="multipart/form-data" class="formulario" id="formPasarela">
                     
-                    <input type="hidden" id="id_monto" value="1">
-                    <input type="hidden" id="id_mes" value="<?php /*echo htmlspecialchars($id_mes); */ ?>">
-                    <input type="hidden" id="id_usuario" value="<?php /*echo htmlspecialchars($_SESSION['id_usuarios'] ?? $_SESSION['id'] ?? 0); */ ?>">
-                    
                     <input type="file" id="subir" name="comprobante" accept="image/*" style="display: none;" onchange="comprobanteSeleccionado()">
-                    <button type="button" class="fuente btn" onclick="mostrar('pasarela', 'cuotaPendiente')" <?php /*if ($id_estado === 1) echo 'disabled'; */?>>Enviar pago</button>
+                    <button type="button" class="fuente btn" onclick="mostrar('pasarela', 'cuotaPendiente')" id="BtnEnviarPago">Enviar pago</button>
                 </form>
             </div>   
         </div> 
@@ -118,5 +113,5 @@
 </body>
 </html>
 <?php
-    //$conexion->close();
+    $conexion->close();
 ?>

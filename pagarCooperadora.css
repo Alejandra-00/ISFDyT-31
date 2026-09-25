@@ -131,6 +131,17 @@ body {
     margin-left: auto;
 }
 
+button:disabled {
+    color: #666666 !important;
+    cursor: not-allowed !important;
+    opacity: 0.6;
+}
+
+button:disabled img {
+    filter: grayscale(100%);
+    opacity: 0.5;
+}
+
 .formulario {
     display: flex;
     justify-content: center;

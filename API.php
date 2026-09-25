@@ -28,20 +28,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         // 2. Consulta SQL con cláusula WHERE y Sentencia Preparada
                         $sql = "SELECT 
-                                        registropagos.id, 
-                                        registropagos.fecha, 
-                                        usuarios.id AS id_usuario, 
-                                        monto.importe AS monto, 
-                                        estadopago.nombre AS estadopago, 
-                                        comprobante.foto, 
-                                        meses.nombre AS meses
-                                    FROM registropagos
-                                    LEFT JOIN usuarios ON registropagos.id_usuarios = usuarios.id
-                                    LEFT JOIN monto ON registropagos.id_monto = monto.id
-                                    LEFT JOIN estadopago ON registropagos.id_estado = estadopago.id
-                                    LEFT JOIN comprobante ON registropagos.id_comprobante = comprobante.id
-                                    LEFT JOIN meses ON registropagos.id_mes = meses.id_mes
-                                    WHERE registropagos.id_usuarios = ?";
+                            registropagos.id, 
+                            registropagos.fecha, 
+                            usuarios.id AS id_usuario, 
+                            monto.importe AS monto, 
+                            estadopago.nombre AS estadopago, 
+                            comprobante.foto, 
+                            meses.nombre AS meses
+                            FROM registropagos
+                            LEFT JOIN usuarios ON registropagos.id_usuarios = usuarios.id
+                            LEFT JOIN monto ON registropagos.id_monto = monto.id
+                            LEFT JOIN estadopago ON registropagos.id_estado = estadopago.id
+                            LEFT JOIN comprobante ON registropagos.id_comprobante = comprobante.id
+                            LEFT JOIN meses ON registropagos.id_mes = meses.id_mes
+                            WHERE registropagos.id_usuarios = ?
+                        ";
 
                         $stmt = mysqli_prepare($conexion, $sql);
 
@@ -62,6 +63,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                     break;
                     
+                    case 'Readpagos':
+                        $id_pago = (int)($datos['id_pago']);
+
+                        if ($id_pago === 0) {
+                            http_response_code(400);
+                            echo json_encode(["error" => "El pago no se encontró."]);
+                            break;
+                        }
+
+                        $sql = "SELECT 
+                            registropagos.id, 
+                            registropagos.fecha, 
+                            monto.importe AS monto, 
+                            estadopago.nombre AS estadopago, 
+                            meses.nombre AS meses
+                            FROM registropagos
+                            LEFT JOIN monto ON registropagos.id_monto = monto.id
+                            LEFT JOIN estadopago ON registropagos.id_estado = estadopago.id
+                            LEFT JOIN meses ON registropagos.id_mes = meses.id_mes
+                            WHERE registropagos.id = ?
+                        ";
+
+                        $stmt = mysqli_prepare($conexion, $sql);
+
+                        if ($stmt) {
+                            mysqli_stmt_bind_param($stmt, "i", $id_pago);
+                            mysqli_stmt_execute($stmt);
+                            $resultado = mysqli_stmt_get_result($stmt);
+                            $pago = mysqli_fetch_assoc($resultado);
+                            
+                            echo json_encode($pago);
+                            mysqli_stmt_close($stmt);
+                        } else {
+                            http_response_code(500);
+                            echo json_encode(["error" => "Error al ejecutar la consulta SQL."]);
+                        }
+                    break;
+
                     case 'Read':
                         $sql = "SELECT registroPagos.id_pago, usuarios.id_usuarios, monto.importe, estado.nombre AS estado, comprobante.foto
                                 FROM registroPagos

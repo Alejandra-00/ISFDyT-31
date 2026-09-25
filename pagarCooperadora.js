@@ -46,51 +46,47 @@ function aceptarComprobante() {
    mostrar('pasarela');
 }
 
-/*
-   function obtenerDatos() {
-      // Petición para obtener el Monto
-      fetch("API.php", {
-         method: "POST",
-         headers: {
-            "Content-Type": "application/json"
-         },
-         body: JSON.stringify({
-            recurso: "monto",
-            consulta: "Read"
-         })
-      })
-      .then(respuesta => respuesta.json())
-      .then(datosMonto => {
-         console.log("Datos de monto:", datosMonto);
-         //Como 'datosMonto' es un arreglo, tomamos el valor 'importe' del primer elemento
-         if (datosMonto && datosMonto.length > 0) {
-            document.getElementById("monto").textContent = "$" + datosMonto[0].importe;
-         }
-      })
-      .catch(error => console.error("Error al obtener monto:", error));
-      
-      //Petición para obtener los Meses
-      fetch("API.php", {
-         method: "POST",
-         headers: {
-         "Content-Type": "application/json"
-         },
-         body: JSON.stringify({
-            recurso: "meses",
-            consulta: "Read"
-         })
-      })
-      .then(respuesta => respuesta.json())
-      .then(datosMeses => {
-         console.log("Datos de meses:", datosMeses);
-         //Como 'datosMeses' es un arreglo de nombres, mostramos el mes deseado (por ejemplo, el primero)
-         if (datosMeses && datosMeses.length > 0) {
-            document.getElementById("mes").textContent =datosMeses[0].nombre;
-         }
-      })
-      .catch(error => console.error("Error al obtener meses:", error));
-   }
+document.addEventListener('DOMContentLoaded', () => {
+   obtenerDatosPagos();
+});
 
-   //Cargar los datos automáticamente al cargar la página
-   document.addEventListener("DOMContentLoaded", obtenerDatos);
-*/
+function obtenerDatosPagos() {
+   const idPago = document.getElementById('idPagoActual').value;
+
+   fetch('API.php', { 
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ recurso: 'registroPagos', consulta: 'Readpagos', id_pago: idPago })
+   })
+   .then(respuesta => respuesta.json())
+   .then(datos => {
+      if (datos && !datos.error) {
+         document.getElementById("verMes").textContent = datos.meses ?? '0';
+         document.getElementById("verMonto").textContent = "$" + (datos.monto ?? '0');
+         document.getElementById("verEstado").textContent = (datos.estadopago ?? 'Impago');
+
+         desactivarBotones(datos.estadopago);
+      }
+   })
+   .catch(error => console.error("Error al obtener los datos del pago:", error));
+}
+
+function desactivarBotones(estado) {
+   const btnFactura = document.getElementById('BtnDescargarFactura');
+   const btnComprobante = document.getElementById('BtnEnviarComprobante');
+   const btnPago = document.getElementById('BtnEnviarPago');
+
+   if (estado === 'Pago') {
+      if (btnPago) btnPago.disabled = true;
+      if (btnComprobante) btnComprobante.disabled = true;
+      if (btnFactura) btnFactura.disabled = false;
+   } else if (estado === 'Pendiente') {
+      if (btnPago) btnPago.disabled = true;
+      if (btnComprobante) btnComprobante.disabled = true;
+      if (btnFactura) btnFactura.disabled = true;
+   } else if (estado === 'Impago') {
+      if (btnPago) btnPago.disabled = true;
+      if (btnComprobante) btnComprobante.disabled = false;
+      if (btnFactura) btnFactura.disabled = true;
+   }
+}
