@@ -89,67 +89,26 @@
                 <h3>Cooperadora actual</h3>
             </div>
             
-            <!-- Ver pagos -->
             <div id="verPagos" class="formulario tarjeta">
-                <h3>Ver pagos</h3>
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover align-middle">
-                        <thead>
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Tipo de socio</th>
-                                <th>Carrera</th>
-                                <th>Mes</th>
-                                <th>Fecha</th>
-                                <th>Importe</th>
-                                <th>Estado</th>
-                                <th>Comprobante</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            if (!$resultadoPagos) {
-                                echo "
-                                    <tr>
-                                        <td colspan='8' class='text-center'>
-                                            Error al consultar los pagos.
-                                        </td>
-                                    </tr>
-                                ";
-                            } elseif ($resultadoPagos->num_rows == 0) {
-                                echo "
-                                    <tr>
-                                        <td colspan='8' class='text-center'>
-                                            No hay pagos registrados.
-                                        </td>
-                                    </tr>
-                                ";
-                            } else {
-                                while ($row = $resultadoPagos->fetch_assoc()) {
-                            ?>
-                                <tr>
-                                    <td><?= htmlspecialchars($row['nombre_completo']) ?></td>
-                                    <td><?= htmlspecialchars($row['tipo_socio']) ?></td>
-                                    <td><?= htmlspecialchars($row['carrera']) ?></td>
-                                    <td><?= htmlspecialchars($row['mes']) ?></td>
-                                    <td><?= htmlspecialchars($row['fecha']) ?></td>
-                                    <td>$<?= htmlspecialchars($row['importe']) ?></td>
-                                    <td><?= htmlspecialchars($row['estado']) ?></td>
-                                    <td>
-                                        <?php if (!empty($row['foto'])): ?>
-                                            <a href="<?= htmlspecialchars($row['foto']) ?>" target="_blank">Ver</a>
-                                        <?php else: ?>
-                                            Sin archivo
-                                        <?php endif; ?>
-                                    </td>
-                                </tr>
-                            <?php
-                                }
-                            }
-                            ?>
-                        </tbody>
-                    </table>
-                </div>
+                <table class="tabla-pagos">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Tipo de socio</th>
+                            <th>Carrera</th>
+                            <th>Mes</th>
+                            <th>Fecha</th>
+                            <th>Importe</th>
+                            <th>Estado</th>
+                            <th>Comprobante</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablapagos">
+                        <tr>
+                            <td colspan="8" class="text-center">Cargando pagos...</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
             <!-- Graficos -->

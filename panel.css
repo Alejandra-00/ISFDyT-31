@@ -154,3 +154,23 @@ body {
     text-decoration: underline;
     background: transparent;
 }
+
+#verPagos table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    background-color: #1217a7d7;
+    color: #a9cd46;
+}
+
+#verPagos th, 
+#verPagos td {
+    padding: 10px;
+    text-align: left;
+    border: 1px #0e1395d7;
+}
+
+#verPagos th {
+    background-color: #1217a7d7;
+    font-weight: bold;
+}

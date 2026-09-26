@@ -13,13 +13,13 @@
             <section class="card">
                 <p>
                     Monto actual<br>
-                    <strong>$$$$</strong>
+                    <strong id="montoActual">$$$$</strong>
                 </p>
             </section>
             <section class="card">
                 <p>
                     Monto anterior<br>
-                    <strong>$$$$</strong>
+                    <strong id="montoAnterior">$$$$</strong>
                 </p>
             </section>
         </div>
@@ -44,5 +44,6 @@
             <?php include 'footer.php'; ?>
         </div>
     </section>
+    <script src="inicio.js"></script>
 </body>
 </html>

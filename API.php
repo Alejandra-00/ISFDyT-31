@@ -107,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 INNER JOIN usuarios ON registroPagos.id_usuario = usuarios.id_usuarios
                                 INNER JOIN monto ON registroPagos.id_monto = monto.id_monto
                                 INNER JOIN estado ON registroPagos.id_estado = estado.id_estado
-                                INNER JOIN comprobante ON registroPagos.id_comprobante = comprobante.id_comprobante"; 
+                                INNER JOIN comprobante ON registroPagos.id_comprobante = comprobante.id_comprobante";
                         $resultado = mysqli_query($conexion, $sql);
                         if ($resultado) {
                             $pagos = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
@@ -424,6 +424,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             case 'monto':
                 switch ($consulta) {
+                    case 'Inicio':
+                        $sql = "SELECT importe, importe_anterior FROM monto ORDER BY fecha_efecto DESC 
+                        LIMIT 1";
+                        $resultado = mysqli_query($conexion, $sql);
+
+                        if ($resultado) {
+                            $monto = mysqli_fetch_assoc($resultado);
+                            if ($monto) { echo json_encode($monto);
+                            } else {
+                                http_response_code(404);
+                                echo json_encode(["error" => "No hay montos registrados."]);
+                            }
+                        } else {
+                            http_response_code(500);
+                            echo json_encode(["error" => "Error de lectura."]);
+                        }
+                    break;
+
                     case 'Read':
                         $sql = "SELECT id, importe, importe_anterior, fecha_guardado, fecha_efecto FROM monto";
                         $resultado = mysqli_query($conexion, $sql);
