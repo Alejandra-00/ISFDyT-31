@@ -11,11 +11,8 @@ fetch("API.php", {
 
 .then(respuesta => respuesta.json())
 .then(datos => {
-    document.getElementById("montoActual").textContent =
-        "$" + datos.importe;
-
-    document.getElementById("montoAnterior").textContent =
-        "$" + datos.importe_anterior;
+    document.getElementById("montoActual").textContent = "$" + datos.importe;
+    document.getElementById("montoAnterior").textContent = "$" + datos.importe_anterior;
 })
 
 .catch(error => {
