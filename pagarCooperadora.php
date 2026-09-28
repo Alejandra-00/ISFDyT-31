@@ -47,7 +47,7 @@
 
             <div class="linea"></div>
             <div class="descargar">
-                <button type="button" id="BtnDescargarFactura">
+                <button type="button" id="BtnDescargarFactura" onclick="descargarFactura()">
                     <span class="fuente" style="display: flex; align-items: center;">
                         <img src="iconos/descargar.png" alt="Descarga">
                         Descargar factura
@@ -63,12 +63,9 @@
                         Enviar comprobante de pago
                     </span>
                 </button>
-                <!-- Formulario POST que incluye el input del comprobante -->
-                <form action="pagarCooperadora.php" method="POST" enctype="multipart/form-data" class="formulario" id="formPasarela">
                     
-                    <input type="file" id="subir" name="comprobante" accept="image/*" style="display: none;" onchange="comprobanteSeleccionado()">
-                    <button type="button" class="fuente btn" onclick="mostrar('pasarela', 'cuotaPendiente')" id="BtnEnviarPago">Enviar pago</button>
-                </form>
+                <input type="file" id="subir" name="comprobante" accept="image/*" style="display: none;" onchange="comprobanteSeleccionado()">
+                <button type="button" class="fuente btn" onclick="enviarPagoAPI()" id="BtnEnviarPago">Enviar pago</button>
             </div>   
         </div> 
 
@@ -91,7 +88,7 @@
 
             <div class="info">
                 <div class="estado">
-                    <p class="fuente">Estado</p>
+                    <p class="fuente" id="verEstadoPendiente"></p>
                 </div>
                 <div class="datos">
                     <p class="fuente">Te informaremos cuando el pago haya sido validado.</p>

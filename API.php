@@ -17,20 +17,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             case 'registroPagos':
                 switch ($consulta) {
                     case 'Readusuarios':
+                        if (ob_get_length()) ob_clean();
+
                         $id_usuarios = (int)($datos['id_usuario'] ?? 0);
 
-                        // 1. Validar solo los campos requeridos
                         if ($id_usuarios === 0) {
                             http_response_code(400);
                             echo json_encode(["error" => "El usuario no se encontró."]);
                             break;
                         }
 
-                        // 2. Consulta SQL con cláusula WHERE y Sentencia Preparada
                         $sql = "SELECT 
                             registropagos.id, 
                             registropagos.fecha, 
-                            usuarios.id AS id_usuario, 
                             monto.importe AS monto, 
                             estadopago.nombre AS estadopago, 
                             comprobante.foto, 
@@ -48,18 +47,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         if ($stmt) {
                             mysqli_stmt_bind_param($stmt, "i", $id_usuarios);
-                            mysqli_stmt_execute($stmt);
-                            $resultado = mysqli_stmt_get_result($stmt);
-
-                            $pagos = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
                             
-                            http_response_code(200);
-                            echo json_encode($pagos);
+                            if (mysqli_stmt_execute($stmt)) {
+                                $resultado = mysqli_stmt_get_result($stmt);
+                                $pagos = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
+                                
+                                http_response_code(200);
+                                echo json_encode($pagos);
+                            } else {
+                                http_response_code(500);
+                                echo json_encode(["error" => "Error SQL: " . mysqli_stmt_error($stmt)]);
+                            }
                             
                             mysqli_stmt_close($stmt);
                         } else {
-                            http_response_code(500); // 500 Es más adecuado para error interno/consulta
-                            echo json_encode(["error" => "Error al ejecutar la consulta SQL."]);
+                            http_response_code(500);
+                            echo json_encode(["error" => "Error al preparar SQL: " . mysqli_error($conexion)]);
                         }
                     break;
                     
@@ -77,8 +80,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             registropagos.fecha, 
                             monto.importe AS monto, 
                             estadopago.nombre AS estadopago, 
-                            meses.nombre AS meses
+                            meses.nombre AS meses,
+                            usuarios.nombre_completo,
+                            usuarios.DNI,
+                            usuarios.email
                             FROM registropagos
+                            LEFT JOIN usuarios ON registropagos.id_usuarios = usuarios.id
                             LEFT JOIN monto ON registropagos.id_monto = monto.id
                             LEFT JOIN estadopago ON registropagos.id_estado = estadopago.id
                             LEFT JOIN meses ON registropagos.id_mes = meses.id_mes
@@ -101,9 +108,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                     break;
 
+                    case 'UpdatePago':
+                        $id_pago = (int)($datos["id_pago"] ?? 0);
+                        $id_estado = (int)($datos["id_estado"] ?? 0);
+                        $fotoBase64 = $datos["foto"] ?? ""; 
+                        $fecha = date('Y-m-d');
+
+                        if ($id_pago === 0) {
+                            http_response_code(400);
+                            echo json_encode(["error" => "El pago no se encontró."]);
+                            break;
+                        }
+
+                        $stmtFoto = $conexion->prepare("INSERT INTO comprobante (foto) VALUES (?)");
+                        if ($stmtFoto) {
+                            $stmtFoto->bind_param("s", $fotoBase64);
+                            
+                            if ($stmtFoto->execute()) {
+                                // Obtenemos el ID del comprobante que se acaba de crear
+                                $id_comprobante = $stmtFoto->insert_id;
+                                $stmtFoto->close();
+
+                                // Actualizar registropagos con el nuevo id_comprobante, fecha e id_estado
+                                $stmtPago = $conexion->prepare("UPDATE registropagos SET id_estado = ?, fecha = ?, id_comprobante = ? WHERE id = ?");
+                                if ($stmtPago) {
+                                    $stmtPago->bind_param("isii", $id_estado, $fecha, $id_comprobante, $id_pago);
+                                    
+                                    if ($stmtPago->execute()) {
+                                        echo json_encode(["mensaje" => "Pago actualizado correctamente"]);
+                                    } else {
+                                        http_response_code(500);
+                                        echo json_encode(["error" => "Error al actualizar el pago."]);
+                                    }
+                                    $stmtPago->close();
+                                }
+                            } else {
+                                http_response_code(500);
+                                echo json_encode(["error" => "Error al guardar el comprobante."]);
+                                $stmtFoto->close();
+                            }
+                        } else {
+                            http_response_code(500);
+                            echo json_encode(["error" => "Error al preparar la inserción del comprobante."]);
+                        }
+                        break;
+
                     case 'Read':
                         $sql = "SELECT registroPagos.id_pago, usuarios.id_usuarios, monto.importe, estado.nombre AS estado, comprobante.foto
-                                FROM registroPagos
+                                FROM registropagos
                                 INNER JOIN usuarios ON registroPagos.id_usuario = usuarios.id_usuarios
                                 INNER JOIN monto ON registroPagos.id_monto = monto.id_monto
                                 INNER JOIN estado ON registroPagos.id_estado = estado.id_estado
@@ -131,7 +183,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             exit;
                         }
 
-                        $stmt = $conexion->prepare("INSERT INTO registroPagos (id_usuario, id_monto, id_estado, id_comprobante) VALUES (?, ?, ?, ?)");
+                        $stmt = $conexion->prepare("INSERT INTO registropagos (id_usuario, id_monto, id_estado, id_comprobante) VALUES (?, ?, ?, ?)");
                         $stmt->bind_param("iiii", $id_usuario, $id_monto, $id_estado, $id_comprobante);
 
                         if ($stmt->execute()) {
@@ -147,7 +199,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $id_pago = (int)($datos["id_pago"] ?? 0);
                         $id_estado = (int)($datos["id_estado"] ?? 0);
 
-                        $stmt = $conexion->prepare("UPDATE registroPagos SET id_estado = ? WHERE id_pago = ?");
+                        $stmt = $conexion->prepare("UPDATE registropagos SET id_estado = ? WHERE id = ?");
                         $stmt->bind_param("ii", $id_estado, $id_pago);
 
                         if ($stmt->execute()) {

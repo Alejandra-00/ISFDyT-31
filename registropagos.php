@@ -8,20 +8,20 @@
 </head>
 <body>
     <?php
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
         include("nav.php");
     ?>
     <div class="cont">
-        <form action="pagarCooperadora.php" method="POST">
-            <button class="registro">
-                <table>
-                    <tr>
-                        <tbody id="tablapagos" onload="cargarPagos()">
-                        
-                        </tbody>
-                    </tr>
-                </table>
-            </button>
-         <input type="hidden" name="id_pago" id="id_pago" value="">
+        <form id="formPago" action="pagarCooperadora.php" method="POST">
+            <input type="hidden" name="id_pago" id="id_pago" value="">
+            
+            <table class="registro">
+                <tbody id="tablapagos">
+                    
+                </tbody>
+            </table>
         </form>
     </div>
     <script src="registropagos.js"></script>

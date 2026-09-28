@@ -4,15 +4,33 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function cargarPagos() {
+   const inputUsuario = document.getElementById('usuario');
+   const idUsuario = inputUsuario ? inputUsuario.value : 0;
+
+   if (!idUsuario || idUsuario === "0" || idUsuario === "") {
+      console.error("No se encontró el ID de usuario en el nav.");
+      return;
+   }
+
    fetch('API.php', { 
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ recurso: 'registroPagos', consulta: 'Readusuarios', id_usuario: document.getElementById('usuario').value })
+      body: JSON.stringify({ 
+         recurso: 'registroPagos', 
+         consulta: 'Readusuarios', 
+         id_usuario: parseInt(idUsuario) 
+      })
    })
    .then(response => response.json())
    .then(data => {
       const tbody = document.getElementById('tablapagos');
+      if (!tbody) return;
       tbody.innerHTML = '';
+
+      if (!Array.isArray(data)) {
+         console.error("Respuesta de la API no es una lista válida:", data);
+         return;
+      }
 
       data.forEach(pago => { 
          const fila = document.createElement('tr');
@@ -24,66 +42,17 @@ function cargarPagos() {
             <td>${pago.estadopago ?? ''}</td>
          `;
 
-         // Al hacer clic en la fila, asigna el id_pago y envía el formulario
+         // Al hacer clic en la fila, envía el ID a la pasarela de pago
          fila.addEventListener('click', () => {
-            document.getElementById('id_pago').value = pago.id;
-            document.querySelector('form').submit();
+            const inputIdPago = document.getElementById('id_pago');
+            if (inputIdPago) {
+               inputIdPago.value = pago.id;
+               inputIdPago.closest('form').submit();
+            }
          });
 
          tbody.appendChild(fila);
       });
    })
-   .catch(error => console.error('Error:', error));
-}   
-
-// Cargar los pagos automáticamente al abrir la página
-cargarPagos();
-
-/*
-   function obtenerDatos() {
-      // Petición para obtener el Monto
-      fetch("API.php", {
-         method: "POST",
-         headers: {
-            "Content-Type": "application/json"
-         },
-         body: JSON.stringify({
-            recurso: "monto",
-            consulta: "Read"
-         })
-      })
-      .then(respuesta => respuesta.json())
-      .then(datosMonto => {
-         console.log("Datos de monto:", datosMonto);
-         //Como 'datosMonto' es un arreglo, tomamos el valor 'importe' del primer elemento
-         if (datosMonto && datosMonto.length > 0) {
-            document.getElementById("monto").textContent = "$" + datosMonto[0].importe;
-         }
-      })
-      .catch(error => console.error("Error al obtener monto:", error));
-      
-      //Petición para obtener los Meses
-      fetch("API.php", {
-         method: "POST",
-         headers: {
-         "Content-Type": "application/json"
-         },
-         body: JSON.stringify({
-            recurso: "meses",
-            consulta: "Read"
-         })
-      })
-      .then(respuesta => respuesta.json())
-      .then(datosMeses => {
-         console.log("Datos de meses:", datosMeses);
-         //Como 'datosMeses' es un arreglo de nombres, mostramos el mes deseado (por ejemplo, el primero)
-         if (datosMeses && datosMeses.length > 0) {
-            document.getElementById("mes").textContent =datosMeses[0].nombre;
-         }
-      })
-      .catch(error => console.error("Error al obtener meses:", error));
-   }
-
-   //Cargar los datos automáticamente al cargar la página
-   document.addEventListener("DOMContentLoaded", obtenerDatos);
-*/
+   .catch(error => console.error('Error al cargar la tabla de pagos:', error));
+}
