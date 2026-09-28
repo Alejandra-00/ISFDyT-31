@@ -35,7 +35,7 @@
             </li>
             
             <li>
-                <a href="pagarCooperadora.php" onclick=CambioColor(this) class="<?= $pagina_actual == 'pagarCooperadora.php' ? 'activo' : '' ?>">
+                <a href="registropagos.php" onclick=CambioColor(this) class="<?= $pagina_actual == 'pagarCooperadora.php' ? 'activo' : '' ?>">
                     Pagar cooperadora
                 </a>
             </li>
