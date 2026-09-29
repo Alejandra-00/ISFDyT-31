@@ -14,13 +14,13 @@
                 <img src="iconos/logo.jpg" alt="Logo">
             </div>
             <nav>
-                <button onclick="mostrar('inicio')"><img src="iconos/inicio.png" alt="Inicio">Inicio</button>
-                <button onclick="mostrar('sociosAlumnos')"><img src="iconos/usuario-azul.png" alt="Usuario">Socios alumnos</button>
-                <button onclick="mostrar('sociosVoluntarios')"><img src="iconos/usuario-azul.png" alt="Usuario">Socios voluntarios</button>
-                <button onclick="mostrar('carreras')"><img src="iconos/graduacion.png" alt="Carreras">Carreras</button>
-                <button onclick="mostrar('cooperadora')"><img src="iconos/dinero.png" alt="Cooperadora">Cooperadora actual</button>
-                <button onclick="mostrar('verPagos')"><img src="iconos/dinero.png" alt="Pagos">Ver pagos</button>
-                <button onclick="mostrar('graficos')"><img src="iconos/graficos.png" alt="Gráficos">Gráficos</button>
+                <button onclick="mostrar('inicio')"><img src="iconos/inicio.png" alt="Inicio" style = "width: 17.5%">Inicio</button>
+                <button onclick="mostrar('sociosAlumnos')"><img src="iconos/usuario-azul.png" alt="Usuario" style= "width: 19%">Socios alumnos</button>
+                <button onclick="mostrar('sociosVoluntarios')"><img src="iconos/usuario-azul.png" alt="Usuario" style= "width: 19%">Socios voluntarios</button>
+                <button onclick="mostrar('carreras')"><img src="iconos/graduacion.png" alt="Carreras" style= "width: 18%">Carreras</button>
+                <button onclick="mostrar('cooperadora')"><img src="iconos/dinero.png" alt="Cooperadora" style= "width: 18%">Cooperadora actual</button>
+                <button onclick="mostrar('verPagos')"><img src="iconos/dinero.png" alt="Pagos" style= "width: 18%">Ver pagos</button>
+                <button onclick="mostrar('graficos')"><img src="iconos/graficos.png" alt="Gráficos" style= "width: 18%">Gráficos</button>
             </nav>
         </aside>
 
@@ -81,10 +81,10 @@
                 <h3>Carreras</h3>
             </div>
 
-            <!-- Cooperadora (Oculto hasta activar) -->
+            <!-- Cooperadora -->
             <div id="cooperadora" class="formulario cooperadora-card">
                 <div class="cooperadora-header">
-                    <button class="btn-editar" onclick="mostrar('editarCooperadora')">Editar</button>
+                    <button class="btn-editar" id="editar" onclick="editarMonto()">Editar</button>
                     <h2 class="titulo-cooperadora">Cooperadora actual</h2>
                 </div>
 
@@ -97,17 +97,16 @@
                             <th>Fecha de efecto</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>$$$$</td>
-                            <td>$$$$</td>
-                            <td>XX-XX-XXXX</td>
-                            <td>XX-XX-XXXX</td>
-                        </tr>
+                    <tbody id="tablaMonto">
+
                     </tbody>
                 </table>
+
+                <div class="cooperadora-acciones-bottom">
+                    <button class="btn-cancelar" id="cancelar" onclick="cancelarEdicionMonto()" style="display: none;">Cancelar</button>
+                </div>
             </div>
-            
+
             <div id="verPagos" class="formulario tarjeta pagos-card">
                 <div class="pagos-header">
                     <h2 class="titulo-pagos">Pagos registrados</h2>

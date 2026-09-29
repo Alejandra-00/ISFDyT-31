@@ -3,6 +3,8 @@ include("conexion.php");
 
 header("Content-Type: application/json; charset=UTF-8");
 
+//contraseña de phpMailer: oytq mfud xkjc ebdl
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $jsonRecibido = file_get_contents('php://input');
     $datos = json_decode($jsonRecibido, true);
@@ -526,12 +528,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $id = $datos["id"];
                         $importe = $datos["importe"];
                         $importeAnterior = $datos["importe_anterior"];
-                        $fechaGuardado = $datos["fecha_guardado"];
                         $fechaEfecto = $datos["fecha_efecto"];
                         $sql = "UPDATE monto
                                 SET importe = '$importe',
                                     importe_anterior = '$importeAnterior',
-                                    fecha_guardado = '$fechaGuardado',
                                     fecha_efecto = '$fechaEfecto'
                                 WHERE id = $id";
                         $resultado = mysqli_query($conexion, $sql);

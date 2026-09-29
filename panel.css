@@ -102,7 +102,7 @@ body {
     margin-top: 5%;
     flex: 1;
     min-width: 180px;
-    background: #0048ace5;
+    background: #0048acda;
     color: #a9cd46;
     border-radius: 10px;
     padding: 20px;
@@ -125,7 +125,7 @@ body {
 .card-listado {
     flex: 1;
     min-width: 280px;
-    background: #0048ace5;
+    background: #0048acda;
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
@@ -167,7 +167,7 @@ body {
     margin: auto 0;
     padding: 20px 25px;
     color: #a9cd46;
-    background: rgba(11, 85, 178, 0.88);
+    background: #0048acda;
     border-radius: 10px;
 }
 
@@ -213,7 +213,7 @@ body {
 .tabla-pagos select.estado {
     padding: 5px 8px;
     color: #a9cd46;
-    background: #0048ace5;
+    background: #0049ac;
     border: 1px solid #a9cd46;
     border-radius: 4px;
     font-family: 'Tamrin', sans-serif;
@@ -227,7 +227,7 @@ body {
     margin: auto 0; /* 'auto' arriba y abajo lo centra verticalmente en el espacio disponible */
     padding: 20px 25px;
     color: #a9cd46;
-    background: rgba(11, 85, 178, 0.88);
+    background: #0048acda;
     border-radius: 10px;
     box-sizing: border-box;
 }
@@ -240,7 +240,7 @@ body {
 
 .cooperadora-header {
     display: grid;
-    grid-template-columns: 1fr auto 1fr;
+    grid-template-columns: 100px 1fr 100px; /* 3 columnas: botón izquierda, título centro, espacio simétrico derecha */
     align-items: center;
     margin-bottom: 15px;
 }
@@ -257,7 +257,7 @@ body {
     grid-column: 1;
     justify-self: start;
     padding: 6px 20px;
-    color: #1217a7;
+    color: #0049ac;
     background: #a9cd46;
     border: 0;
     border-radius: 6px;
@@ -286,5 +286,43 @@ body {
 }
 
 .tabla-cooperadora td {
-    font-size: 1.2rem;
+    font-size: 15px;
+}
+
+.tabla-cooperadora input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 4px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.btn-guardar {
+    background-color: #a9cd46;
+    color: #0049ac;
+}
+
+.acciones-cooperadora {
+    grid-column: 1;
+    display: flex;
+    gap: 10px;
+}
+
+.cooperadora-acciones-bottom {
+    display: flex;
+    justify-content: flex-start; /* Alinea el botón Cancelar hacia la izquierda */
+    margin-top: 20px;
+    width: 100%;
+}
+
+.btn-cancelar {
+    padding: 6px 20px;
+    color: #0049ac;
+    background: #a9cd46;
+    border: 0;
+    border-radius: 6px;
+    font-family: 'Tamrin', sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
 }

@@ -33,6 +33,13 @@ function mostrar(id) {
     }
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+    cargarInicio();
+    cargarPagos();
+    cambiarEstadoPago();
+    cargarMonto();
+});
+
 // Inicio del panel
 function cargarInicio() {
     Promise.all([
@@ -78,7 +85,6 @@ function cargarInicio() {
         console.error('Error al cargar el inicio:', error); 
     });
 }
-cargarInicio();
 
 // socio alumnos
 
@@ -87,7 +93,186 @@ cargarInicio();
 // carreras
 
 // monto actual
+let editandoMonto = false; 
+let datosOriginalesMonto = null; 
 
+function cargarMonto() {
+    // Realizamos la petición POST a la API para leer la información de la BD
+    fetch('API.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+            recurso: 'monto', 
+            consulta: 'Read' 
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        const tbody = document.getElementById('tablaMonto');
+        if (!tbody) return;
+        tbody.innerHTML = ''; // Limpiamos la tabla antes de renderizar
+
+        // Validamos que la respuesta sea un arreglo con datos
+        if (!Array.isArray(data) || data.length === 0) {
+           console.error("Respuesta de la API no es una lista válida:", data);
+           return;
+        }
+
+        // Recorremos los registros devueltos por la API
+        data.forEach(monto => { 
+           const fila = document.createElement('tr');
+           
+           // Guardamos el ID real del registro dentro de un atributo HTML (data-id)
+           // Esto es clave para saber qué registro actualizar luego en la BD
+           if (monto.id) {
+               fila.dataset.id = monto.id;
+           }
+
+           // Insertamos los valores en cada celda de la fila
+           fila.innerHTML = `
+              <td>${monto.importe ?? ''}</td>
+              <td>${monto.importe_anterior ?? ''}</td>
+              <td>${monto.fecha_guardado ?? ''}</td>
+              <td>${monto.fecha_efecto ?? ''}</td>
+           `;
+
+           tbody.appendChild(fila);
+        });
+   })
+   .catch(error => console.error('Error al cargar la tabla de montos:', error));
+}
+
+// Convierte fechas en formato DD/MM/YYYY a YYYY-MM-DD,
+function formatearFechaParaInput(fechaStr) {
+    if (!fechaStr) return '';
+    if (fechaStr.includes('/')) {
+        const partes = fechaStr.split('/');
+        if (partes.length === 3) {
+            return `${partes[2]}-${partes[1].padStart(2, '0')}-${partes[0].padStart(2, '0')}`;
+        }
+    }
+    return fechaStr; // Si ya venía en formato YYYY-MM-DD
+}
+
+function editarMonto() {
+    const tbody = document.getElementById("tablaMonto");
+    const tr = tbody.querySelector("tr"); // Obtenemos la fila de la tabla
+    const btnEditar = document.getElementById("editar");
+    const btnCancelar = document.getElementById("cancelar");
+
+    if (!tr) return; // Si no hay fila cargada, salimos de la función
+
+    if (!editandoMonto) {
+        const celdas = tr.querySelectorAll("td");
+
+        // 1. Guardamos una copia exacta de los textos originales
+        datosOriginalesMonto = {
+            importe: celdas[0].textContent.trim(),
+            importeAnt: celdas[1].textContent.trim(),
+            fechaGuardado: celdas[2].textContent.trim(), // Esta fecha no se editará
+            fechaEfecto: celdas[3].textContent.trim()
+        };
+
+        // Convertimos la fecha de efecto al formato apto para input date
+        const fechaEfectoInput = formatearFechaParaInput(datosOriginalesMonto.fechaEfecto);
+
+        // 2. Reemplazamos el texto plano de las celdas por campos <input>
+        celdas[0].innerHTML = `<input type="number" step="0.01" id="inputImporte" value="${datosOriginalesMonto.importe}">`;
+        celdas[1].innerHTML = `<input type="number" step="0.01" id="inputImporteAnt" value="${datosOriginalesMonto.importeAnt}">`;
+        // Nota: celdas[2] (fecha_guardado) se omite intencionalmente para que no sea editable
+        celdas[3].innerHTML = `<input type="date" id="inputFechaEfecto" value="${fechaEfectoInput}">`;
+
+        // 3. Cambiamos la interfaz del botón
+        btnEditar.textContent = "Guardar"; // El botón "Editar" cambia su texto a "Guardar"
+        btnEditar.classList.add("btn-guardar");
+        if (btnCancelar) btnCancelar.style.display = "inline-block"; // Hacemos visible el botón Cancelar
+
+        editandoMonto = true; // Actualizamos la bandera de estado a "editando"
+
+    } else {
+        // 1. Capturamos los nuevos valores ingresados en los inputs
+        const nuevoImporte = document.getElementById("inputImporte").value;
+        const nuevoImporteAnt = document.getElementById("inputImporteAnt").value;
+        const nuevaFechaEfecto = document.getElementById("inputFechaEfecto").value;
+        
+        // Obtenemos el ID de la fila desde el atributo data-id (o usa 1 por defecto)
+        const idMonto = tr.dataset.id || 1;
+
+        // 2. Armamos el objeto con los datos a enviar a la BD
+        const payload = {
+            recurso: 'monto',
+            consulta: 'Update',
+            id: parseInt(idMonto),
+            importe: nuevoImporte,
+            importe_anterior: nuevoImporteAnt,
+            fecha_efecto: nuevaFechaEfecto
+        };
+
+        // 3. Enviamos la actualización vía Fetch a la API
+        fetch('API.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }, // Header obligatorio para que la API procese el JSON
+            body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(res => {
+            if (res.error) {
+                alert("Error al guardar: " + res.error);
+                return;
+            }
+
+            // 4. Si la BD se actualizó con éxito, quitamos los inputs y mostramos el nuevo texto plano
+            const celdas = tr.querySelectorAll("td");
+            celdas[0].textContent = nuevoImporte;
+            celdas[1].textContent = nuevoImporteAnt;
+            celdas[3].textContent = nuevaFechaEfecto;
+
+            // 5. Restablecemos los botones al estado inicial
+            restaurarBotones();
+            editandoMonto = false; // Desactivamos el modo edición
+        })
+        .catch(err => {
+            console.error("Error al actualizar monto:", err);
+            alert("Error de comunicación con el servidor.");
+        });
+    }
+}
+
+function cancelarEdicionMonto() {
+    // Si no estamos en modo edición o no hay datos respaldados, no hacemos nada
+    if (!editandoMonto || !datosOriginalesMonto) return;
+
+    const tbody = document.getElementById("tablaMonto");
+    const tr = tbody.querySelector("tr");
+
+    if (tr) {
+        const celdas = tr.querySelectorAll("td");
+        
+        // Restauramos los valores originales en texto plano sin tocar la BD
+        celdas[0].textContent = datosOriginalesMonto.importe;
+        celdas[1].textContent = datosOriginalesMonto.importeAnt;
+        celdas[3].textContent = datosOriginalesMonto.fechaEfecto;
+    }
+
+    // Ocultamos el botón Cancelar y volvemos el botón a "Editar"
+    restaurarBotones();
+    editandoMonto = false; // Desactivamos el modo edición
+}
+
+function restaurarBotones() {
+    const btnEditar = document.getElementById("editar");
+    const btnCancelar = document.getElementById("cancelar");
+
+    if (btnEditar) {
+        btnEditar.textContent = "Editar";
+        btnEditar.classList.remove("btn-guardar");
+    }
+    if (btnCancelar) {
+        btnCancelar.style.display = "none"; // Oculta el botón cancelar
+    }
+}
+
+//Pagos
 function cargarPagos() {
     fetch('API.php', { // peticion fetch a la api
         method: 'POST',
