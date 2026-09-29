@@ -10,31 +10,28 @@
 }
 
 body {
-    font-family: 'Tamrin';
+    font-family: 'Tamrin', sans-serif;
     min-height: 100vh;
-    background-image: url("fondo/fondoISFDyT31.jpeg");
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: 100% auto;
+    background: url("fondo/fondoISFDyT31.jpeg") center/cover no-repeat fixed;
 }
 
 .contenedor {
     display: flex;
 }
 
+/* Sidebar */
 .sideBar {
     width: 300px;
     min-height: 100vh;
     padding: 20px 15px;
     background: #a9cd46b1;
-    font-family: 'Tamrin';
     display: flex;
     flex-direction: column;
 }
 
 .sideBar .logo {
-    margin-top: 20px;
-    margin-bottom: 25px;
+    margin: 20px 0 25px;
+    text-align: center;
 }
 
 .sideBar .logo img {
@@ -59,7 +56,7 @@ body {
     background: transparent;
     border: none;
     color: #091887;
-    font-family: 'Tamrin';
+    font-family: 'Tamrin', sans-serif;
     font-size: 0.90rem;
     text-align: left;
     cursor: pointer;
@@ -71,13 +68,20 @@ body {
     background: rgba(255, 255, 255, 0.15);
 }
 
+.sideBar nav button img {
+    width: 18%;
+}
+
+/* Contenido Principal */
 .contenido {
     flex: 1;
     padding: 30px;
-    
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Asegura que el área de contenido ocupe todo el alto */
 }
 
-/* apartados del panel */
+/* Control de Secciones/Formularios */
 .formulario {
     display: none;
 }
@@ -86,6 +90,7 @@ body {
     display: block;
 }
 
+/* Tarjetas e Inicio */
 .cards {
     display: flex;
     gap: 20px;
@@ -99,16 +104,16 @@ body {
     min-width: 180px;
     background: #0048ace5;
     color: #a9cd46;
-    bottom: 5px;
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
 .card-numero {
-    font-size: 1.rem;
+    font-size: 1rem;
     color: #a9cd46;
 }
+
 .imgs {
     display: flex;
     align-items: center;
@@ -124,7 +129,8 @@ body {
 .card-etiqueta {
     font-size: 14px;
     opacity: 0.9;
-     margin-top: 5px;
+    margin-top: 5px;
+    display: block;
 }
 
 .listados {
@@ -151,32 +157,29 @@ body {
     margin-bottom: 15px;
 }
 
-.listado-header h4 {
+.listado-header h4,
+.item-email,
+.ver-todos {
     color: #a9cd46;
-    margin: 0;
 }
 
 .item-email {
-    color: #a9cd46;
     font-size: 0.7rem;
 }
 
 .ver-todos {
     background: transparent;
     border: none;
-    padding: 0;
-    font-family: 'Tamrin';
-    color: #a9cd46;
-    text-decoration: none;
+    font-family: 'Tamrin', sans-serif;
     font-size: 0.8rem;
     cursor: pointer;
 }
 
 .ver-todos:hover {
     text-decoration: underline;
-    background: transparent;
 }
 
+/* Tablas generales */
 #verPagos table {
     width: 100%;
     border-collapse: collapse;
@@ -189,10 +192,78 @@ body {
 #verPagos td {
     padding: 10px;
     text-align: left;
-    border: 1px #0048ace5;
 }
 
 #verPagos th {
-    background-color: #0048ace5;
     font-weight: bold;
+}
+
+/* Sección Cooperadora (Corregido para integrarse al sistema de vistas) */
+#cooperadora.cooperadora-card {
+    opacity: 1;
+    width: 100%;
+    min-height: 480px;
+    margin: auto 0; /* 'auto' arriba y abajo lo centra verticalmente en el espacio disponible */
+    padding: 20px 25px;
+    color: #a9cd46;
+    background: rgba(11, 85, 178, 0.88);
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+/* Solo se despliega con flex cuando el JS le agrega la clase activo */
+#cooperadora.cooperadora-card.activo {
+    display: flex;
+    flex-direction: column;
+}
+
+.cooperadora-header {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.titulo-cooperadora {
+    grid-column: 2;
+    color: #a9cd46;
+    font-size: 18px;
+    font-weight: normal;
+    text-align: center;
+}
+
+.btn-editar {
+    grid-column: 1;
+    justify-self: start;
+    padding: 6px 20px;
+    color: #1217a7;
+    background: #a9cd46;
+    border: 0;
+    border-radius: 6px;
+    font-family: 'Tamrin', sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.tabla-cooperadora {
+    width: 100%;
+    margin-top: 10px;
+    border-collapse: collapse;
+    color: #a9cd46;
+}
+
+.tabla-cooperadora th,
+.tabla-cooperadora td {
+    padding: 16px 10px;
+    border: 2px solid #a9cd46;
+    text-align: center;
+}
+
+.tabla-cooperadora th {
+    font-size: 15px;
+}
+
+.tabla-cooperadora td {
+    font-size: 1.2rem;
 }
