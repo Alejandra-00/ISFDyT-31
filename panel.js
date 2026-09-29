@@ -124,7 +124,8 @@ function cargarPagos() {
                 <td>${escapeHtml(pago.fecha || '-')}</td>
                 <td>${escapeHtml(pago.nombre_completo || '-')}</td>
                 <td>$${escapeHtml(pago.importe || '0')}</td>
-                <td>${estadoSelect}</td>
+                <td>${scapeHtml(comprobante)}</td>
+                <td>${echo ("holis")}</td>
                 <td>${escapeHtml(pago.tipo_socio || '-')}</td>
                 <td>${escapeHtml(pago.carrera || '-')}</td>
             `;

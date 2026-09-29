@@ -108,26 +108,31 @@
                 </table>
             </div>
             
-            <div id="verPagos" class="formulario tarjeta">
-                <table class="tabla-pagos">
-                    <thead>
-                        <tr>
-                            <th>Mes</th>
-                            <th>Fecha</th>
-                            <th>Usuario</th>
-                            <th>Monto</th>
-                            <th>Comprobante</th>
-                            <th>Estado</th>
-                            <th>Tipo Socio</th>
-                            <th>Carrera</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tablapagos">
-                        <tr>
-                            <td colspan="8" style="text-align: center;">Cargando pagos...</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div id="verPagos" class="formulario tarjeta pagos-card">
+                <div class="pagos-header">
+                    <h2 class="titulo-pagos">Pagos registrados</h2>
+                </div>
+                <div class="tabla-pagos-contenedor">
+                    <table class="tabla-pagos">
+                        <thead>
+                            <tr>
+                                <th>Mes</th>
+                                <th>Fecha</th>
+                                <th>Usuario</th>
+                                <th>Monto</th>
+                                <th>Comprobante</th>
+                                <th>Estado</th>
+                                <th>Tipo Socio</th>
+                                <th>Carrera</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablapagos">
+                            <tr>
+                                <td colspan="8" style="text-align: center;">Cargando pagos...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <div id="graficos" class="formulario tarjeta">

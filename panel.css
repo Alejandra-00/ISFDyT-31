@@ -160,23 +160,63 @@ body {
     text-decoration: underline;
 }
 
-/* Tablas generales */
-#verPagos table {
+/* Sección Pagos */
+#verPagos.pagos-card {
     width: 100%;
+    min-height: 480px;
+    margin: auto 0;
+    padding: 20px 25px;
+    color: #a9cd46;
+    background: rgba(11, 85, 178, 0.88);
+    border-radius: 10px;
+}
+
+.pagos-header {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.titulo-pagos {
+    grid-column: 2;
+    color: #a9cd46;
+    font-size: 18px;
+    font-weight: normal;
+    text-align: center;
+}
+
+.tabla-pagos-contenedor {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.tabla-pagos {
+    min-width: 850px;
+    width: 100%;
+    margin-top: 10px;
     border-collapse: collapse;
-    margin-top: 15px;
-    background-color: #0048ace5;
     color: #a9cd46;
 }
 
-#verPagos th, 
-#verPagos td {
-    padding: 10px;
-    text-align: left;
+.tabla-pagos th,
+.tabla-pagos td {
+    padding: 16px 10px;
+    border: 2px solid #a9cd46;
+    text-align: center;
 }
 
-#verPagos th {
-    font-weight: bold;
+.tabla-pagos th {
+    font-size: 15px;
+}
+
+.tabla-pagos select.estado {
+    padding: 5px 8px;
+    color: #a9cd46;
+    background: #0048ace5;
+    border: 1px solid #a9cd46;
+    border-radius: 4px;
+    font-family: 'Tamrin', sans-serif;
 }
 
 /* Sección Cooperadora (Corregido para integrarse al sistema de vistas) */
