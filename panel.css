@@ -114,25 +114,6 @@ body {
     color: #a9cd46;
 }
 
-.imgs {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    justify-content: center;
-}
-
-.card-icono {
-    width: 32px;
-    height: 32px;
-}
-
-.card-etiqueta {
-    font-size: 14px;
-    opacity: 0.9;
-    margin-top: 5px;
-    display: block;
-}
-
 .listados {
     margin-top: 15%;
     width: 100%;

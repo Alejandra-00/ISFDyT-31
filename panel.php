@@ -24,41 +24,25 @@
             </nav>
         </aside>
 
-        <!-- Contenido -->
+        <!-- APARTADOS -->
         <main class="contenido">
             <!-- Inicio -->
             <div id="inicio" class="formulario activo tarjeta">
                 <div class="cards">
                     <div class="card-chica">
-                        <div class="imgs">
-                            <img src="iconos/usuario-verde.png" alt="Alumnos" class="card-icono">
-                            <div id="cantAlumnos" class="card-numero"></div>
-                        </div>
-                        <span class="card-etiqueta">Socio alumnos</span>
+                        <div id = "cantAlumnos" class="card-numero"></div> Socio alumnos
                     </div>
 
                     <div class="card-chica">
-                        <div class="imgs">
-                            <img src="iconos/usuario-verde.png" alt="Voluntarios" class="card-icono">
-                            <div id="cantVoluntarios" class="card-numero"></div>
-                        </div>
-                        <span class="card-etiqueta">Socio voluntarios</span>
+                        <div id = "cantVoluntarios" class="card-numero"></div> Socio voluntarios
                     </div>
 
                     <div class="card-chica">
-                        <div class="imgs">
-                            <img src="iconos/graduacion-verde.png" alt="Carreras" class="card-icono">
-                            <div id="cantCarreras" class="card-numero"></div>
-                        </div>
-                        <span class="card-etiqueta">Carreras</span>
+                        <div id = "cantCarreras" class="card-numero"></div> Carreras
                     </div>
 
                     <div class="card-chica">
-                        <div class="imgs">
-                            <img src="iconos/dinero-verde.png" alt="Cooperadora" class="card-icono">
-                            <div id="montoActual" class="card-numero"></div>
-                        </div>
-                        <span class="card-etiqueta">Cooperadora actual</span>
+                        <div id = "montoActual" class="card-numero"></div> Cooperadora actual
                     </div>
                 </div>
                 
@@ -128,19 +112,19 @@
                 <table class="tabla-pagos">
                     <thead>
                         <tr>
-                            <th>Nombre</th>
-                            <th>Tipo de socio</th>
-                            <th>Carrera</th>
                             <th>Mes</th>
                             <th>Fecha</th>
-                            <th>Importe</th>
-                            <th>Estado</th>
+                            <th>Usuario</th>
+                            <th>Monto</th>
                             <th>Comprobante</th>
+                            <th>Estado</th>
+                            <th>Tipo Socio</th>
+                            <th>Carrera</th>
                         </tr>
                     </thead>
                     <tbody id="tablapagos">
                         <tr>
-                            <td colspan="8" class="text-center">Cargando pagos...</td>
+                            <td colspan="8" style="text-align: center;">Cargando pagos...</td>
                         </tr>
                     </tbody>
                 </table>

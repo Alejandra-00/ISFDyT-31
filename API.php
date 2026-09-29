@@ -154,15 +154,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         break;
 
                     case 'Read':
-                        $sql = "SELECT 
-                                registropagos.id, usuarios.nombre_completo, monto.importe, estadopago.nombre AS estado, comprobante.foto,
-                                socio.nombre AS tipo_socio, carrera.nombre AS carrera, meses.nombre AS mes, registropagos.fecha
+                                $sql = "SELECT
+                                registropagos.id,
+                                registropagos.id_estado,
+                                usuarios.nombre_completo,
+                                monto.importe,
+                                estadopago.nombre AS estado,
+                                comprobante.foto,
+                                socio.nombre AS tipo_socio,
+                                carrera.nombre AS carrera,
+                                meses.nombre AS mes,
+                                registropagos.fecha
                                 FROM registropagos
                                 LEFT JOIN usuarios ON registropagos.id_usuarios = usuarios.id
                                 LEFT JOIN monto ON registropagos.id_monto = monto.id
                                 LEFT JOIN estadopago ON registropagos.id_estado = estadopago.id
                                 LEFT JOIN comprobante ON registropagos.id_comprobante = comprobante.id
-                                LEFT JOIN socio ON usuarios.id_socio = socio.id 
+                                LEFT JOIN socio ON usuarios.id_socio = socio.id
                                 LEFT JOIN meses ON registropagos.id_mes = meses.id_mes
                                 LEFT JOIN carrera ON usuarios.id_carrera = carrera.id";
                         $resultado = mysqli_query($conexion, $sql);
@@ -407,7 +415,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $sql = "SELECT * FROM carrera";
                         $resultado = mysqli_query($conexion, $sql);
                         if ($resultado) {
-                            echo json_encode(["mensaje" => "Ok."]);
+                            echo json_encode(mysqli_fetch_all($resultado, MYSQLI_ASSOC));
                         } else {
                             http_response_code(502);
                             echo json_encode(["error" => "Error de lectura."]);
