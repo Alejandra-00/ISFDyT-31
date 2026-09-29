@@ -105,7 +105,7 @@
                     <input type="password" name="contrasena" placeholder="Ingrese su contraseña" class="input input-password">
                     <i class="ojo" onclick="verClave(this)"><img id="iconoOjo" src="iconos/ojo.png" alt=""></i>
                 </div>
-                <p class="linkOlvido"><a href="olvideContrasena">Olvidé mi contraseña</a></p>
+                <p class="linkOlvido"><a href="enviarMail.php">Olvidé mi contraseña</a></p>
                 <?php if (isset($mensajeError)): ?>
                     <p class="error"><?= $mensajeError ?></p>
                 <?php endif; ?>

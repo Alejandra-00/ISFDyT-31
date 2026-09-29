@@ -24,7 +24,7 @@ body {
     width: 300px;
     min-height: 100vh;
     padding: 20px 15px;
-    background: #a9cd46b1;
+    background: #b8d46ed4;
     display: flex;
     flex-direction: column;
 }
@@ -55,7 +55,7 @@ body {
     margin-bottom: 5px;
     background: transparent;
     border: none;
-    color: #091887;
+    color: #0049ac;
     font-family: 'Tamrin', sans-serif;
     font-size: 0.90rem;
     text-align: left;
@@ -102,7 +102,7 @@ body {
     margin-top: 5%;
     flex: 1;
     min-width: 180px;
-    background: #0048acda;
+    background: #0049acd4;
     color: #a9cd46;
     border-radius: 10px;
     padding: 20px;
@@ -125,7 +125,7 @@ body {
 .card-listado {
     flex: 1;
     min-width: 280px;
-    background: #0048acda;
+    background: #0049acd4;
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
@@ -167,7 +167,7 @@ body {
     margin: auto 0;
     padding: 20px 25px;
     color: #a9cd46;
-    background: #0048acda;
+    background: #0049acd4;
     border-radius: 10px;
 }
 
@@ -213,7 +213,7 @@ body {
 .tabla-pagos select.estado {
     padding: 5px 8px;
     color: #a9cd46;
-    background: #0049ac;
+    background: #0049acd4;
     border: 1px solid #a9cd46;
     border-radius: 4px;
     font-family: 'Tamrin', sans-serif;
@@ -227,7 +227,7 @@ body {
     margin: auto 0; /* 'auto' arriba y abajo lo centra verticalmente en el espacio disponible */
     padding: 20px 25px;
     color: #a9cd46;
-    background: #0048acda;
+    background: #0049acd4;
     border-radius: 10px;
     box-sizing: border-box;
 }
