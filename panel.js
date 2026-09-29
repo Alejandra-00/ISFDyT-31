@@ -23,16 +23,68 @@ function mostrar(id) {
     }
 }
 
+// Inicio del panel
+function cargarInicio() {
+    Promise.all([
+        // obtener usuarios
+        fetch('API.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json'},
+            body: JSON.stringify({ recurso: 'usuarios', consulta: 'Read'})
+        }).then(response => response.json()),
+
+        // obtener carreras
+        fetch('API.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json'},
+            body: JSON.stringify({ recurso: 'carreras', consulta: 'Read'})
+        }).then(response => response.json()),
+
+        // obtener montos
+        fetch('API.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json'},
+            body: JSON.stringify({ recurso: 'monto', consulta: 'Read'})
+        }).then(response => response.json()) ])
+        .then(([usuarios, carreras, montos]) => {
+            // cuenta los cocios alumnos y voluntarios
+            let alumnos = 0; 
+            let voluntarios = 0;
+
+        usuarios.forEach(usuario => {
+            if (usuario.nombre_socio === 'Alumno') { alumnos++; }
+            if (usuario.nombre_socio === 'Voluntario') { voluntarios++; }
+        });
+        document.getElementById('cantAlumnos').textContent = alumnos;
+        document.getElementById('cantVoluntarios').textContent = voluntarios;
+        document.getElementById('cantCarreras').textContent = carreras.length -1;
+
+        if (montos.length > 0) { // devuelve cuantos elementos hay
+            const ultimoMonto = montos[montos.length - 1]; //obtiene el ultimo monto
+            document.getElementById('montoActual').textContent = '$' + ultimoMonto.importe;
+        }
+    })
+    .catch(error => {
+        console.error('Error al cargar el inicio:', error); 
+    });
+}
+cargarInicio();
+
+// socio alumnos
+
+// socio voluntarios
+
+// carreras
+
+// monto actual
+
+// ver pagos
 function cargarPagos() {
     fetch('API.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            recurso: 'registroPagos',
-            consulta: 'Read'
-        })
-    })
-    .then(response => response.json())
+        body: JSON.stringify({ recurso: 'registroPagos', consulta: 'Read'})
+    }).then(response => response.json())
     .then(data => {
         const tbody = document.getElementById('tablapagos');
         tbody.innerHTML = '';
@@ -65,3 +117,5 @@ function cargarPagos() {
         tbody.innerHTML = '<tr><td colspan="8">Error al cargar los pagos.</td></tr>';
     });
 }
+
+// graficos

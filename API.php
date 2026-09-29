@@ -154,12 +154,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         break;
 
                     case 'Read':
-                        $sql = "SELECT registroPagos.id_pago, usuarios.id_usuarios, monto.importe, estado.nombre AS estado, comprobante.foto
+                        $sql = "SELECT 
+                                registropagos.id, usuarios.nombre_completo, monto.importe, estadopago.nombre AS estado, comprobante.foto,
+                                socio.nombre AS tipo_socio, carrera.nombre AS carrera, meses.nombre AS mes, registropagos.fecha
                                 FROM registropagos
-                                INNER JOIN usuarios ON registroPagos.id_usuario = usuarios.id_usuarios
-                                INNER JOIN monto ON registroPagos.id_monto = monto.id_monto
-                                INNER JOIN estado ON registroPagos.id_estado = estado.id_estado
-                                INNER JOIN comprobante ON registroPagos.id_comprobante = comprobante.id_comprobante";
+                                LEFT JOIN usuarios ON registropagos.id_usuarios = usuarios.id
+                                LEFT JOIN monto ON registropagos.id_monto = monto.id
+                                LEFT JOIN estadopago ON registropagos.id_estado = estadopago.id
+                                LEFT JOIN comprobante ON registropagos.id_comprobante = comprobante.id
+                                LEFT JOIN socio ON usuarios.id_socio = socio.id 
+                                LEFT JOIN meses ON registropagos.id_mes = meses.id_mes
+                                LEFT JOIN carrera ON usuarios.id_carrera = carrera.id";
                         $resultado = mysqli_query($conexion, $sql);
                         if ($resultado) {
                             $pagos = mysqli_fetch_all($resultado, MYSQLI_ASSOC);

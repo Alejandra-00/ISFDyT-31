@@ -28,10 +28,10 @@ body {
     font-size: 1.2rem;
     font-family: 'Tamrin';
     margin-bottom: 20px;
-    color: #1217a7;
+    color: #091887;
 }
 .sideBar .logo {
-    text-align: center;
+    margin-top: 20px;
     margin-bottom: 25px;
 }
 .sideBar .logo img {
@@ -53,7 +53,7 @@ body {
     margin-bottom: 5px;
     background: transparent;
     border: none;
-    color: #1217a7;
+    color: #091887;
     font-family: 'Tamrin';
     font-size: 0.90rem;
     text-align: left;
@@ -92,7 +92,7 @@ body {
     margin-top: 5%;
     flex: 1;
     min-width: 180px;
-    background: #1217a7d7;
+    background: #0048ace5;
     color: #a9cd46;
     bottom: 5px;
     border-radius: 10px;
@@ -116,7 +116,7 @@ body {
 .card-listado {
     flex: 1;
     min-width: 280px;
-    background: #1217a7d7;
+    background: #0048ace5;
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
@@ -159,7 +159,7 @@ body {
     width: 100%;
     border-collapse: collapse;
     margin-top: 15px;
-    background-color: #1217a7d7;
+    background-color: #0048ace5;
     color: #a9cd46;
 }
 
@@ -167,10 +167,10 @@ body {
 #verPagos td {
     padding: 10px;
     text-align: left;
-    border: 1px #0e1395d7;
+    border: 1px #0048ace5;
 }
 
 #verPagos th {
-    background-color: #1217a7d7;
+    background-color: #0048ace5;
     font-weight: bold;
 }
