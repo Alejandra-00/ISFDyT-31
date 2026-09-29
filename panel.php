@@ -49,7 +49,7 @@
                 <div class="listados">
                     <div class="card-listado">
                         <div class="listado-header">
-                            <h4>Socio alumnos</h4>
+                            <h4>Socio alumno</h4>
                             <button class="ver-todos" onclick="mostrar('sociosAlumnos')">Ver todos</button>
                         </div>
                         <div class="listado-item">
