@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
         formData.append("dni", dniInput); // Asigna la clave 'dni' que leerá PHP como $_POST['dni']
 
         // Feedback visual inmediato para indicar que la petición se está realizando
-        mensajeModal.style.color = "blue";
+        mensajeModal.style.color = "black";
         mensajeModal.textContent = "Procesando envío...";
 
         try {
@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Verifica si el código de estado HTTP indica éxito (200-299)
             if (respuesta.ok) {
-                mensajeModal.style.color = "green";
+                mensajeModal.style.color = "black";
                 mensajeModal.textContent = textoRespuesta; // Muestra el mensaje de éxito de PHP
             } else {
                 mensajeModal.style.color = "red";

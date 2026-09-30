@@ -3,7 +3,7 @@ include("conexion.php");
 
 header("Content-Type: application/json; charset=UTF-8");
 
-//contraseña de phpMailer: oytq mfud xkjc ebdl
+//contraseña de phpMailer: 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $jsonRecibido = file_get_contents('php://input');

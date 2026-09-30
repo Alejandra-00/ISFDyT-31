@@ -231,31 +231,60 @@ input[type="text"] {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(4px); /* EFECTO DESENFOQUE AL FONDO */
+    
+    /* Centrado perfecto en pantalla */
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 9999;
 }
 
-/* Caja blanca central */
+/* Caja blanca del modal */
 .modal-contenido {
-    background: #fff;
-    padding: 25px;
-    border-radius: 8px;
+    background: #a9cd46;
+    padding: 30px 25px;
+    border-radius: 12px;
     width: 90%;
     max-width: 400px;
     position: relative;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    
+    /* Animación de entrada suave */
+    animation: modalEntrada 0.25s ease-out forwards;
 }
 
+/* Animación de aparición */
+@keyframes modalEntrada {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Botón de cierre 'X' */
 .cerrar-modal {
     position: absolute;
-    top: 10px;
-    right: 15px;
+    top: 12px;
+    right: 16px;
     font-size: 24px;
-    font-weight: bold;
+    font-family: 'Tamrin';
+    color: black;
     cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+/* Ajuste de mensajes e input dentro del modal */
+#mensajeModal {
+    margin-top: 12px;
+    font-size: 13px;
+    font-family: 'Tamrin';
+    text-align: center;
 }
