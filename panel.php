@@ -15,8 +15,8 @@
             </div>
             <nav>
                 <button onclick="mostrar('inicio')"><img src="iconos/inicio.png" alt="Inicio" style = "width: 17.5%">Inicio</button>
-                <button onclick="mostrar('sociosAlumnos')"><img src="iconos/usuario-azul.png" alt="Usuario" style= "width: 19%">Socios alumnos</button>
-                <button onclick="mostrar('sociosVoluntarios')"><img src="iconos/usuario-azul.png" alt="Usuario" style= "width: 19%">Socios voluntarios</button>
+                <button onclick="mostrar('sociosAlumnos'); cargarAlumnos()"><img src="iconos/usuario-azul.png" alt="Usuario" style= "width: 19%">Socios alumnos</button>
+                <button onclick="mostrar('sociosVoluntarios'); cargarVoluntarios()"><img src="iconos/usuario-azul.png" alt="Usuario" style= "width: 19%">Socios voluntarios</button>
                 <button onclick="mostrar('carreras')"><img src="iconos/graduacion.png" alt="Carreras" style= "width: 18%">Carreras</button>
                 <button onclick="mostrar('cooperadora')"><img src="iconos/dinero.png" alt="Cooperadora" style= "width: 18%">Cooperadora actual</button>
                 <button onclick="mostrar('verPagos')"><img src="iconos/dinero.png" alt="Pagos" style= "width: 18%">Ver pagos</button>
@@ -71,7 +71,6 @@
             <!-- Secciones Secundarias -->
              <div id="sociosAlumnos"  class="formulario">
                 <div class="socios-header">
-                    <button class="btn-editar" onclick="mostrar('editarDNI')">Editar DNI</button>
                     <h3>Socios alumnos</h3>
                 </div>
                 <table>
@@ -88,7 +87,9 @@
             </div>
 
             <div id="sociosVoluntarios" class="formulario">
-                <h3>Socios voluntarios</h3>
+                <div class="socios-header">
+                    <h3>Socios voluntarios</h3>
+                </div>
                  <table>
                     <thead>
                         <tr>
