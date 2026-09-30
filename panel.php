@@ -69,12 +69,37 @@
             </div>
             
             <!-- Secciones Secundarias -->
-            <div id="sociosAlumnos" class="formulario tarjeta">
-                <h3>Socios alumnos</h3>
+             <div id="sociosAlumnos"  class="formulario">
+                <div class="socios-header">
+                    <button class="btn-editar" onclick="mostrar('editarDNI')">Editar DNI</button>
+                    <h3>Socios alumnos</h3>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>DNI</th>
+                            <th>Nombre</th>
+                            <th>Marcar como inactivo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablasocios-Alumno" ></tbody>
+                   
+                </table>
             </div>
 
-            <div id="sociosVoluntarios" class="formulario tarjeta">
+            <div id="sociosVoluntarios" class="formulario">
                 <h3>Socios voluntarios</h3>
+                 <table>
+                    <thead>
+                        <tr>
+                            <th>DNI</th>
+                            <th>Nombre</th>
+                            <th>Marcar como inactivo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablasocios-Voluntario" ></tbody>
+                   
+                </table>
             </div>
 
             <div id="carreras" class="formulario tarjeta">

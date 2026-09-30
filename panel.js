@@ -87,8 +87,104 @@ function cargarInicio() {
 }
 
 // socio alumnos
+function cargarAlumno() {
+    fetch('API.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            recurso: 'usuarios',
+            consulta: 'socios',
+            id_socio: 1  
+        })
+    })
+    .then(response => response.json())
+    .then(data => { 
+        const tbody = document.getElementById('tablasocios-Alumno');
+        tbody.innerHTML = '';
+        data.forEach(usuarios => {
+            const dni = usuarios.DNI ?? '';
+            const nombre = usuarios.nombre_completo ?? '';
+
+            const fila = document.createElement('tr');
+
+            // Celda DNI 
+            const tdDni = document.createElement('td');
+            const contDni = document.createElement('div');
+            contDni.className = 'dni-con-boton';
+
+            const spanDni = document.createElement('span');
+            spanDni.textContent = escapeHtml(dni);
+
+            const btnEditar = document.createElement('button');
+            btnEditar.className = 'btn-editar-dni';
+            btnEditar.innerHTML = '<img src="iconos/dni.png" alt="Editar">';
+            btnEditar.onclick = () => editarDNI(dni);
+
+            contDni.appendChild(btnEditar);
+            contDni.appendChild(spanDni);
+            tdDni.appendChild(contDni);
+
+            // Celda Nombre
+            const tdNombre = document.createElement('td');
+            tdNombre.textContent = escapeHtml(nombre);
+
+            // Celda Inactivo 
+            const tdBoton = document.createElement('td');
+            const btnInactivo = document.createElement('button');
+            btnInactivo.className = 'btn-inactivo';
+            btnInactivo.innerHTML = '<img src="iconos/inactivo.png" alt="Inactivo">';
+            btnInactivo.onclick = () => marcarInactivo(dni);
+            tdBoton.appendChild(btnInactivo);
+
+            fila.appendChild(tdDni);
+            fila.appendChild(tdNombre);
+            fila.appendChild(tdBoton);
+            tbody.appendChild(fila);
+        });
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        const tbody = document.getElementById('tablasocios-Alumno');
+        tbody.innerHTML = '<tr><td colspan="3">Error al cargar los socios.</td></tr>';
+    });
+}
+
 
 // socio voluntarios
+function cargarVoluntario() {
+    
+    fetch('API.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            recurso: 'usuarios',
+            consulta: 'socios',
+            id_socio: 2
+        })
+    })
+    .then(response => response.json())
+    .then(data => { 
+      
+        console.log('Respuesta:', data);
+         const tbody = document.getElementById('tablasocios-Voluntario');
+        tbody.innerHTML = '';
+        data.forEach(usuarios => {
+            const fila = document.createElement('tr');
+            fila.innerHTML = `
+                <td>${escapeHtml(usuarios.DNI ?? '')}</td>
+                <td>${escapeHtml(usuarios.nombre_completo ?? '')}</td>
+                <td>${escapeHtml(usuarios.activo ?? '')}</td>
+            `;
+            tbody.appendChild(fila);
+        }); 
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        tbody.innerHTML = '<tr><td colspan="3">Error al cargar los socios.</td></tr>';
+    }); 
+}
+
+
 
 // carreras
 

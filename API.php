@@ -247,6 +247,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                     break;
 
+                    case "socios":
+                         $id_socio = $datos['id_socio'] ?? null;
+
+                         $sql ="SELECT usuarios.id, usuarios.nombre_completo, usuarios.email, usuarios.telefono, usuarios.DNI, usuarios.activo, socio.nombre AS nombre_socio, carrera.nombre AS nombre_carrera
+                                FROM usuarios 
+                                INNER JOIN socio ON usuarios.id_socio = socio.id
+                                INNER JOIN carrera ON usuarios.id_carrera = carrera.id";
+                            
+                            if ($id_socio) {
+                                $sql .= " WHERE usuarios.id_socio = " . intval($id_socio);
+                            }
+
+                            $resultado = mysqli_query($conexion, $sql);
+                            if ($resultado) {
+                                $usuarios = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
+                                echo json_encode($usuarios);
+                            } else {
+                                http_response_code(502);
+                                echo json_encode(["error" => "Error de lectura."]);
+                            }
+                        break;
+
                     case "Read":
                         $sql = "SELECT usuarios.id, usuarios.nombre_completo, usuarios.email, usuarios.telefono, usuarios.DNI, usuarios.activo, socio.nombre AS nombre_socio, carrera.nombre AS nombre_carrera
                                 FROM usuarios 
