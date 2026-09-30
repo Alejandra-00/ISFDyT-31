@@ -31,7 +31,7 @@ body {
 .contenedor {
     width: 600px;
     height: auto;
-    background: #0048acda; 
+    background: #0049acd4; 
     border-radius: 20px;
     box-sizing: border-box;
     padding: 25px 30px;
@@ -93,7 +93,7 @@ body {
 
 .linea {
     width: 100%;
-    border-top: 1.5px solid #b8d46e; 
+    border-top: 1.5px solid #a9cd46; 
     margin: 12px 0;
 }
 
@@ -149,7 +149,7 @@ button:disabled img {
 }
 
 .enviar .btn {
-    background-color: #b8d46e; 
+    background-color: #a9cd46; 
     color: #000;
     border: none;
     padding: 8px 24px;
@@ -164,7 +164,7 @@ button:disabled img {
 }
 
 .enviar .btn:hover {
-    background-color: #b8d46e;
+    background-color: #a9cd46;
 }
 
 .cargar {
@@ -175,7 +175,7 @@ button:disabled img {
 }
 
 .cargarImagen {
-    background-color: #b8d46e; 
+    background-color: #a9cd46; 
     width: 250px;
     height: 150px;
     border-radius: 20px;
@@ -189,7 +189,7 @@ button:disabled img {
 }
 
 .cargarImagen:hover {
-    background-color: #b8d46e;
+    background-color: #a9cd46;
     transform: scale(1.02);
 }
 
@@ -211,7 +211,7 @@ button:disabled img {
 }
 
 .btnEnviar {
-    background-color: #b8d46e; 
+    background-color: #a9cd46; 
     color: #000000;
     border: none;
     padding: 6px 30px;
@@ -225,7 +225,7 @@ button:disabled img {
 }
 
 .btnEnviar:hover {
-    background-color: #b8d46e;
+    background-color: #a9cd46;
 }
 
 .btnEnviar:active {

@@ -227,71 +227,35 @@ input[type="text"] {
     color: #666666;
 }
 
-@media (max-width: 767px) {
-    body {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 15px;
-    }
+.modal-olvido {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
 
-    /* La tarjeta verde deja de estar clavada en px y se adapta */
-    .FondoVerde {
-        position: relative;
-        width: 100%;
-        max-width: 360px;
-        height: auto;
-        min-height: 600px;
-        top: auto;
-        left: auto;
-        transform: none;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 25px 15px;
-    }
+/* Caja blanca central */
+.modal-contenido {
+    background: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    position: relative;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
 
-    /* El bloque azul pasa arriba y en ancho completo */
-    .fondoAzul {
-        position: relative;
-        top: auto;
-        left: auto;
-        transform: none;
-        width: 100%;
-        height: auto;
-        min-height: 280px;
-        border-radius: 12px;
-        margin-bottom: 20px;
-    }
-
-    /* Logo y textos del panel azul: se centran y fluyen */
-    .ContenedorLogo, .Cooperadora, .Instituto,
-    .ContenedorLogoNegro, .ISFDYT, .Necochea {
-        position: relative;
-        top: auto;
-        left: auto;
-        transform: none;
-        text-align: center;
-        margin: 5px auto;
-    }
-    .ContenedorLogo { width: 80px; height: 80px; }
-    .ContenedorLogoNegro { width: 180px; height: auto; }
-    .Cooperadora { font-size: 14px; }
-    .Instituto { font-size: 11px; }
-    .ISFDYT { font-size: 20px; }
-    .Necochea { font-size: 14px; }
-
-    /* Formulario: ancho completo, abajo */
-    .ContenedorFormulario {
-        position: relative;
-        top: auto;
-        left: auto;
-        transform: none;
-        width: 100%;
-        margin-top: 20px;
-    }
-
-    .grupoInput, .input { width: 100%; }
-    .titulo { font-size: 20px; }
-    .btn { width: 100%; }
+.cerrar-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
 }

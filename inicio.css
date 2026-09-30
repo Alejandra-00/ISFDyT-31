@@ -1,15 +1,18 @@
 * {
     box-sizing: border-box;
 }
+
 @font-face {
     font-family: 'Tamrin';
     src: url('fuentes/tamrin.ttf') format('truetype');
 }
+
 body {
     margin: 0;
     padding: 0;
     font-family: 'Tamrin';
 }
+
 .inicio {
     min-height: 100vh;
     background-image: url('fondo/fondoISFDyT31.jpeg');
@@ -18,6 +21,7 @@ body {
     background-attachment: fixed;
     position: relative;
 }
+
 .montos {
     position: absolute;
     left: 6%;
@@ -25,6 +29,7 @@ body {
     display: flex;
     gap: 20px;
 }
+
 .card {
     width: 220px;
     min-height: 150px;
@@ -37,29 +42,35 @@ body {
     transition: transform 0.8s;
     transform-style: preserve-3d;
 }
+
 .card p {
     margin: 0;
     font-size: 15px;
 }
+
 .card strong {
     font-size: 20px;
 }
+
 .preguntas {
-    background-color: #5272bd;
+    background-color: #4d70bc;
     display: flex;
     flex-direction: column;
     padding-top: 100px;
 }
+
 .preguntas_contenido {
     flex: none;
     flex-shrink: 0;
 }
+
 .preguntas h1 {
     margin: 0;
     text-align: center;
     font-size: 50px;
     color: black;
 }
+
 .preguntas_contenedor {
     display: flex;
     justify-content: center;
@@ -67,6 +78,7 @@ body {
     gap: 25px;
     margin-top: 100px;
 }
+
 .pregunta {
     width: 400px;
     min-height: 180px;
@@ -80,6 +92,7 @@ body {
     font-size: 18px;
     font-weight: bold;
 }
+
 .footer_separacion {
     margin-top: -220px;
 }

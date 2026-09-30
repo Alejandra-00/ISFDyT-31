@@ -105,7 +105,7 @@
                     <input type="password" name="contrasena" placeholder="Ingrese su contraseña" class="input input-password">
                     <i class="ojo" onclick="verClave(this)"><img id="iconoOjo" src="iconos/ojo.png" alt=""></i>
                 </div>
-                <p class="linkOlvido"><a href="enviarMail.php">Olvidé mi contraseña</a></p>
+                <p class="linkOlvido"><a href="#" id="btnOlvido">Olvidé mi contraseña</a></p>
                 <?php if (isset($mensajeError)): ?>
                     <p class="error"><?= $mensajeError ?></p>
                 <?php endif; ?>
@@ -116,6 +116,8 @@
             
             <button class="btn">Iniciar sesión</button>
             <p class="linkRegistro">¿No tienes una cuenta?<a href="registrarse.php">¡Registrate!</a></p>
+            
+                    
         </form>
     </div>
     <script src="iniciarSesion.js"></script>

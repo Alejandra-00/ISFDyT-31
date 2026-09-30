@@ -18,11 +18,12 @@ $mail = new PHPMailer(true);
 
 //TRAER DATOS DE BBDD
 $dniForm = $_POST['dni'];
-$sql = "SELECT nombre_completo, dni, email FROM usuarios WHERE dni = '".$dniForm."'";
+$sql = "SELECT nombre_completo, DNI, email FROM usuarios WHERE DNI = '".$dniForm."'";
+$resultado = mysqli_query($conexion, $sql);
 
-if (mysqli_num_rows($resultado) > 0) {
+if ($resultado && mysqli_num_rows($resultado) > 0) {
    $resultado = mysqli_query($conexion, $sql);
-   $datos = mysqli_fetch_asssoc($resultado);
+    $datos = mysqli_fetch_assoc($resultado);
    $emailUsuario = $datos['email'];
    $nombre = $datos['nombre_completo'];
    $dni = $datos['DNI'];
