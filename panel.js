@@ -66,7 +66,7 @@ function cargarInicio() {
             body: JSON.stringify({ recurso: 'monto', consulta: 'Read'})
         }).then(response => response.json()) ])
         .then(([usuarios, carreras, montos]) => {
-            // cuenta los cocios alumnos y voluntarios
+            // cuenta los socios alumnos y voluntarios
             let alumnos = 0; 
             let voluntarios = 0;
 
@@ -408,7 +408,11 @@ function cargarPagos() {
         data.forEach(pago => { //recorre data
             const fila = document.createElement('tr'); //crea una nueva fila por cada elemento
 
-            // comprobante
+            let comprobanteHTML = 'Sin archivo';
+            if (pago.foto) {
+                const srcFoto = pago.foto.startsWith('data:') ? pago.foto : `uploads/${pago.foto}`;
+                comprobanteHTML = `<a href="${srcFoto}" target="_blank"><img src="${srcFoto}" alt="Comprobante" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;"></a>`;
+            }
 
             const idEstadoActual = parseInt(pago.id_estado); // obtiene id del estado y lo convierte a entero para comprarlo
             const estadoSelect = `
@@ -425,8 +429,8 @@ function cargarPagos() {
                 <td>${escapeHtml(pago.fecha || '-')}</td>
                 <td>${escapeHtml(pago.nombre_completo || '-')}</td>
                 <td>$${escapeHtml(pago.importe || '0')}</td>
-                <td>${scapeHtml(comprobante)}</td>
-                <td>${echo ("holis")}</td>
+                <td>${comprobanteHTML}</td>
+                <td>${estadoSelect}</td>
                 <td>${escapeHtml(pago.tipo_socio || '-')}</td>
                 <td>${escapeHtml(pago.carrera || '-')}</td>
             `;
@@ -445,7 +449,7 @@ function cambiarEstadoPago(idPago, idEstado) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ recurso: 'registroPagos', consulta: 'Update',
-            id_pago: parseInt(idPago), estado: parseInt(idEstado) //convierte los valores a enteros
+            id_pago: parseInt(idPago), id_estado: parseInt(idEstado) //convierte los valores a enteros
         })
     })
     .then(res => res.json()) // convierte la respuesta

@@ -12,17 +12,19 @@
         <!-- Sidebar -->
         <aside class="sideBar">
             <div class="logo">
-                <img src="iconos/logo.jpg" alt="Logo">
+                <a href="inicio.php">
+                    <img src="iconos/logo.jpg" alt="Logo">
+                </a>
             </div>
             <nav>
-                <button onclick="mostrar('inicio')"><img src="iconos/inicio.png" alt="Inicio" style = "width: 17.5%">Inicio</button>
-                <button onclick="mostrar('sociosAlumnos'); cargarAlumnos()"><img src="iconos/usuario-azul.png" alt="Usuario" style= "width: 19%">Socios alumnos</button>
-                <button onclick="mostrar('sociosVoluntarios'); cargarVoluntarios()"><img src="iconos/usuario-azul.png" alt="Usuario" style= "width: 19%">Socios voluntarios</button>
+                <button onclick="mostrar('inicio')"><img src="iconos/proximo.png" alt="" style = "width: 19%">Inicio</button>
+                <button onclick="mostrar('sociosAlumnos'); cargarAlumnos()"><img src="iconos/usuario-azul.png" alt="Usuario" style= "width: 17%">Socios alumnos</button>
+                <button onclick="mostrar('sociosVoluntarios'); cargarVoluntarios()"><img src="iconos/usuario-azul.png" alt="Usuario" style= "width: 17%">Socios voluntarios</button>
                 <button onclick="mostrar('carreras')"><img src="iconos/graduacion.png" alt="Carreras" style= "width: 18%">Carreras</button>
                 <button onclick="mostrar('cooperadora')"><img src="iconos/dinero.png" alt="Cooperadora" style= "width: 18%">Cooperadora actual</button>
                 <button onclick="mostrar('verPagos')"><img src="iconos/dinero.png" alt="Pagos" style= "width: 18%">Ver pagos</button>
                 <button onclick="mostrar('graficos')"><img src="iconos/graficos.png" alt="Gráficos" style= "width: 18%">Gráficos</button>
-                <button onclick="mostrar('descargarDatos')"><img src="iconos/descargarDatos.png" alt="Descargar" style= "width: 18%">Descargar datos</button>
+                <button onclick="mostrar('descargarDatos')"><img src="iconos/descargarDatos.png" alt="Descargar" style= "width: 17%">Descargar datos</button>
             </nav>
         </aside>
 
@@ -32,29 +34,44 @@
             <div id="inicio" class="formulario activo tarjeta">
                 <div class="cards">
                     <div class="card-chica">
-                        <div id = "cantAlumnos" class="card-numero"></div> Socio alumnos
+                        <div class="valor-icono">
+                            <img src="iconos/usuario-verde.png" alt="usuario">
+                            <div id="cantAlumnos" class="card-numero"></div>
+                        </div>
+                        Socio alumnos
                     </div>
 
                     <div class="card-chica">
-                        <div id = "cantVoluntarios" class="card-numero"></div> Socio voluntarios
+                        <div class="valor-icono">
+                            <img src="iconos/usuario-verde.png" alt="usuario">
+                            <div id="cantVoluntarios" class="card-numero"></div>
+                        </div>
+                        Socio voluntarios
                     </div>
 
                     <div class="card-chica">
-                        <div id = "cantCarreras" class="card-numero"></div> Carreras
+                        <div class="valor-icono">
+                            <img src="iconos/graduacion-verde.png" alt="carreras">
+                            <div id="cantCarreras" class="card-numero"></div>
+                        </div>
+                        Carreras
                     </div>
 
                     <div class="card-chica">
-                        <div id = "montoActual" class="card-numero"></div> Cooperadora actual
+                        <div class="valor-icono">
+                            <img src="iconos/dinero-verde.png" alt="dinero">
+                            <div id="montoActual" class="card-numero"></div>
+                        </div>
+                        Cooperadora actual
                     </div>
                 </div>
-                
                 <div class="listados">
                     <div class="card-listado">
                         <div class="listado-header">
                             <h4>Socio alumno</h4>
                             <button class="ver-todos" onclick="mostrar('sociosAlumnos')">Ver todos</button>
                         </div>
-                        <div class="listado-item">
+                        <div class="listado-item" id="socAlumno">
                             <span class="item-email">nombre@gmail.com</span>
                         </div>
                     </div>
@@ -63,7 +80,7 @@
                             <h4>Socio voluntario</h4>
                             <button class="ver-todos" onclick="mostrar('sociosVoluntarios')">Ver todos</button>
                         </div>
-                        <div class="listado-item">
+                        <div class="listado-item" id="socVoluntario">
                             <span class="item-email">nombre@gmail.com</span>
                         </div>
                     </div>

@@ -19,19 +19,18 @@ body {
     display: flex;
 }
 
-/* Sidebar */
 .sideBar {
     width: 300px;
+    min-width: 300px; /* Asegura el ancho mínimo */
+    flex-shrink: 0;   /* EVITA QUE SE ACHIQUE cuando las tablas o contenidos crecen */
     min-height: 100vh;
     padding: 20px 15px;
     background: #b8d46ed4;
     display: flex;
     flex-direction: column;
 }
-
 .sideBar .logo {
-    margin: 20px 0 25px;
-    text-align: center;
+    margin: 40px 0 25px;
 }
 
 .sideBar .logo img {
@@ -57,7 +56,7 @@ body {
     border: none;
     color: #0049ac;
     font-family: 'Tamrin', sans-serif;
-    font-size: 0.90rem;
+    font-size: 0.85rem;
     text-align: left;
     cursor: pointer;
     border-radius: 8px;
@@ -114,8 +113,19 @@ body {
     color: #a9cd46;
 }
 
+.valor-icono {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.valor-icono img {
+    width: 15%;
+}
+
 .listados {
-    margin-top: 15%;
+    margin-top: 10%;
     width: 100%;
     display: flex;
     gap: 20px;
@@ -138,9 +148,7 @@ body {
     margin-bottom: 15px;
 }
 
-.listado-header h4,
-.item-email,
-.ver-todos {
+.listado-header h4, .item-email, .ver-todos {
     color: #a9cd46;
 }
 
@@ -160,26 +168,32 @@ body {
     text-decoration: underline;
 }
 
-/* Sección Pagos */
+/* Sección Pagos (Estilo idéntico a Cooperadora Actual) */
 #verPagos.pagos-card {
+    opacity: 1;
     width: 100%;
-    min-height: 480px;
-    margin: auto 0;
+    max-width: 1050px;
+    margin: auto;
     padding: 20px 25px;
     color: #a9cd46;
     background: #0049acd4;
     border-radius: 10px;
+    box-sizing: border-box;
+}
+
+#verPagos.pagos-card.activo {
+    display: flex;
+    flex-direction: column;
 }
 
 .pagos-header {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
+    display: flex;
+    justify-content: center;
     align-items: center;
     margin-bottom: 15px;
 }
 
 .titulo-pagos {
-    grid-column: 2;
     color: #a9cd46;
     font-size: 18px;
     font-weight: normal;
@@ -192,7 +206,6 @@ body {
 }
 
 .tabla-pagos {
-    min-width: 850px;
     width: 100%;
     margin-top: 10px;
     border-collapse: collapse;
@@ -204,12 +217,26 @@ body {
     padding: 16px 10px;
     border: 2px solid #a9cd46;
     text-align: center;
-}
-
-.tabla-pagos th {
+    vertical-align: middle;
     font-size: 15px;
 }
 
+.tabla-pagos th {
+    font-weight: normal;
+}
+
+/* Vista previa del Comprobante */
+.tabla-pagos td img,
+.tabla-pagos .comprobante-preview {
+    width: 45px;
+    height: 45px;
+    object-fit: cover;
+    border-radius: 4px;
+    display: block;
+    margin: 0 auto;
+}
+
+/* Selector del Estado */
 .tabla-pagos select.estado {
     padding: 5px 8px;
     color: #a9cd46;
@@ -217,6 +244,32 @@ body {
     border: 1px solid #a9cd46;
     border-radius: 4px;
     font-family: 'Tamrin', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    outline: none;
+}
+
+.tabla-pagos select.estado option {
+    background: #0049ac;
+    color: #a9cd46;
+}
+
+/* Selector/Dropdown del Estado (Pendiente, Aprobado, etc.) */
+.tabla-pagos select.estado {
+    padding: 6px 12px;
+    color: #a9cd46;
+    background: #0049acd4;
+    border: 1px solid #a9cd46;
+    border-radius: 4px;
+    font-family: 'Tamrin', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    outline: none;
+}
+
+.tabla-pagos select.estado option {
+    background: #0049ac;
+    color: #a9cd46;
 }
 
 /* SECCIÓN COOPERADORA */
