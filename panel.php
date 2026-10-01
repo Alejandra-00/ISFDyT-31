@@ -20,9 +20,9 @@
                 <button onclick="mostrar('inicio')"><img src="iconos/proximo.png" alt="" style = "width: 19%">Inicio</button>
                 <button onclick="mostrar('sociosAlumnos'); cargarAlumnos()"><img src="iconos/usuario-azul.png" alt="Usuario" style= "width: 17%">Socios alumnos</button>
                 <button onclick="mostrar('sociosVoluntarios'); cargarVoluntarios()"><img src="iconos/usuario-azul.png" alt="Usuario" style= "width: 17%">Socios voluntarios</button>
-                <button onclick="mostrar('carreras')"><img src="iconos/graduacion.png" alt="Carreras" style= "width: 18%">Carreras</button>
-                <button onclick="mostrar('cooperadora')"><img src="iconos/dinero.png" alt="Cooperadora" style= "width: 18%">Cooperadora actual</button>
-                <button onclick="mostrar('verPagos')"><img src="iconos/dinero.png" alt="Pagos" style= "width: 18%">Ver pagos</button>
+                <button onclick="mostrar('carreras')"><img src="iconos/graduacion.png" alt="Carreras" style= "width: 19%">Carreras</button>
+                <button onclick="mostrar('cooperadora')"><img src="iconos/dinero.png" alt="Cooperadora" style= "width: 19%">Cooperadora actual</button>
+                <button onclick="mostrar('verPagos')"><img src="iconos/dinero.png" alt="Pagos" style= "width: 19%">Ver pagos</button>
                 <button onclick="mostrar('graficos')"><img src="iconos/graficos.png" alt="Gráficos" style= "width: 18%">Gráficos</button>
                 <button onclick="mostrar('descargarDatos')"><img src="iconos/descargarDatos.png" alt="Descargar" style= "width: 17%">Descargar datos</button>
             </nav>
