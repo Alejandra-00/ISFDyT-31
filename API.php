@@ -3,7 +3,6 @@ include("conexion.php");
 
 header("Content-Type: application/json; charset=UTF-8");
 
-//contraseña de phpMailer: 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $jsonRecibido = file_get_contents('php://input');
@@ -224,6 +223,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             echo json_encode(["error" => "Error: Estado no actualizado."]);
                         }
                         $stmt->close();
+                    break;
+
+                    case 'ExportarExcel':
+                        $fechaInicio = $datos['fechaInicio'];
+                        $fechaFinal = $datos['fechaFinal'];
+
+                        if (empty($fechaInicio) || empty($fechaFinal)) {
+                            http_response_code(400);
+                            echo json_encode(["error" => "Debe ingresar una fecha de inicio y una fecha de fin."]);
+                            break;
+                        }
+
+                        $sql = "SELECT 
+                            usuarios.DNI,
+                            usuarios.nombre_completo,
+                            socio.nombre AS socio,
+                            carrera.nombre AS carrera,
+                            monto.importe AS monto,
+                            registropagos.fecha
+                        FROM registropagos
+                        INNER JOIN usuarios ON registropagos.id_usuarios = usuarios.id
+                        INNER JOIN monto ON registropagos.id_monto = monto.id
+                        LEFT JOIN socio ON usuarios.id_socio = socio.id
+                        LEFT JOIN carrera ON usuarios.id_carrera = carrera.id
+                        WHERE registropagos.fecha BETWEEN ? AND ?
+                        AND registropagos.id_estado = 1";
+
+                        $stmt = mysqli_prepare($conexion, $sql);
+
+                        if ($stmt) {
+                            mysqli_stmt_bind_param($stmt, "ss", $fechaInicio, $fechaFinal);
+                            mysqli_stmt_execute($stmt);
+                            $resultado = mysqli_stmt_get_result($stmt);
+                            $datosExcel = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
+
+                            http_response_code(200);
+                            echo json_encode($datosExcel);
+                            mysqli_stmt_close($stmt);
+                        } else {
+                            http_response_code(500);
+                            echo json_encode(["error" => "Error al exportar los datos."]);
+                        }
                     break;
                         
                     default:

@@ -38,6 +38,8 @@ document.addEventListener('DOMContentLoaded', () => {
     cargarPagos();
     cambiarEstadoPago();
     cargarMonto();
+    cargarVoluntarios();
+    cargarAlumnos();
 });
 
 // Inicio del panel
@@ -149,10 +151,8 @@ function cargarAlumnos() {
     });
 }
 
-
 // socio voluntarios
 function cargarVoluntarios() {
-    
    fetch('API.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -214,8 +214,6 @@ function cargarVoluntarios() {
     });
 }
 
-
-
 // carreras
 
 // monto actual
@@ -223,7 +221,7 @@ let editandoMonto = false;
 let datosOriginalesMonto = null; 
 
 function cargarMonto() {
-    // Realizamos la petición POST a la API para leer la información de la BD
+    const mensaje = document.getElementById('mensajeCooperadora');
     fetch('API.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -236,36 +234,29 @@ function cargarMonto() {
     .then(data => {
         const tbody = document.getElementById('tablaMonto');
         if (!tbody) return;
-        tbody.innerHTML = ''; // Limpiamos la tabla antes de renderizar
+        tbody.innerHTML = '';
 
-        // Validamos que la respuesta sea un arreglo con datos
         if (!Array.isArray(data) || data.length === 0) {
-           console.error("Respuesta de la API no es una lista válida:", data);
+           if (mensaje) mensaje.innerText = 'No se encontraron registros de monto.';
            return;
         }
 
-        // Recorremos los registros devueltos por la API
         data.forEach(monto => { 
            const fila = document.createElement('tr');
-           
-           // Guardamos el ID real del registro dentro de un atributo HTML (data-id)
-           // Esto es clave para saber qué registro actualizar luego en la BD
-           if (monto.id) {
-               fila.dataset.id = monto.id;
-           }
+           if (monto.id) fila.dataset.id = monto.id;
 
-           // Insertamos los valores en cada celda de la fila
            fila.innerHTML = `
               <td>${monto.importe ?? ''}</td>
               <td>${monto.importe_anterior ?? ''}</td>
               <td>${monto.fecha_guardado ?? ''}</td>
               <td>${monto.fecha_efecto ?? ''}</td>
            `;
-
            tbody.appendChild(fila);
         });
    })
-   .catch(error => console.error('Error al cargar la tabla de montos:', error));
+   .catch(error => {
+        if (mensaje) mensaje.innerText = 'Error al cargar el monto de la cooperadora: ' + error;
+   });
 }
 
 // Convierte fechas en formato DD/MM/YYYY a YYYY-MM-DD,
@@ -291,7 +282,7 @@ function editarMonto() {
     if (!editandoMonto) {
         const celdas = tr.querySelectorAll("td");
 
-        // 1. Guardamos una copia exacta de los textos originales
+        // Guardamos una copia exacta de los textos originales
         datosOriginalesMonto = {
             importe: celdas[0].textContent.trim(),
             importeAnt: celdas[1].textContent.trim(),
@@ -302,13 +293,13 @@ function editarMonto() {
         // Convertimos la fecha de efecto al formato apto para input date
         const fechaEfectoInput = formatearFechaParaInput(datosOriginalesMonto.fechaEfecto);
 
-        // 2. Reemplazamos el texto plano de las celdas por campos <input>
+        // Reemplazamos el texto plano de las celdas por campos <input>
         celdas[0].innerHTML = `<input type="number" step="0.01" id="inputImporte" value="${datosOriginalesMonto.importe}">`;
         celdas[1].innerHTML = `<input type="number" step="0.01" id="inputImporteAnt" value="${datosOriginalesMonto.importeAnt}">`;
         // Nota: celdas[2] (fecha_guardado) se omite intencionalmente para que no sea editable
         celdas[3].innerHTML = `<input type="date" id="inputFechaEfecto" value="${fechaEfectoInput}">`;
 
-        // 3. Cambiamos la interfaz del botón
+        // Cambiamos la interfaz del botón
         btnEditar.textContent = "Guardar"; // El botón "Editar" cambia su texto a "Guardar"
         btnEditar.classList.add("btn-guardar");
         if (btnCancelar) btnCancelar.style.display = "inline-block"; // Hacemos visible el botón Cancelar
@@ -316,7 +307,7 @@ function editarMonto() {
         editandoMonto = true; // Actualizamos la bandera de estado a "editando"
 
     } else {
-        // 1. Capturamos los nuevos valores ingresados en los inputs
+        // Capturamos los nuevos valores ingresados en los inputs
         const nuevoImporte = document.getElementById("inputImporte").value;
         const nuevoImporteAnt = document.getElementById("inputImporteAnt").value;
         const nuevaFechaEfecto = document.getElementById("inputFechaEfecto").value;
@@ -324,7 +315,7 @@ function editarMonto() {
         // Obtenemos el ID de la fila desde el atributo data-id (o usa 1 por defecto)
         const idMonto = tr.dataset.id || 1;
 
-        // 2. Armamos el objeto con los datos a enviar a la BD
+        // Armamos el objeto con los datos a enviar a la BD
         const payload = {
             recurso: 'monto',
             consulta: 'Update',
@@ -334,7 +325,7 @@ function editarMonto() {
             fecha_efecto: nuevaFechaEfecto
         };
 
-        // 3. Enviamos la actualización vía Fetch a la API
+        // Enviamos la actualización vía Fetch a la API
         fetch('API.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' }, // Header obligatorio para que la API procese el JSON
@@ -347,19 +338,18 @@ function editarMonto() {
                 return;
             }
 
-            // 4. Si la BD se actualizó con éxito, quitamos los inputs y mostramos el nuevo texto plano
+            // Si la BD se actualizó con éxito, quitamos los inputs y mostramos el nuevo texto plano
             const celdas = tr.querySelectorAll("td");
             celdas[0].textContent = nuevoImporte;
             celdas[1].textContent = nuevoImporteAnt;
             celdas[3].textContent = nuevaFechaEfecto;
 
-            // 5. Restablecemos los botones al estado inicial
+            // Restablecemos los botones al estado inicial
             restaurarBotones();
             editandoMonto = false; // Desactivamos el modo edición
         })
-        .catch(err => {
-            console.error("Error al actualizar monto:", err);
-            alert("Error de comunicación con el servidor.");
+        .catch(error => {
+            mensaje.innerHTML = 'Error al actualizar el monto de la cooperadora', error;
         });
     }
 }
@@ -410,7 +400,7 @@ function cargarPagos() {
         const tbody = document.getElementById('tablapagos');
         tbody.innerHTML = '';
 
-        if (!Array.isArray(data) || data.length === 0) { // si data esta vacio corta las columnas y uestra por pantalla el error 
+        if (!Array.isArray(data) || data.length === 0) { // si data esta vacio corta las columnas y muestra por pantalla el error 
             tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">No hay pagos registrados.</td></tr>';
             return;
         }
@@ -469,4 +459,57 @@ function cambiarEstadoPago(idPago, idEstado) {
     .catch(err => console.error("Error en la petición:", err));
 }
 
-// graficos
+// Gráficos
+
+// Exportar datos
+function exportarExcel() {
+    const fecha_inicio = document.getElementById('fecha_inicio').value;
+    const fecha_final = document.getElementById('fecha_final').value;
+    const mensaje = document.getElementById('mensajeDescargar');
+
+    if (!fecha_inicio || !fecha_final) {
+        if (mensaje) mensaje.innerText = 'Por favor selecciona ambas fechas para definir el período.';
+        return;
+    }
+
+    if (mensaje) mensaje.innerText = '';
+
+    const payload = {
+        recurso: 'registroPagos',
+        consulta: 'ExportarExcel',
+        fechaInicio: fecha_inicio,
+        fechaFinal: fecha_final
+    };
+
+    fetch('API.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    })
+    .then(response => response.json())
+    .then(datos => {
+        if (!Array.isArray(datos) || datos.length === 0) {
+            if (mensaje) mensaje.innerText = "No se encontraron registros de pagos en el período seleccionado.";
+            return;
+        }
+
+        // Formateamos los datos forzando el monto como NÚMERO
+        const datosFormateados = datos.map(item => ({
+            "DNI": item.DNI ?? '',
+            "Nombre Completo": item.nombre_completo ?? '',
+            "Tipo de Socio": item.socio ?? '',
+            "Carrera": item.carrera ?? '',
+            "Monto ($)": parseFloat(item.monto) || 0, // 👈 Convertir a número float remueve la tilde en Excel
+            "Fecha de Pago": item.fecha ?? ''
+        }));
+
+        const hojaTrabajo = XLSX.utils.json_to_sheet(datosFormateados);
+        const libroTrabajo = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(libroTrabajo, hojaTrabajo, "Pagos");
+
+        XLSX.writeFile(libroTrabajo, `Reporte_Pagos_${fecha_inicio}_a_${fecha_final}.xlsx`);
+    })
+    .catch(error => {
+        if (mensaje) mensaje.innerText = "Error al exportar a Excel: " + error;
+    });
+}

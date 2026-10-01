@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <title>Panel de Administración</title>
     <link rel="stylesheet" href="panel.css">
 </head>
@@ -21,6 +22,7 @@
                 <button onclick="mostrar('cooperadora')"><img src="iconos/dinero.png" alt="Cooperadora" style= "width: 18%">Cooperadora actual</button>
                 <button onclick="mostrar('verPagos')"><img src="iconos/dinero.png" alt="Pagos" style= "width: 18%">Ver pagos</button>
                 <button onclick="mostrar('graficos')"><img src="iconos/graficos.png" alt="Gráficos" style= "width: 18%">Gráficos</button>
+                <button onclick="mostrar('descargarDatos')"><img src="iconos/descargarDatos.png" alt="Descargar" style= "width: 18%">Descargar datos</button>
             </nav>
         </aside>
 
@@ -68,8 +70,8 @@
                 </div>
             </div>
             
-            <!-- Secciones Secundarias -->
-             <div id="sociosAlumnos"  class="formulario">
+            <!-- Socios alumnos -->
+             <div id="sociosAlumnos"  class="formulario tarjeta">
                 <div class="socios-header">
                     <h3>Socios alumnos</h3>
                 </div>
@@ -86,7 +88,8 @@
                 </table>
             </div>
 
-            <div id="sociosVoluntarios" class="formulario">
+            <!-- Socios voluntarios -->
+            <div id="sociosVoluntarios" class="formulario tarjeta">
                 <div class="socios-header">
                     <h3>Socios voluntarios</h3>
                 </div>
@@ -102,13 +105,14 @@
                    
                 </table>
             </div>
-
+            
+            <!-- Carreras -->
             <div id="carreras" class="formulario tarjeta">
                 <h3>Carreras</h3>
             </div>
 
             <!-- Cooperadora -->
-            <div id="cooperadora" class="formulario cooperadora-card">
+            <div id="cooperadora" class="formulario tarjeta cooperadora-card">
                 <div class="cooperadora-header">
                     <button class="btn-editar" id="editar" onclick="editarMonto()">Editar</button>
                     <h2 class="titulo-cooperadora">Cooperadora actual</h2>
@@ -124,7 +128,7 @@
                         </tr>
                     </thead>
                     <tbody id="tablaMonto">
-
+                        <p id="mensajeCooperadora" style="text-align:center; font-family:Tamrin; font-size:12px; color: red;"></p>
                     </tbody>
                 </table>
 
@@ -133,6 +137,7 @@
                 </div>
             </div>
 
+            <!-- Ver pagos -->
             <div id="verPagos" class="formulario tarjeta pagos-card">
                 <div class="pagos-header">
                     <h2 class="titulo-pagos">Pagos registrados</h2>
@@ -160,8 +165,26 @@
                 </div>
             </div>
 
+            <!-- Gráficos -->
             <div id="graficos" class="formulario tarjeta">
                 <h3>Gráficos</h3>
+            </div>
+
+            <!-- Descargar datos -->
+            <div id="descargarDatos" class="formulario tarjeta descargar-card">
+                <div class="descargar-header">
+                    <h2 class="titulo-descargar">Descargar datos</h2>
+                </div>
+
+                <label for="inicio">Desde:</label>
+                <input type="date" class="input-descargar" id="fecha_inicio">
+
+                <label for="final">Hasta:</label>
+                <input type="date" class="input-descargar" id="fecha_final">
+
+                <button type="button" onclick="exportarExcel()" class="btn-exportar">Exportar a Excel</button>
+
+                <p id="mensajeDescargar" style="text-align:center; font-family:Tamrin; font-size:12px; color: yellow; margin-top: 10px;"></p>
             </div>
         </main>
     </div>
