@@ -22,7 +22,7 @@ body {
     width: 90%;
     max-width: 900px;
     margin: auto;
-    background-color: rgba(107, 160, 86, 0.85);
+    background-color: rgba(107, 160, 86, 0.90);
     padding: 25px;
     border-radius: 25px;
     margin-bottom: 30px;
@@ -38,6 +38,31 @@ body {
     align-items: center;            /* Centra verticalmente el contenido */
     gap: 28px;                      /* Separa la información de los botones */
     width: 100%;                    /* Asegura que ocupe todo el ancho disponible */
+}
+
+.fila.edicion {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+}
+
+.fila.edicion .informacion {
+    display: contents;
+}
+
+.fila.edicion .informacion h3 {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+.fila.edicion .campo-edicion {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.fila.edicion .acciones-edicion {
+    grid-column: 2;
+    grid-row: 2;
 }
 
 .fila:not(.perfil) .informacion {
@@ -109,18 +134,39 @@ body {
 
 .campo-edicion {
     margin-top: 8px;
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 15px;
+    border: 2px solid rgba(54, 95, 45, 0.55);
+    border-radius: 12px;
+    background-color: #fff;
+    color: #24351f;
+    font: 16px Arial, sans-serif;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.campo-edicion:focus {
+    outline: none;
+    border-color: #365f2d;
+    box-shadow: 0 0 0 4px rgba(54, 95, 45, 0.18);
 }
 
 .editar-btn {
-    display: inline-block;
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: blue;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 46px;
+    margin-top: 0;
+    padding: 12px 22px;
+    border: 0;
+    background-color: #0049ac;
+border-radius: 10px;
+color: white;
     color: white;
     text-decoration: none;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-    border-radius: 25px;
+    font: 600 15px Arial, sans-serif;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
 .campo-edicion,
@@ -133,28 +179,38 @@ body {
     align-items: center;
 }
 
-.guardar-btn {
-    margin-top: 10px;
-    padding: 10px 20px;
+.guardar-btn,
+.cancelar-btn {
+    min-height: 46px;
+    padding: 12px 22px;
     border: 0;
-    border-radius: 25px;
-    background-color: #365f2d;
+    border-radius: 12px;
     color: white;
+    font: 600 15px Arial, sans-serif;
     cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.guardar-btn {
+    margin-top: 0;
+    background-color: #365f2d;
 }
 
 .cancelar-btn {
-    margin-top: 10px;
-    padding: 10px 20px;
-    border: 0;
-    border-radius: 25px;
+    margin-top: 0;
     background-color: #8b3d35;
-    color: white;
-    cursor: pointer;
 }
 
 .guardar-btn:hover,
 .cancelar-btn:hover,
 .editar-btn:hover {
-    opacity: 0.85;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(36, 53, 31, 0.22);
+}
+
+.guardar-btn:focus-visible,
+.cancelar-btn:focus-visible,
+.editar-btn:focus-visible {
+    outline: 3px solid rgba(255, 255, 255, 0.9);
+    outline-offset: 2px;
 }

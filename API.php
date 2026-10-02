@@ -234,6 +234,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             case "usuarios":
                 switch ($consulta) {
                     case "usuario":
+                        session_start();
                         $sql = "SELECT * FROM usuarios WHERE id = ".$_SESSION["id"];
                         $resultado = mysqli_query($conexion, $sql);
                         if ($resultado) {
@@ -328,6 +329,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $contrasena = $datos["contrasena"];
                         $id_socio = $datos["socio"];
                         $id_carrera = $datos["carrera"];
+                        $contrasena = password_hash($contrasena, PASSWORD_BCRYPT); // Encriptación segura de contraseña 
                         $sql = "UPDATE usuarios
                                 SET DNI = '$DNI',
                                     nombre_completo = '$nombre_completo',
