@@ -278,7 +278,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 switch ($consulta) {
                     case "usuario":
                         session_start();
-                        $sql = "SELECT * FROM usuarios WHERE id = ".$_SESSION["id"];
+                        $sql = "SELECT 
+    u.id,
+    u.DNI,
+    u.nombre_completo,
+    u.email,
+    u.telefono,
+    u.activo,
+    u.admin,
+    s.nombre AS nombre_socio,
+    c.nombre AS nombre_carrera
+FROM usuarios u
+INNER JOIN socio s ON u.id_socio = s.id
+INNER JOIN carrera c ON u.id_carrera = c.id"; 
                         $resultado = mysqli_query($conexion, $sql);
                         if ($resultado) {
                             $usuarios = mysqli_fetch_all($resultado, MYSQLI_ASSOC);

@@ -120,8 +120,8 @@
     <form method="POST" class="fila">
         <div class="informacion">
             <h3>Tipo de Socio</h3>
-            <p id="vertiposocio"><?= htmlspecialchars($usuario['tipo_socio'] ?? '') ?></p>
-            <input class="campo-edicion" id="editar_tiposocio" type="text" name="valor" value="<?= htmlspecialchars($usuario['tipo_socio'] ?? '') ?>">
+            <p id="vertiposocio"><?= htmlspecialchars($usuario['nombre_socio'] ?? '') ?></p>
+            <input class="campo-edicion" id="editar_tiposocio" type="text" name="valor" value="<?= htmlspecialchars($usuario['nombre_socio'] ?? '') ?>">
         </div>
     </form>
 

@@ -38,21 +38,12 @@ function obtenerDatosUsuario(idusuario) {
             asignarValor('vertelefono', 'editar_telefono', datos.telefono);
 
             // Rellenar Tipo de Socio
-            asignarValor('vertiposocio', 'editar_tipo_socio', datos.tipo_socio ?? datos.id_socio);
+            asignarValor('vertiposocio', 'editar_tiposocio', datos.nombre_socio);
         } else {
             console.warn("No se encontraron datos de usuario en la respuesta.");
         }
     })
     .catch(error => console.error("Error al procesar el JSON recibido:", error));
-
-    // Dentro de obtenerDatosUsuario:
-const carreraTexto = transformarIdATexto('editar_id_carrera', datos.id_carrera, mapaCarrera);
-const elTextoCarrera = document.getElementById('veridcarrera');
-if (elTextoCarrera) elTextoCarrera.textContent = carreraTexto;
-
-const socioTexto = transformarIdATexto('editar_tipo_socio', datos.id_socio ?? datos.tipo_socio, mapaSocio);
-const elTextoSocio = document.getElementById('vertiposocio');
-if (elTextoSocio) elTextoSocio.textContent = socioTexto;
 }
 
 // Transformar IDs a Texto durante la lectura inicial
