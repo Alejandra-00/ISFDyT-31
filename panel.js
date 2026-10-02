@@ -36,7 +36,6 @@ function mostrar(id) {
 document.addEventListener('DOMContentLoaded', () => {
     cargarInicio();
     cargarPagos();
-    cambiarEstadoPago();
     cargarMonto();
     cargarVoluntarios();
     cargarAlumnos();
