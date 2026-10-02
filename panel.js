@@ -275,6 +275,7 @@ function editarMonto() {
     const tr = tbody.querySelector("tr"); // Obtenemos la fila de la tabla
     const btnEditar = document.getElementById("editar");
     const btnCancelar = document.getElementById("cancelar");
+    const mensaje = document.getElementById('mensajeDescargar');
 
     if (!tr) return; // Si no hay fila cargada, salimos de la función
 
@@ -465,7 +466,7 @@ function cambiarEstadoPago(idPago, idEstado) {
 // Gráficos
 
 // Exportar datos
-function exportarExcel() {
+function exportarExcelPagos() {
     const fecha_inicio = document.getElementById('fecha_inicio').value;
     const fecha_final = document.getElementById('fecha_final').value;
     const mensaje = document.getElementById('mensajeDescargar');
@@ -479,7 +480,7 @@ function exportarExcel() {
 
     const payload = {
         recurso: 'registroPagos',
-        consulta: 'ExportarExcel',
+        consulta: 'ExportarExcelPagos',
         fechaInicio: fecha_inicio,
         fechaFinal: fecha_final
     };
@@ -496,15 +497,25 @@ function exportarExcel() {
             return;
         }
 
-        // Formateamos los datos forzando el monto como NÚMERO
-        const datosFormateados = datos.map(item => ({
-            "DNI": item.DNI ?? '',
-            "Nombre Completo": item.nombre_completo ?? '',
-            "Tipo de Socio": item.socio ?? '',
-            "Carrera": item.carrera ?? '',
-            "Monto ($)": parseFloat(item.monto) || 0, // 👈 Convertir a número float remueve la tilde en Excel
-            "Fecha de Pago": item.fecha ?? ''
-        }));
+        // Formateamos los datos
+        const datosFormateados = datos.map(item => {
+            let fechaObjeto = '';
+            if (item.fecha && item.fecha.includes('-')) {
+                const partes = item.fecha.split('-');
+                if (partes.length === 3) {
+                    fechaObjeto = new Date(partes[0], partes[1] - 1, partes[2]);
+                }
+            }
+
+            return {
+                "DNI": item.DNI ?? '',
+                "Nombre Completo": item.nombre_completo ?? '',
+                "Tipo de Socio": item.socio ?? '',
+                "Carrera": item.carrera ?? '',
+                "Monto ($)": parseFloat(item.monto) || 0,
+                "Fecha de Pago": fechaObjeto
+            };
+        });
 
         const hojaTrabajo = XLSX.utils.json_to_sheet(datosFormateados);
         const libroTrabajo = XLSX.utils.book_new();
@@ -513,6 +524,42 @@ function exportarExcel() {
         XLSX.writeFile(libroTrabajo, `Reporte_Pagos_${fecha_inicio}_a_${fecha_final}.xlsx`);
     })
     .catch(error => {
-        if (mensaje) mensaje.innerText = "Error al exportar a Excel: " + error;
+        if (mensaje) mensaje.innerText = "Error al exportar pagos: " + error;
+    });
+}
+
+function exportarExcelUsuarios() {
+    const mensaje = document.getElementById('mensajeDescargar');
+    fetch('API.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+            recurso: 'usuarios', 
+            consulta: 'ExportarExcelUsuarios' 
+        })
+    })
+    .then(response => response.json())
+    .then(datos => {
+        if (!Array.isArray(datos) || datos.length === 0) {
+            if (mensaje) mensaje.innerText = "No se encontraron usuarios registrados.";
+            return;
+        }
+
+        // Formateamos los datos forzando el monto como NÚMERO
+        const datosFormateados = datos.map(item => ({
+            "DNI": item.DNI ?? '',
+            "Nombre Completo": item.nombre_completo ?? '',
+            "Tipo de Socio": item.socio ?? '',
+            "Carrera": item.carrera ?? '',
+        }));
+
+        const hojaTrabajo = XLSX.utils.json_to_sheet(datosFormateados);
+        const libroTrabajo = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(libroTrabajo, hojaTrabajo, "Usuarios");
+
+        XLSX.writeFile(libroTrabajo, `Reporte_Usuarios.xlsx`);
+    })
+    .catch(error => {
+        if (mensaje) mensaje.innerText = "Error al exportar usuarios: " + error;
     });
 }

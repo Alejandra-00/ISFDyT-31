@@ -152,7 +152,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             http_response_code(500);
                             echo json_encode(["error" => "Error al preparar la inserción del comprobante."]);
                         }
-                        break;
+                    break;
 
                     case 'Read':
                                 $sql = "SELECT
@@ -225,7 +225,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $stmt->close();
                     break;
 
-                    case 'ExportarExcel':
+                    case 'ExportarExcelPagos':
                         $fechaInicio = $datos['fechaInicio'];
                         $fechaFinal = $datos['fechaFinal'];
 
@@ -263,7 +263,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             mysqli_stmt_close($stmt);
                         } else {
                             http_response_code(500);
-                            echo json_encode(["error" => "Error al exportar los datos."]);
+                            echo json_encode(["error" => "Error al exportar datos de pagos."]);
                         }
                     break;
                         
@@ -289,27 +289,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     break;
 
                     case "socios":
-                         $id_socio = $datos['id_socio'] ?? null;
-
-                         $sql ="SELECT usuarios.id, usuarios.nombre_completo, usuarios.email, usuarios.telefono, usuarios.DNI, usuarios.activo, socio.nombre AS nombre_socio, carrera.nombre AS nombre_carrera
-                                FROM usuarios 
-                                INNER JOIN socio ON usuarios.id_socio = socio.id
-                                INNER JOIN carrera ON usuarios.id_carrera = carrera.id";
-                            
-                            if ($id_socio) {
-                                $sql .= " WHERE usuarios.id_socio = " . intval($id_socio);
-                            }
-
-                            $resultado = mysqli_query($conexion, $sql);
-                            if ($resultado) {
-                                $usuarios = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
-                                echo json_encode($usuarios);
-                            } else {
-                                http_response_code(502);
-                                echo json_encode(["error" => "Error de lectura."]);
-                            }
-                        break;
-
+                        $id_socio = $datos['id_socio'] ?? null;
+                        $sql ="SELECT usuarios.id, usuarios.nombre_completo, usuarios.email, usuarios.telefono, usuarios.DNI, usuarios.activo, socio.nombre AS nombre_socio, carrera.nombre AS nombre_carrera
+                               FROM usuarios 
+                               INNER JOIN socio ON usuarios.id_socio = socio.id
+                               INNER JOIN carrera ON usuarios.id_carrera = carrera.id";
+                           
+                           if ($id_socio) {
+                               $sql .= " WHERE usuarios.id_socio = " . intval($id_socio);
+                           }
+                           $resultado = mysqli_query($conexion, $sql);
+                           if ($resultado) {
+                               $usuarios = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
+                               echo json_encode($usuarios);
+                           } else {
+                               http_response_code(502);
+                               echo json_encode(["error" => "Error de lectura."]);
+                           }
+                    break;
+                    
                     case "Read":
                         $sql = "SELECT usuarios.id, usuarios.nombre_completo, usuarios.email, usuarios.telefono, usuarios.DNI, usuarios.activo, socio.nombre AS nombre_socio, carrera.nombre AS nombre_carrera
                                 FROM usuarios 
@@ -457,6 +455,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         } else {
                             http_response_code(500);
                         }
+                    break;
+
+                    case "ExportarExcelUsuarios":
+                        $sql = "SELECT 
+                            usuarios.DNI,
+                            usuarios.nombre_completo,
+                            socio.nombre AS socio,
+                            carrera.nombre AS carrera
+                            FROM usuarios
+                            LEFT JOIN socio ON usuarios.id_socio = socio.id
+                            LEFT JOIN carrera ON usuarios.id_carrera = carrera.id
+                        WHERE usuarios.activo = 1;";
+                        
+                        $resultado = mysqli_query($conexion, $sql);
+
+                        if ($resultado) {
+                            $usuarios = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
+                            http_response_code(200);
+                            echo json_encode($usuarios);
+                        } else {
+                            http_response_code(500);
+                            echo json_encode(["error" => "Error al exportar datos de usuarios."]);
+                        }
+                    break;
+
+                    default:
+                        http_response_code(400);
+                        echo json_encode(["error" => "Consulta no válida"]);
                     break;
                 }
             break;

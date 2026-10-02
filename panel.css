@@ -527,7 +527,9 @@ body {
 #descargarDatos.descargar-card {
     opacity: 1;
     width: 100%;
-    min-height: 480px;
+    max-width: 650px; /* Limita el ancho del panel */
+    min-height: auto;
+    align-self: center;
     margin: auto 0; /* 'auto' arriba y abajo lo centra verticalmente en el espacio disponible */
     padding: 20px 25px;
     color: #a9cd46;
@@ -539,6 +541,7 @@ body {
 #descargarDatos.descargar-card.activo {
     display: flex;
     flex-direction: column;
+    align-items: center;
 }
 
 .descargar-header {
@@ -546,18 +549,48 @@ body {
     align-items: center;
     justify-content: center;
     margin-bottom: 15px;
+    width: 100%;
 }
 
 .titulo-descargar {
-    grid-column: 2;
     color: #a9cd46;
     font-size: 18px;
     font-weight: normal;
     text-align: center;
 }
 
+.descargar-body {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 20px; /* Separación horizontal entre el bloque 'Desde' y 'Hasta' */
+    width: 100%;
+    margin-top: 10px;
+}
+
+.descargar-label {
+    display: block;
+    color: #a9cd46;
+    font-size: 14px;
+}
+
+.input-descargar {
+    width: 220px;
+    box-sizing: border-box;
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.grupo-descargar {
+    display: flex;
+    flex-direction: column;
+    gap: 6px; /* Espacio entre el label y el input */
+}
+
 .btn-exportar {
-    grid-column: 1;
+    width: 220px;
     justify-self: start;
     padding: 6px 20px;
     color: #0049ac;
@@ -566,14 +599,14 @@ body {
     border-radius: 6px;
     font-family: 'Tamrin', sans-serif;
     font-size: 14px;
-    font-weight: bold;
     cursor: pointer;
 }
 
-.input-descargar {
+.descargar-acciones-button {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 12px;
     width: 100%;
-    box-sizing: border-box;
-    padding: 4px 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
 }

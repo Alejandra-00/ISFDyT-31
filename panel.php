@@ -192,14 +192,23 @@
                 <div class="descargar-header">
                     <h2 class="titulo-descargar">Descargar datos</h2>
                 </div>
+                
+                <div class="descargar-body">
+                    <div class="grupo-descargar">
+                        <label for="inicio" class="descargar-label">Desde:</label>
+                        <input type="date" class="input-descargar" id="fecha_inicio">
+                    </div>
 
-                <label for="inicio">Desde:</label>
-                <input type="date" class="input-descargar" id="fecha_inicio">
-
-                <label for="final">Hasta:</label>
-                <input type="date" class="input-descargar" id="fecha_final">
-
-                <button type="button" onclick="exportarExcel()" class="btn-exportar">Exportar a Excel</button>
+                    <div class="grupo-descargar">
+                        <label for="final" class="descargar-label">Hasta:</label>
+                        <input type="date" class="input-descargar" id="fecha_final">
+                    </div>
+                </div>
+                
+                <div class="descargar-acciones-button">
+                    <button type="button" onclick="exportarExcelPagos()" class="btn-exportar">Exportar pagos</button>
+                    <button type="button" onclick="exportarExcelUsuarios()" class="btn-exportar">Exportar usuarios</button>
+                </div>
 
                 <p id="mensajeDescargar" style="text-align:center; font-family:Tamrin; font-size:12px; color: yellow; margin-top: 10px;"></p>
             </div>
