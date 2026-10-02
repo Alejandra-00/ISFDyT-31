@@ -35,7 +35,6 @@ function cargarPagos() {
       data.forEach(pago => { 
          const fila = document.createElement('tr');
          fila.innerHTML = `
-            <td>${pago.id ?? ''}</td>
             <td>${pago.meses ?? ''}</td>
             <td>${pago.monto ?? ''}</td>
             <td>${pago.fecha ?? ''}</td>

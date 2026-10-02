@@ -3,6 +3,7 @@ include("conexion.php");
 
 header("Content-Type: application/json; charset=UTF-8");
 
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $jsonRecibido = file_get_contents('php://input');
     $datos = json_decode($jsonRecibido, true);
@@ -151,7 +152,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             http_response_code(500);
                             echo json_encode(["error" => "Error al preparar la inserción del comprobante."]);
                         }
-                        break;
+                    break;
 
                     case 'Read':
                                 $sql = "SELECT
@@ -223,6 +224,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                         $stmt->close();
                     break;
+
+                    case 'ExportarExcelPagos':
+                        $fechaInicio = $datos['fechaInicio'];
+                        $fechaFinal = $datos['fechaFinal'];
+
+                        if (empty($fechaInicio) || empty($fechaFinal)) {
+                            http_response_code(400);
+                            echo json_encode(["error" => "Debe ingresar una fecha de inicio y una fecha de fin."]);
+                            break;
+                        }
+
+                        $sql = "SELECT 
+                            usuarios.DNI,
+                            usuarios.nombre_completo,
+                            socio.nombre AS socio,
+                            carrera.nombre AS carrera,
+                            monto.importe AS monto,
+                            registropagos.fecha
+                        FROM registropagos
+                        INNER JOIN usuarios ON registropagos.id_usuarios = usuarios.id
+                        INNER JOIN monto ON registropagos.id_monto = monto.id
+                        LEFT JOIN socio ON usuarios.id_socio = socio.id
+                        LEFT JOIN carrera ON usuarios.id_carrera = carrera.id
+                        WHERE registropagos.fecha BETWEEN ? AND ?
+                        AND registropagos.id_estado = 1";
+
+                        $stmt = mysqli_prepare($conexion, $sql);
+
+                        if ($stmt) {
+                            mysqli_stmt_bind_param($stmt, "ss", $fechaInicio, $fechaFinal);
+                            mysqli_stmt_execute($stmt);
+                            $resultado = mysqli_stmt_get_result($stmt);
+                            $datosExcel = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
+
+                            http_response_code(200);
+                            echo json_encode($datosExcel);
+                            mysqli_stmt_close($stmt);
+                        } else {
+                            http_response_code(500);
+                            echo json_encode(["error" => "Error al exportar datos de pagos."]);
+                        }
+                    break;
                         
                     default:
                         http_response_code(400);
@@ -246,6 +289,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                     break;
 
+                    case "socios":
+                        $id_socio = $datos['id_socio'] ?? null;
+                        $sql ="SELECT usuarios.id, usuarios.nombre_completo, usuarios.email, usuarios.telefono, usuarios.DNI, usuarios.activo, socio.nombre AS nombre_socio, carrera.nombre AS nombre_carrera
+                               FROM usuarios 
+                               INNER JOIN socio ON usuarios.id_socio = socio.id
+                               INNER JOIN carrera ON usuarios.id_carrera = carrera.id";
+                           
+                           if ($id_socio) {
+                               $sql .= " WHERE usuarios.id_socio = " . intval($id_socio);
+                           }
+                           $resultado = mysqli_query($conexion, $sql);
+                           if ($resultado) {
+                               $usuarios = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
+                               echo json_encode($usuarios);
+                           } else {
+                               http_response_code(502);
+                               echo json_encode(["error" => "Error de lectura."]);
+                           }
+                    break;
+                    
                     case "Read":
                         $sql = "SELECT usuarios.id, usuarios.nombre_completo, usuarios.email, usuarios.telefono, usuarios.DNI, usuarios.activo, socio.nombre AS nombre_socio, carrera.nombre AS nombre_carrera
                                 FROM usuarios 
@@ -395,6 +458,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             http_response_code(500);
                         }
                     break;
+
+                    case "ExportarExcelUsuarios":
+                        $sql = "SELECT 
+                            usuarios.DNI,
+                            usuarios.nombre_completo,
+                            socio.nombre AS socio,
+                            carrera.nombre AS carrera
+                            FROM usuarios
+                            LEFT JOIN socio ON usuarios.id_socio = socio.id
+                            LEFT JOIN carrera ON usuarios.id_carrera = carrera.id
+                        WHERE usuarios.activo = 1;";
+                        
+                        $resultado = mysqli_query($conexion, $sql);
+
+                        if ($resultado) {
+                            $usuarios = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
+                            http_response_code(200);
+                            echo json_encode($usuarios);
+                        } else {
+                            http_response_code(500);
+                            echo json_encode(["error" => "Error al exportar datos de usuarios."]);
+                        }
+                    break;
+
+                    default:
+                        http_response_code(400);
+                        echo json_encode(["error" => "Consulta no válida"]);
+                    break;
                 }
             break;
 
@@ -528,12 +619,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $id = $datos["id"];
                         $importe = $datos["importe"];
                         $importeAnterior = $datos["importe_anterior"];
-                        $fechaGuardado = $datos["fecha_guardado"];
                         $fechaEfecto = $datos["fecha_efecto"];
                         $sql = "UPDATE monto
                                 SET importe = '$importe',
                                     importe_anterior = '$importeAnterior',
-                                    fecha_guardado = '$fechaGuardado',
                                     fecha_efecto = '$fechaEfecto'
                                 WHERE id = $id";
                         $resultado = mysqli_query($conexion, $sql);

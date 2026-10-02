@@ -105,7 +105,7 @@
                     <input type="password" name="contrasena" placeholder="Ingrese su contraseña" class="input input-password">
                     <i class="ojo" onclick="verClave(this)"><img id="iconoOjo" src="iconos/ojo.png" alt=""></i>
                 </div>
-                <p class="linkOlvido"><a href="olvideContrasena">Olvidé mi contraseña</a></p>
+                <p class="linkOlvido"><a href="#" id="btnOlvido">Olvidé mi contraseña</a></p>
                 <?php if (isset($mensajeError)): ?>
                     <p class="error"><?= $mensajeError ?></p>
                 <?php endif; ?>
@@ -118,6 +118,27 @@
             <p class="linkRegistro">¿No tienes una cuenta?<a href="registrarse.php">¡Registrate!</a></p>
         </form>
     </div>
+
+    <div id="modalOlvido" class="modal-olvido" style="display: none;">
+        <div class="modal-contenido">
+            <span class="cerrar-modal" id="cerrarModal">&times;</span>
+            <h3 style="text-align: center; margin-bottom: 10px; font-family: 'Tamrin'; font-size: 18px;">Recuperar Contraseña</h3>
+            <p style="text-align: center; font-size: 12px; margin-bottom: 15px; color: black; font-family: 'Tamrin';">
+                Ingrese su DNI. Se restablecerá la contraseña y se enviarán los datos a su correo electrónico.
+            </p>
+            
+            <form id="formOlvido">
+                <div class="grupoInput">
+                    <label for="dniOlvido" class="label">DNI</label>
+                    <input type="text" id="dniOlvido" name="dni" maxlength="8" minlength="8" required placeholder="Ingrese su DNI" class="input">
+                </div>
+                <button type="submit" class="btn" style="margin-top: 15px;">Enviar correo</button>
+            </form>
+            
+            <p id="mensajeModal"></p>
+        </div>
+    </div>
+
     <script src="iniciarSesion.js"></script>
 </body>
 </html>

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <title>Panel de Administración</title>
     <link rel="stylesheet" href="panel.css">
 </head>
@@ -11,16 +12,19 @@
         <!-- Sidebar -->
         <aside class="sideBar">
             <div class="logo">
-                <img src="iconos/logo.jpg" alt="Logo">
+                <a href="inicio.php">
+                    <img src="iconos/logo.jpg" alt="Logo">
+                </a>
             </div>
             <nav>
-                <button onclick="mostrar('inicio')"><img src="iconos/inicio.png" alt="Inicio">Inicio</button>
-                <button onclick="mostrar('sociosAlumnos')"><img src="iconos/usuario-azul.png" alt="Usuario">Socios alumnos</button>
-                <button onclick="mostrar('sociosVoluntarios')"><img src="iconos/usuario-azul.png" alt="Usuario">Socios voluntarios</button>
-                <button onclick="mostrar('carreras')"><img src="iconos/graduacion.png" alt="Carreras">Carreras</button>
-                <button onclick="mostrar('cooperadora')"><img src="iconos/dinero.png" alt="Cooperadora">Cooperadora actual</button>
-                <button onclick="mostrar('verPagos')"><img src="iconos/dinero.png" alt="Pagos">Ver pagos</button>
-                <button onclick="mostrar('graficos')"><img src="iconos/graficos.png" alt="Gráficos">Gráficos</button>
+                <button onclick="mostrar('inicio')"><img src="iconos/proximo.png" alt="" style = "width: 19%">Inicio</button>
+                <button onclick="mostrar('sociosAlumnos'); cargarAlumnos()"><img src="iconos/usuario-azul.png" alt="Usuario" style= "width: 17%">Socios alumnos</button>
+                <button onclick="mostrar('sociosVoluntarios'); cargarVoluntarios()"><img src="iconos/usuario-azul.png" alt="Usuario" style= "width: 17%">Socios voluntarios</button>
+                <button onclick="mostrar('carreras')"><img src="iconos/graduacion.png" alt="Carreras" style= "width: 19%">Carreras</button>
+                <button onclick="mostrar('cooperadora')"><img src="iconos/dinero.png" alt="Cooperadora" style= "width: 19%">Cooperadora actual</button>
+                <button onclick="mostrar('verPagos')"><img src="iconos/dinero.png" alt="Pagos" style= "width: 19%">Ver pagos</button>
+                <button onclick="mostrar('graficos')"><img src="iconos/graficos.png" alt="Gráficos" style= "width: 18%">Gráficos</button>
+                <button onclick="mostrar('descargarDatos')"><img src="iconos/descargarDatos.png" alt="Descargar" style= "width: 17%">Descargar datos</button>
             </nav>
         </aside>
 
@@ -30,29 +34,44 @@
             <div id="inicio" class="formulario activo tarjeta">
                 <div class="cards">
                     <div class="card-chica">
-                        <div id = "cantAlumnos" class="card-numero"></div> Socio alumnos
+                        <div class="valor-icono">
+                            <img src="iconos/usuario-verde.png" alt="usuario">
+                            <div id="cantAlumnos" class="card-numero"></div>
+                        </div>
+                        Socio alumnos
                     </div>
 
                     <div class="card-chica">
-                        <div id = "cantVoluntarios" class="card-numero"></div> Socio voluntarios
+                        <div class="valor-icono">
+                            <img src="iconos/usuario-verde.png" alt="usuario">
+                            <div id="cantVoluntarios" class="card-numero"></div>
+                        </div>
+                        Socio voluntarios
                     </div>
 
                     <div class="card-chica">
-                        <div id = "cantCarreras" class="card-numero"></div> Carreras
+                        <div class="valor-icono">
+                            <img src="iconos/graduacion-verde.png" alt="carreras">
+                            <div id="cantCarreras" class="card-numero"></div>
+                        </div>
+                        Carreras
                     </div>
 
                     <div class="card-chica">
-                        <div id = "montoActual" class="card-numero"></div> Cooperadora actual
+                        <div class="valor-icono">
+                            <img src="iconos/dinero-verde.png" alt="dinero">
+                            <div id="montoActual" class="card-numero"></div>
+                        </div>
+                        Cooperadora actual
                     </div>
                 </div>
-                
                 <div class="listados">
                     <div class="card-listado">
                         <div class="listado-header">
                             <h4>Socio alumno</h4>
                             <button class="ver-todos" onclick="mostrar('sociosAlumnos')">Ver todos</button>
                         </div>
-                        <div class="listado-item">
+                        <div class="listado-item" id="socAlumno">
                             <span class="item-email">nombre@gmail.com</span>
                         </div>
                     </div>
@@ -61,30 +80,58 @@
                             <h4>Socio voluntario</h4>
                             <button class="ver-todos" onclick="mostrar('sociosVoluntarios')">Ver todos</button>
                         </div>
-                        <div class="listado-item">
+                        <div class="listado-item" id="socVoluntario">
                             <span class="item-email">nombre@gmail.com</span>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <!-- Secciones Secundarias -->
-            <div id="sociosAlumnos" class="formulario tarjeta">
-                <h3>Socios alumnos</h3>
+            <!-- Socios alumnos -->
+             <div id="sociosAlumnos"  class="formulario tarjeta">
+                <div class="socios-header">
+                    <h3>Socios alumnos</h3>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>DNI</th>
+                            <th>Nombre</th>
+                            <th>Marcar como inactivo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablasocios-Alumno" ></tbody>
+                   
+                </table>
             </div>
 
+            <!-- Socios voluntarios -->
             <div id="sociosVoluntarios" class="formulario tarjeta">
-                <h3>Socios voluntarios</h3>
+                <div class="socios-header">
+                    <h3>Socios voluntarios</h3>
+                </div>
+                 <table>
+                    <thead>
+                        <tr>
+                            <th>DNI</th>
+                            <th>Nombre</th>
+                            <th>Marcar como inactivo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablasocios-Voluntario" ></tbody>
+                   
+                </table>
             </div>
-
+            
+            <!-- Carreras -->
             <div id="carreras" class="formulario tarjeta">
                 <h3>Carreras</h3>
             </div>
 
-            <!-- Cooperadora (Oculto hasta activar) -->
-            <div id="cooperadora" class="formulario cooperadora-card">
+            <!-- Cooperadora -->
+            <div id="cooperadora" class="formulario tarjeta cooperadora-card">
                 <div class="cooperadora-header">
-                    <button class="btn-editar" onclick="mostrar('editarCooperadora')">Editar</button>
+                    <button class="btn-editar" id="editar" onclick="editarMonto()">Editar</button>
                     <h2 class="titulo-cooperadora">Cooperadora actual</h2>
                 </div>
 
@@ -97,17 +144,17 @@
                             <th>Fecha de efecto</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>$$$$</td>
-                            <td>$$$$</td>
-                            <td>XX-XX-XXXX</td>
-                            <td>XX-XX-XXXX</td>
-                        </tr>
+                    <tbody id="tablaMonto">
+                        <p id="mensajeCooperadora" style="text-align:center; font-family:Tamrin; font-size:12px; color: red;"></p>
                     </tbody>
                 </table>
+
+                <div class="cooperadora-acciones-bottom">
+                    <button class="btn-cancelar" id="cancelar" onclick="cancelarEdicionMonto()" style="display: none;">Cancelar</button>
+                </div>
             </div>
-            
+
+            <!-- Ver pagos -->
             <div id="verPagos" class="formulario tarjeta pagos-card">
                 <div class="pagos-header">
                     <h2 class="titulo-pagos">Pagos registrados</h2>
@@ -135,8 +182,35 @@
                 </div>
             </div>
 
+            <!-- Gráficos -->
             <div id="graficos" class="formulario tarjeta">
                 <h3>Gráficos</h3>
+            </div>
+
+            <!-- Descargar datos -->
+            <div id="descargarDatos" class="formulario tarjeta descargar-card">
+                <div class="descargar-header">
+                    <h2 class="titulo-descargar">Descargar datos</h2>
+                </div>
+                
+                <div class="descargar-body">
+                    <div class="grupo-descargar">
+                        <label for="inicio" class="descargar-label">Desde:</label>
+                        <input type="date" class="input-descargar" id="fecha_inicio">
+                    </div>
+
+                    <div class="grupo-descargar">
+                        <label for="final" class="descargar-label">Hasta:</label>
+                        <input type="date" class="input-descargar" id="fecha_final">
+                    </div>
+                </div>
+                
+                <div class="descargar-acciones-button">
+                    <button type="button" onclick="exportarExcelPagos()" class="btn-exportar">Exportar pagos</button>
+                    <button type="button" onclick="exportarExcelUsuarios()" class="btn-exportar">Exportar usuarios</button>
+                </div>
+
+                <p id="mensajeDescargar" style="text-align:center; font-family:Tamrin; font-size:12px; color: yellow; margin-top: 10px;"></p>
             </div>
         </main>
     </div>

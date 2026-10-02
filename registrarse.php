@@ -110,7 +110,7 @@
 
             <div class="campo"> 
                 <label>DNI</label>
-                <input type="text" name="dni" placeholder="Ingrese su DNI" required> 
+                <input type="text" name="dni" maxlength="8" minlength="8" placeholder="Ingrese su DNI" required> 
             </div> 
 
             <div class="campo">
