@@ -505,6 +505,61 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                         $stmt->close();
                     break;
+                    
+                    case "Buscar":
+                        $busqueda = trim($datos["busqueda"] ?? '');
+                        $id_socio = (int)($datos["id_socio"] ?? 0);
+
+                        if ($busqueda === '') {
+                            http_response_code(400);
+                            echo json_encode(["error" => "Debe ingresar un término de búsqueda."]);
+                            break;
+                        }
+
+                        $busqueda = "%" . $busqueda . "%";
+
+                        $sql = "SELECT 
+                                    usuarios.id,
+                                    usuarios.nombre_completo,
+                                    usuarios.email,
+                                    usuarios.telefono,
+                                    usuarios.DNI,
+                                    usuarios.activo,
+                                    socio.nombre AS nombre_socio,
+                                    carrera.nombre AS nombre_carrera
+                                FROM usuarios 
+                                INNER JOIN socio ON usuarios.id_socio = socio.id
+                                INNER JOIN carrera ON usuarios.id_carrera = carrera.id
+                                WHERE (usuarios.nombre_completo LIKE ? OR usuarios.DNI LIKE ?)";
+
+                        // Si viene id_socio, filtrar por tipo (alumno o voluntario)
+                        if ($id_socio > 0) {
+                            $sql .= " AND usuarios.id_socio = ?";
+                            $stmt = $conexion->prepare($sql);
+                            $stmt->bind_param("ssi", $busqueda, $busqueda, $id_socio);
+                        } else {
+                            $stmt = $conexion->prepare($sql);
+                            $stmt->bind_param("ss", $busqueda, $busqueda);
+                        }
+
+                        $stmt->execute();
+                        $resultado = $stmt->get_result();
+
+                        if ($resultado) {
+                            $usuarios = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
+                            if (empty($usuarios)) {
+                                http_response_code(404);
+                                echo json_encode(["error" => "No se encontraron usuarios."]);
+                            } else {
+                                http_response_code(200);
+                                echo json_encode($usuarios);
+                            }
+                        } else {
+                            http_response_code(500);
+                            echo json_encode(["error" => "Error de lectura."]);
+                        }
+                        $stmt->close();
+                    break;
 
 
                     case "Login":

@@ -18,8 +18,8 @@
             </div>
             <nav>
                 <button onclick="mostrar('inicio')"><img src="iconos/proximo.png" alt="" style = "width: 19%">Inicio</button>
-                <button onclick="mostrar('sociosAlumnos'); cargarAlumnos()"><img src="iconos/usuario-azul.png" alt="Usuario" style= "width: 17%">Socios alumnos</button>
-                <button onclick="mostrar('sociosVoluntarios'); cargarVoluntarios()"><img src="iconos/usuario-azul.png" alt="Usuario" style= "width: 17%">Socios voluntarios</button>
+                <button onclick="mostrar('alumno'); cargarAlumnos()"><img src="iconos/usuario-azul.png" alt="Usuario" style= "width: 17%">Socios alumnos</button>
+                <button onclick="mostrar('voluntario'); cargarVoluntarios()"><img src="iconos/usuario-azul.png" alt="Usuario" style= "width: 17%">Socios voluntarios</button>
                 <button onclick="mostrar('carreras')"><img src="iconos/graduacion.png" alt="Carreras" style= "width: 19%">Carreras</button>
                 <button onclick="mostrar('cooperadora')"><img src="iconos/dinero.png" alt="Cooperadora" style= "width: 19%">Cooperadora actual</button>
                 <button onclick="mostrar('verPagos')"><img src="iconos/dinero.png" alt="Pagos" style= "width: 19%">Ver pagos</button>
@@ -87,47 +87,55 @@
                 </div>
             </div>
             <!-- Socios -->
-              <div id="sociosAlumnos"  class="formulario">
-                <div class="socios-header">
-                    <h3>Socios alumnos</h3>
+            <div id="alumno" class="formulario">
+                <input type="text" id="barraBusquedaAlumnos" placeholder="Buscar por DNI o nombre completo..." onkeydown="if(event.key === 'Enter') buscarUsuariosAlumnos()">
+
+                <div id="sociosAlumnos">
+                    <div class="socios-header">
+                        <h3>Socios alumnos</h3>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>DNI</th>
+                                <th>Nombre</th>
+                                <th>Marcar como inactivo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablasocios-Alumno"></tbody>
+                    </table>
                 </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>DNI</th>
-                            <th>Nombre</th>
-                            <th>Marcar como inactivo</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tablasocios-Alumno" ></tbody>
-                   
-                </table>
             </div>
 
-            <div id="sociosVoluntarios" class="formulario">
-                <div class="socios-header">
-                    <h3>Socios voluntarios</h3>
+            <div id="voluntario" class="formulario">
+                 <input type="text" id="barraBusquedaVoluntarios" placeholder="Buscar por DNI o nombre completo..." onkeydown="if(event.key === 'Enter') buscarUsuariosVoluntarios()">
+                
+                 <div id="sociosVoluntarios">
+                
+                    <div class="socios-header">
+                        <h3>Socios voluntarios</h3>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>DNI</th>
+                                <th>Nombre</th>
+                                <th>Marcar como inactivo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablasocios-Voluntario"></tbody>
+                    </table>
                 </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>DNI</th>
-                            <th>Nombre</th>
-                            <th>Marcar como inactivo</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tablasocios-Voluntario" ></tbody>
-                   
-                </table>
             </div>
-
             <div id="editarDni" class="formulario">
                 <h3>Editar DNI</h3>
                 <div class="editar-dni-form">
                     <label for="nuevoDni">DNI</label>
                     <input type="text" id="nuevoDni" placeholder="Nuevo DNI">
                     <button class="btn-editar" onclick="guardarDni()">Guardar cambios</button>
+                    <p id="mensajeEditarDni"></p>
                 </div>
+                
             </div>
             
             <!-- Carreras -->

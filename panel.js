@@ -246,16 +246,45 @@ function cambiarEstadoActivo(idUsuario, activo) {
             console.error('Error:', data.error);
             return;
         }
-        // Recargamos la tabla para reflejar el nuevo estado
-        cargarAlumnos();
-        cargarVoluntarios();
+        // Refrescar según el estado de la barra de búsqueda
+        refrescarAlumnos();
+        refrescarVoluntarios();
     })
     .catch(error => {
         console.error('Error:', error);
     });
 }
 
+// Refresca alumnos: si hay búsqueda activa, la repite; si no, carga todos
+function refrescarAlumnos() {
+    const busqueda = document.getElementById("barraBusquedaAlumnos").value.trim();
+    if (busqueda === "") {
+        cargarAlumnos();
+    } else {
+        buscarUsuariosAlumnos();
+    }
+}
+
+// Ídem para voluntarios
+function refrescarVoluntarios() {
+    const busqueda = document.getElementById("barraBusquedaVoluntarios").value.trim();
+    if (busqueda === "") {
+        cargarVoluntarios();
+    } else {
+        buscarUsuariosVoluntarios();
+    }
+}
+
+let usuarioEditando = null;   //declaramos la variable global para almacenar el id del usuario que se está editando
+let seccionAnterior = null;   //declaramos la variable global para almacenar la sección anterior antes de editar el DNI
+
 function editarDNI(dni) {
+     // Limpiar mensaje anterior
+    document.getElementById('mensajeEditarDni').textContent = '';
+
+    // Guardar de dónde venimos (alumno o voluntario)
+    seccionAnterior = document.querySelector('.formulario.activo').id;
+
     fetch('API.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -285,6 +314,8 @@ function editarDNI(dni) {
     });
 }
 
+
+
 function guardarDni() {
     const nuevoDni = document.getElementById('nuevoDni').value.trim();
 
@@ -310,21 +341,181 @@ function guardarDni() {
     .then(response => response.json())
     .then(data => {
         if (data.error) {
-            alert('Error: ' + data.error);
+            document.getElementById('mensajeEditarDni').textContent = 'Error: ' + data.error;
             return;
         }
-        alert('DNI actualizado correctamente.');
+        document.getElementById('mensajeEditarDni').textContent = 'DNI actualizado correctamente.';
         // Recargamos las tablas
         cargarAlumnos();
         cargarVoluntarios();
-        // Volvemos al inicio
-        mostrar('inicio');
+        // Volver a donde estábamos, no al inicio
+        setTimeout(() => {
+            mostrar(seccionAnterior || 'inicio');
+            document.getElementById('mensajeEditarDni').textContent = '';
+        }, 1500);
         usuarioEditando = null;
     })
-    .catch(error => {
-        console.error('Error:', error);
-    });
 }
+
+async function buscarUsuariosAlumnos() {
+    const busqueda = document.getElementById("barraBusquedaAlumnos").value.trim();
+
+    // Si está vacío, recargar todos los alumnos
+    if (busqueda === "") {
+        cargarAlumnos();
+        return;
+    }
+
+    try {
+        const respuesta = await fetch("API.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                recurso: "usuarios",
+                consulta: "Buscar",
+                busqueda: busqueda,
+                id_socio: 1
+            })
+        });
+        const datos = await respuesta.json();
+
+        const tbody = document.getElementById('tablasocios-Alumno');
+        tbody.innerHTML = '';
+
+        if (respuesta.ok) {
+            // Mismo pintado que cargarAlumnos()
+            datos.forEach(usuarios => {
+                const dni = usuarios.DNI ?? '';
+                const nombre = usuarios.nombre_completo ?? '';
+
+                const fila = document.createElement('tr');
+
+                const tdDni = document.createElement('td');
+                const contDni = document.createElement('div');
+                contDni.className = 'dni-con-boton';
+
+                const spanDni = document.createElement('span');
+                spanDni.textContent = escapeHtml(dni);
+
+                const btnEditar = document.createElement('button');
+                btnEditar.className = 'btn-editar-dni';
+                btnEditar.innerHTML = '<img src="iconos/dni.png" alt="Editar">';
+                btnEditar.onclick = () => editarDNI(dni);
+
+                contDni.appendChild(btnEditar);
+                contDni.appendChild(spanDni);
+                tdDni.appendChild(contDni);
+
+                const tdNombre = document.createElement('td');
+                tdNombre.textContent = escapeHtml(nombre);
+
+                const tdBoton = document.createElement('td');
+                const btnInactivo = document.createElement('button');
+                btnInactivo.className = 'btn-inactivo';
+
+                const activo = usuarios.activo == 1;
+                btnInactivo.innerHTML = activo
+                    ? '<img src="iconos/inactivo.png" alt="Inactivar">'
+                    : '<img src="iconos/activo.png" alt="Activar">';
+
+                btnInactivo.onclick = () => cambiarEstadoActivo(usuarios.id, activo);
+                tdBoton.appendChild(btnInactivo);
+
+                fila.appendChild(tdDni);
+                fila.appendChild(tdNombre);
+                fila.appendChild(tdBoton);
+                tbody.appendChild(fila);
+            });
+        } else {
+            tbody.innerHTML = '<tr><td colspan="3">No se encontraron usuarios.</td></tr>';
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        document.getElementById('tablasocios-Alumno').innerHTML = 
+            '<tr><td colspan="3">Error al buscar.</td></tr>';
+    }
+}
+
+async function buscarUsuariosVoluntarios() {
+    const busqueda = document.getElementById("barraBusquedaVoluntarios").value.trim();
+
+    // Si está vacío, recargar todos los voluntarios
+    if (busqueda === "") {
+        cargarVoluntarios();
+        return;
+    }
+
+    try {
+        const respuesta = await fetch("API.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                recurso: "usuarios",
+                consulta: "Buscar",
+                busqueda: busqueda,
+                id_socio: 2
+            })
+        });
+        const datos = await respuesta.json();
+
+        const tbody = document.getElementById('tablasocios-Voluntario');
+        tbody.innerHTML = '';
+
+        if (respuesta.ok) {
+            // Mismo pintado que cargarVoluntarios()
+            datos.forEach(usuarios => {
+                const dni = usuarios.DNI ?? '';
+                const nombre = usuarios.nombre_completo ?? '';
+
+                const fila = document.createElement('tr');
+
+                const tdDni = document.createElement('td');
+                const contDni = document.createElement('div');
+                contDni.className = 'dni-con-boton';
+
+                const spanDni = document.createElement('span');
+                spanDni.textContent = escapeHtml(dni);
+
+                const btnEditar = document.createElement('button');
+                btnEditar.className = 'btn-editar-dni';
+                btnEditar.innerHTML = '<img src="iconos/dni.png" alt="Editar">';
+                btnEditar.onclick = () => editarDNI(dni);
+
+                contDni.appendChild(btnEditar);
+                contDni.appendChild(spanDni);
+                tdDni.appendChild(contDni);
+
+                const tdNombre = document.createElement('td');
+                tdNombre.textContent = escapeHtml(nombre);
+
+                const tdBoton = document.createElement('td');
+                const btnInactivo = document.createElement('button');
+                btnInactivo.className = 'btn-inactivo';
+
+                const activo = usuarios.activo == 1;
+                btnInactivo.innerHTML = activo
+                    ? '<img src="iconos/inactivo.png" alt="Inactivar">'
+                    : '<img src="iconos/activo.png" alt="Activar">';
+
+                btnInactivo.onclick = () => cambiarEstadoActivo(usuarios.id, activo);
+                tdBoton.appendChild(btnInactivo);
+
+                fila.appendChild(tdDni);
+                fila.appendChild(tdNombre);
+                fila.appendChild(tdBoton);
+                tbody.appendChild(fila);
+            });
+        } else {
+            tbody.innerHTML = '<tr><td colspan="3">No se encontraron usuarios.</td></tr>';
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        document.getElementById('tablasocios-Voluntario').innerHTML = 
+            '<tr><td colspan="3">Error al buscar.</td></tr>';
+    }
+}
+
+
 // carreras
 
 // monto actual
