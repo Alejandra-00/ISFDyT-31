@@ -184,7 +184,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         LEFT JOIN comprobante ON registropagos.id_comprobante = comprobante.id
                         LEFT JOIN socio ON usuarios.id_socio = socio.id
                         LEFT JOIN meses ON registropagos.id_mes = meses.id_mes
-                        LEFT JOIN carrera ON usuarios.id_carrera = carrera.id_carrera";
+                        LEFT JOIN carrera ON usuarios.id_carrera = carrera.id";
 
                         $resultado = mysqli_query($conexion, $sql);
                         if ($resultado) {
