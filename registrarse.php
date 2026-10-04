@@ -83,22 +83,25 @@
     <div class="EsquinaCirculo"></div>
     <img src="curvas/curva.png" alt="" class="EsquinaCurva">
     
-     <div class="FondoVerde"></div>
+    <div class="FondoVerde"></div>
     <img src="curvas/curva2.png" alt="" class="fondoAzul">
     
     <div class="ContenedorLogo">
-    <img src="iconos/logo.jpg" alt="" class="Logo">
-    </div>
-    <div class="Cooperadora">
-    <h1><span class="Verde">A</span>SOCIACIÓN <span class="Verde">C</span>OOPERADORA</h1>
-    </div>
+        <img src="iconos/logo.jpg" alt="" class="Logo">
 
-    <div class="Instituto">
-    <h2>Instituto Superior de Formación Docente y Técnica n°31</h2>
+        <div class="textoLogo">
+            <div class="Cooperadora">
+                <h1><span class="Verde">A</span>SOCIACIÓN<span class="Verde">C</span>OOPERADORA</h1>
+            </div>
+
+            <div class="Instituto">
+                <h2>Instituto Superior de Formación Docente y Técnica n°31</h2>
+            </div>
+        </div>
     </div>
 
     <div class="ContenedorLogoNegro">
-    <img src="iconos/logoNegro.png" alt="" class="LogoNegro">
+        <img src="iconos/logoNegro.png" alt="" class="LogoNegro">
     </div>
 
     <div class="ISFDYT"><span class="Verde">ISFDYT N°31</span></div>
