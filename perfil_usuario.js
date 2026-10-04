@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Si no pasamos id, la API usará la sesión iniciada en el servidor
-    obtenerDatosUsuario();
+    // Obtener el ID del input oculto presente en nav.php
+    const idUsuario = document.getElementById('usuario')?.value;
+    obtenerDatosUsuario(idusuario);
 });
 
 function obtenerDatosUsuario(idusuario) {
@@ -133,6 +135,8 @@ function cancelarEdicion(campo) {
 
 // 3. Guardar el cambio y actualizar la vista con nombres legibles
 function guardarCampo(campo) {
+    // Recopilar datos actuales del DOM
+    const idusuario = document.getElementById('usuario')?.value || '1'; // <-- AQUÍ
     if (campo === 'dni' || campo === 'numero_documento') return;
 
     const form = document.querySelector(`input[name="campo"][value="${campo}"]`)?.closest('form');

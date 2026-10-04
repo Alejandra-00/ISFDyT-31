@@ -277,7 +277,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             case "usuarios":
                 switch ($consulta) {
                     case "usuario":
-                        session_start();
+                        if (session_status() === PHP_SESSION_NONE) {
+                            session_start();
+                        }
+                        // Obtener ID desde el JSON o desde la sesión PHP como fallback
+                        $id_usuario = (int)($datos['id_usuario'] ?? $_SESSION['id'] ?? 0);
+                        if ($id_usuario === 0) {
+                            http_response_code(400);
+                            echo json_encode(["error" => "ID de usuario no proporcionado o sesión inválida."]);
+                            break;
+                        }
                         $sql = "SELECT 
                                     u.id,
                                     u.DNI,
@@ -289,16 +298,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     s.nombre AS nombre_socio,
                                     c.nombre AS nombre_carrera
                                 FROM usuarios u
-                                INNER JOIN socio s ON u.id_socio = s.id
-                                INNER JOIN carrera c ON u.id_carrera = c.id"; 
-                        $resultado = mysqli_query($conexion, $sql);
-                        if ($resultado) {
-                            $usuarios = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
-                            echo json_encode($usuarios);
-                        } else {
-                            http_response_code(502);
-                            echo json_encode(["error" => "Error de lectura."]);
-                        }
+                                LEFT JOIN socio s ON u.id_socio = s.id
+                                LEFT JOIN carrera c ON u.id_carrera = c.id
+                                WHERE u.id = ?";
+
+                            $stmt = $conexion->prepare($sql);
+                            if ($stmt) {
+                                $stmt->bind_param("i", $id_usuario);
+                                $stmt->execute();
+                                $resultado = $stmt->get_result();
+                                $usuario = $resultado->fetch_assoc();
+
+                                if ($usuario) {
+                                    echo json_encode($usuario);
+                                } else {
+                                    http_response_code(404);
+                                    echo json_encode(["error" => "Usuario no encontrado."]);
+                                }
+                                $stmt->close();
+                            } else {    
+                                http_response_code(500);
+                                echo json_encode(["error" => "Error en la consulta."]);
+                            }
                     break;
 
                     case "socios":
