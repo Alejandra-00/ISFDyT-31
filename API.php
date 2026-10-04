@@ -1,8 +1,14 @@
 <?php
+// Desactivar la impresión de warnings/errors HTML en la salida JSON
+ini_set('display_errors', 0);
+error_reporting(0);
+
+// Limpiar cualquier buffer o espacio en blanco previo
+if (ob_get_length()) ob_clean();
+
 include("conexion.php");
 
 header("Content-Type: application/json; charset=UTF-8");
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $jsonRecibido = file_get_contents('php://input');
@@ -18,8 +24,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             case 'registroPagos':
                 switch ($consulta) {
                     case 'Readusuarios':
-                        if (ob_get_length()) ob_clean();
-
                         $id_usuarios = (int)($datos['id_usuario'] ?? 0);
 
                         if ($id_usuarios === 0) {
@@ -115,22 +119,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $fotoBase64 = $datos["foto"] ?? ""; 
                         $fecha = date('Y-m-d');
 
-                        if ($id_pago === 0) {
+                        if ($id_pago === 0 || empty($fotoBase64)) {
                             http_response_code(400);
-                            echo json_encode(["error" => "El pago no se encontró."]);
+                            echo json_encode(["error" => "Faltan datos obligatorios (ID o Imagen)."]);
                             break;
                         }
 
+                        // Decodificar Base64 a binario para guardarlo en MEDIUMBLOB
+                        if (strpos($fotoBase64, ',') !== false) {
+                            @list(, $fotoBase64) = explode(',', $fotoBase64);
+                        }
+                        $blobData = base64_decode($fotoBase64);
+
+                        if ($blobData === false) {
+                            http_response_code(400);
+                            echo json_encode(["error" => "No se pudo procesar el formato de la imagen."]);
+                            break;
+                        }
+
+                        // Insertar imagen en comprobante
                         $stmtFoto = $conexion->prepare("INSERT INTO comprobante (foto) VALUES (?)");
                         if ($stmtFoto) {
-                            $stmtFoto->bind_param("s", $fotoBase64);
+                            $stmtFoto->bind_param("s", $blobData);
                             
                             if ($stmtFoto->execute()) {
-                                // Obtenemos el ID del comprobante que se acaba de crear
                                 $id_comprobante = $stmtFoto->insert_id;
                                 $stmtFoto->close();
 
-                                // Actualizar registropagos con el nuevo id_comprobante, fecha e id_estado
+                                // Actualizar registropagos con el nuevo comprobante y estado
                                 $stmtPago = $conexion->prepare("UPDATE registropagos SET id_estado = ?, fecha = ?, id_comprobante = ? WHERE id = ?");
                                 if ($stmtPago) {
                                     $stmtPago->bind_param("isii", $id_estado, $fecha, $id_comprobante, $id_pago);
@@ -139,18 +155,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         echo json_encode(["mensaje" => "Pago actualizado correctamente"]);
                                     } else {
                                         http_response_code(500);
-                                        echo json_encode(["error" => "Error al actualizar el pago."]);
+                                        echo json_encode(["error" => "Error al actualizar la tabla de pagos."]);
                                     }
                                     $stmtPago->close();
                                 }
                             } else {
                                 http_response_code(500);
-                                echo json_encode(["error" => "Error al guardar el comprobante."]);
+                                echo json_encode(["error" => "Error MySQL al guardar la imagen: " . $stmtFoto->error]);
                                 $stmtFoto->close();
                             }
                         } else {
                             http_response_code(500);
-                            echo json_encode(["error" => "Error al preparar la inserción del comprobante."]);
+                            echo json_encode(["error" => "Error al preparar la consulta SQL: " . $conexion->error]);
                         }
                     break;
 
@@ -197,7 +213,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             exit;
                         }
 
-                        $stmt = $conexion->prepare("INSERT INTO registropagos (id_usuario, id_monto, id_estado, id_comprobante) VALUES (?, ?, ?, ?)");
+                        $stmt = $conexion->prepare("INSERT INTO registropagos (id_usuarios, id_monto, id_estado, id_comprobante) VALUES (?, ?, ?, ?)");
                         $stmt->bind_param("iiii", $id_usuario, $id_monto, $id_estado, $id_comprobante);
 
                         if ($stmt->execute()) {

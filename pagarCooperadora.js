@@ -1,3 +1,7 @@
+document.addEventListener('DOMContentLoaded', () => {
+   obtenerDatosPagos();
+});
+
 function copiarElemento(idElemento) {
    const texto = document.getElementById(idElemento).innerText;
    navigator.clipboard.writeText(texto)
@@ -36,16 +40,14 @@ function comprobanteSeleccionado() {
 function aceptarComprobante() {
    const input = document.getElementById('subir');
    if (!input.files || input.files.length === 0) {
-      alert("Debes adjuntar una foto del comprobante.");
+      const mensajeComprobante = document.getElementById('mensajeComprobante');
+      mensajeComprobante.innerText = "Debes adjuntar una foto del comprobante.";
+      mensajeComprobante.style.display = "block";
       return;
    }
    // Al pulsar Aceptar, oculta 'enviarComprobante' y vuelve a 'pasarela'
    mostrar('pasarela');
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-   obtenerDatosPagos();
-});
 
 function obtenerDatosPagos() {
    const idPago = document.getElementById('idPagoActual').value;
@@ -76,11 +78,11 @@ function obtenerDatosPagos() {
 
 function evaluarVistasSegunEstado(estado) {
    if (estado === 'Pendiente') {
-      // Si está pendiente, se muestran PASARELA y CUOTAPENDIENTE juntos
-      mostrar('pasarela', 'cuotaPendiente');
+      // Si está pendiente, se muestra PASARELA
+      mostrar('pasarela');
       desactivarBotones('Pendiente');
    } else if (estado === 'Pago') {
-      // Si el admin ya validó el pago, se oculta cuotaPendiente y queda solo PASARELA
+      // Si el admin ya validó el pago, se muestra PASARELA
       mostrar('pasarela');
       desactivarBotones('Pago');
    } else {
@@ -104,7 +106,7 @@ function desactivarBotones(estado) {
       if (btnComprobante) btnComprobante.disabled = true;
       if (btnFactura) btnFactura.disabled = true;
    } else { // Impago
-      if (btnPago) btnPago.disabled = true; // Habilitar solo cuando adjunte comprobante
+      if (btnPago) btnPago.disabled = false;
       if (btnComprobante) btnComprobante.disabled = false;
       if (btnFactura) btnFactura.disabled = true;
    }
@@ -114,14 +116,18 @@ function enviarPagoAPI() {
    const idPagoInput = document.getElementById('idPagoActual');
    const idPago = idPagoInput ? idPagoInput.value : 0;
    const fileInput = document.getElementById('subir');
+   const mensajeEnvio = document.getElementById('mensajeEnvio');
+   const mensajeComprobante = document.getElementById('mensajeComprobante');
 
    if (!idPago || idPago === "0") {
-      alert("No se encontró el ID de pago a actualizar.");
+      mensajeEnvio = "No se encontró el ID del pago.";
+      mensajeEnvio.style.display = "block";
       return;
    }
 
    if (!fileInput.files || fileInput.files.length === 0) {
-      alert("Por favor, selecciona una foto del comprobante primero.");
+      mensajeComprobante = "Por favor, selecciona una foto del comprobante primero.";
+      mensajeComprobante.style.display = "block";
       return;
    }
 
@@ -129,46 +135,75 @@ function enviarPagoAPI() {
    const reader = new FileReader();
 
    reader.readAsDataURL(archivo);
-   reader.onload = function () {
-      const fotoBase64 = reader.result;
+   reader.onload = function (e) {
+      const img = new Image();
+      img.src = e.target.result;
 
-      const datosEnvio = {
-         recurso: 'registroPagos',
-         consulta: 'UpdatePago',
-         id_pago: parseInt(idPago),
-         id_estado: 3, // ID 3 = Estado 'Pendiente' en la base de datos
-         foto: fotoBase64
-      };
+      img.onload = function () {
+         // Crear canvas para redimensionar y comprimir la imagen
+         const canvas = document.createElement('canvas');
+         const MAX_WIDTH = 1000; // Ancho máximo de 1000px (suficiente para un comprobante)
+         let scaleSize = 1;
 
-      fetch('API.php', {
-         method: 'POST',
-         headers: { 'Content-Type': 'application/json' },
-         body: JSON.stringify(datosEnvio)
-      })
-      .then(respuesta => respuesta.json())
-      .then(datos => {
-         if (datos.mensaje) {
-            // Muestra pasarela + cuotaPendiente juntos
-            mostrar('pasarela', 'cuotaPendiente');
-            
-            // Actualizar vista local a Pendiente
-            const elementosEstado = document.querySelectorAll('#verEstado, #verEstadoPendiente');
-            elementosEstado.forEach(el => el.textContent = 'Pendiente');
-            
-            desactivarBotones('Pendiente');
-         } else {
-            alert("Error: " + (datos.error || "No se pudo procesar el pago."));
+         if (img.width > MAX_WIDTH) {
+            scaleSize = MAX_WIDTH / img.width;
          }
-      })
-      .catch(error => {
-         console.error("Error al enviar el pago:", error);
-         alert("Ocurrió un error al intentar conectar con el servidor.");
-      });
+
+         canvas.width = img.width * scaleSize;
+         canvas.height = img.height * scaleSize;
+
+         const ctx = canvas.getContext('2d');
+         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+         // Convertir a JPEG comprimido al 70% de calidad
+         const fotoBase64Comprimida = canvas.toDataURL('image/jpeg', 0.7);
+
+         const datosEnvio = {
+            recurso: 'registroPagos',
+            consulta: 'UpdatePago',
+            id_pago: parseInt(idPago),
+            id_estado: 3, 
+            foto: fotoBase64Comprimida
+         };
+
+         // Enviar al servidor
+         fetch('API.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(datosEnvio)
+         })
+         .then(async respuesta => {
+            const texto = await respuesta.text();
+            
+            try {
+               return JSON.parse(texto);
+            } catch (err) {
+               mensajeEnvio = "Respuesta cruda de PHP (no es JSON):" + texto;
+               throw new Error("El servidor devolvió una respuesta no válida. Revisa la consola.");
+            }
+         })
+         .then(datos => {
+            if (datos.mensaje) {
+               mensajeEnvio = "¡Pago enviado con éxito!";
+               if (typeof mostrar === "function") mostrar('pasarela');
+
+               const elementosEstado = document.querySelectorAll('#verEstado, #verEstadoPendiente');
+               elementosEstado.forEach(el => el.textContent = 'Pendiente');
+            } else {
+               mensajeEnvio = "Error: " + (datos.error || "No se pudo actualizar el pago.");
+            }
+         })
+         .catch(error => {
+            console.error("Detalle del error:", error);
+            mensajeEnvio = "Ocurrió un error al enviar el pago." + error;
+         });
+      };
    };
 }
 
 function descargarFactura() {
    const idPago = document.getElementById('idPagoActual').value;
+   const mensajeFactura = document.getElementById('mensajeFactura');
 
    // 1. Obtener datos desde la API
    fetch('API.php', {
@@ -186,7 +221,8 @@ function descargarFactura() {
    })
    .then(datosAPI => {
       if (!datosAPI || datosAPI.error) {
-         alert("Error al obtener los datos del pago: " + (datosAPI.error || "Sin respuesta."));
+         mensajeFactura.innerText = "Error al obtener los datos del pago: " + (datosAPI.error || "Sin respuesta.");
+         mensajeFactura.style.display = "block";
          return;
       }
 
@@ -201,7 +237,8 @@ function descargarFactura() {
       if (!res.ok) {
          // Si factura.php da un error (ej. 500), leemos el texto para saber la causa exacta
          return res.text().then(textoError => {
-            console.error("Detalle del error en factura.php:", textoError);
+            mensajeFactura.innerText = "Detalle del error en factura.php:", textoError;
+            mensajeFactura.style.display = "block";
             throw new Error("Error en el servidor al generar la factura.");
          });
       }
@@ -219,7 +256,7 @@ function descargarFactura() {
       window.URL.revokeObjectURL(url);
    })
    .catch(error => {
-      console.error("Error al descargar la factura:", error);
-      alert("Ocurrió un error al intentar descargar la factura. Revisa la consola para más detalles.");
+      mensajeFactura.innerText = "Ocurrió un error al intentar descargar la factura. Revisa la consola para más detalles." + error;
+      mensajeFactura.style.display = "block";
    });
 }

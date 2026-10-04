@@ -37,6 +37,7 @@
                     <p class="fuente" id="verMonto">0</p>
                     <p id="alias" onclick="copiarElemento('alias')" class="fuente">Cooperadora.31</p>
                     <p id="cvu" onclick="copiarElemento('cvu')" class="fuente">0140354901617701138618</p>
+                    <p class="fuente" id="mensajeEstado" style="display:none; text-align:center; font-family:Tamrin; font-size:12px; color: yellow; margin-top: 10px;"></p>
                 </div>
                 <div class="estado">
                     <p class="fuente" id="verEstado"></p>
@@ -53,6 +54,8 @@
                         Descargar factura
                     </span>
                 </button>
+                
+                <p id="mensajeFactura" style="display:none; text-align:center; font-family:Tamrin; font-size:12px; color: yellow; margin-top: 10px;"></p>
             </div>
 
             <div class="linea"></div>
@@ -63,6 +66,8 @@
                         Enviar comprobante de pago
                     </span>
                 </button>
+
+                <p id="mensajeEnvio" style="display:none; text-align:center; font-family:Tamrin; font-size:12px; color: yellow; margin-top: 10px;"></p>
                     
                 <input type="file" id="subir" name="comprobante" accept="image/*" style="display: none;" onchange="comprobanteSeleccionado()">
                 <button type="button" class="fuente btn" onclick="enviarPagoAPI()" id="BtnEnviarPago">Enviar pago</button>
@@ -79,31 +84,10 @@
                     <span class="fuente texto" id="textoSubir">Subir foto del comprobante</span>
                 </label>
             </div>
+
             <button type="button" class="fuente btnEnviar" onclick="aceptarComprobante()">Aceptar</button>
-        </div>
-
-        <!-- Contenedor cuota pendiente -->
-        <div class="contenedor" id="cuotaPendiente">
-            <h1 class="fuente titulo">Comprobante de pago</h1>
-
-            <div class="info">
-                <div class="estado">
-                    <p class="fuente" id="verEstadoPendiente"></p>
-                </div>
-                <div class="datos">
-                    <p class="fuente">Te informaremos cuando el pago haya sido validado.</p>
-                </div>
-            </div>
-
-            <div class="linea"></div>
-            <div class="enviar">
-                <button type="button" onclick="mostrar('enviarComprobante')">
-                    <span class="fuente" style="display: flex; align-items: center;">
-                        <img src="iconos/enviar.png" alt="Enviar">
-                        Enviar comprobante de pago
-                    </span>
-                </button>
-            </div>
+            
+            <p id="mensajeComprobante" style="display:none; text-align:center; font-family:Tamrin; font-size:12px; color: yellow; margin-top: 10px"></p>
         </div>
     </div>
     <script src="pagarCooperadora.js"></script>
