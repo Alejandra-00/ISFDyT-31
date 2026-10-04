@@ -37,13 +37,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             registropagos.fecha, 
                             monto.importe AS monto, 
                             estadopago.nombre AS estadopago, 
-                            comprobante.foto, 
                             meses.nombre AS meses
                             FROM registropagos
-                            LEFT JOIN usuarios ON registropagos.id_usuarios = usuarios.id
                             LEFT JOIN monto ON registropagos.id_monto = monto.id
                             LEFT JOIN estadopago ON registropagos.id_estado = estadopago.id
-                            LEFT JOIN comprobante ON registropagos.id_comprobante = comprobante.id
                             LEFT JOIN meses ON registropagos.id_mes = meses.id_mes
                             WHERE registropagos.id_usuarios = ?
                         ";
@@ -52,22 +49,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         if ($stmt) {
                             mysqli_stmt_bind_param($stmt, "i", $id_usuarios);
-                            
                             if (mysqli_stmt_execute($stmt)) {
                                 $resultado = mysqli_stmt_get_result($stmt);
                                 $pagos = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
-                                
-                                http_response_code(200);
                                 echo json_encode($pagos);
                             } else {
                                 http_response_code(500);
-                                echo json_encode(["error" => "Error SQL: " . mysqli_stmt_error($stmt)]);
+                                echo json_encode(["error" => "Error al ejecutar consulta SQL."]);
                             }
-                            
                             mysqli_stmt_close($stmt);
-                        } else {
-                            http_response_code(500);
-                            echo json_encode(["error" => "Error al preparar SQL: " . mysqli_error($conexion)]);
                         }
                     break;
                     

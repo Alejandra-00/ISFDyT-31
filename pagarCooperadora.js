@@ -65,11 +65,11 @@ function obtenerDatosPagos() {
          
          const textoEstado = datos.estadopago ?? 'Impago';
          
-         // Actualizar textos de estado en la pasarela y en cuotaPendiente
+         // Actualizar textos de estado en la pasarela
          const elementosEstado = document.querySelectorAll('#verEstado, #verEstadoPendiente');
          elementosEstado.forEach(el => el.textContent = textoEstado);
 
-         // Muestra los contenedores según el estado que viene de la BD
+         // Evaluar vistas Y actualizar estado disabled de botones
          evaluarVistasSegunEstado(textoEstado);
       }
    })
@@ -119,15 +119,23 @@ function enviarPagoAPI() {
    const mensajeEnvio = document.getElementById('mensajeEnvio');
    const mensajeComprobante = document.getElementById('mensajeComprobante');
 
+   // Limpiar mensajes previos
+   if (mensajeEnvio) mensajeEnvio.style.display = "none";
+   if (mensajeComprobante) mensajeComprobante.style.display = "none";
+
    if (!idPago || idPago === "0") {
-      mensajeEnvio = "No se encontró el ID del pago.";
-      mensajeEnvio.style.display = "block";
+      if (mensajeEnvio) {
+         mensajeEnvio.innerText = "No se encontró el ID del pago.";
+         mensajeEnvio.style.display = "block";
+      }
       return;
    }
 
    if (!fileInput.files || fileInput.files.length === 0) {
-      mensajeComprobante = "Por favor, selecciona una foto del comprobante primero.";
-      mensajeComprobante.style.display = "block";
+      if (mensajeComprobante) {
+         mensajeComprobante.innerText = "Por favor, selecciona una foto del comprobante primero.";
+         mensajeComprobante.style.display = "block";
+      }
       return;
    }
 
@@ -140,9 +148,8 @@ function enviarPagoAPI() {
       img.src = e.target.result;
 
       img.onload = function () {
-         // Crear canvas para redimensionar y comprimir la imagen
          const canvas = document.createElement('canvas');
-         const MAX_WIDTH = 1000; // Ancho máximo de 1000px (suficiente para un comprobante)
+         const MAX_WIDTH = 1000;
          let scaleSize = 1;
 
          if (img.width > MAX_WIDTH) {
@@ -155,18 +162,16 @@ function enviarPagoAPI() {
          const ctx = canvas.getContext('2d');
          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-         // Convertir a JPEG comprimido al 70% de calidad
          const fotoBase64Comprimida = canvas.toDataURL('image/jpeg', 0.7);
 
          const datosEnvio = {
             recurso: 'registroPagos',
             consulta: 'UpdatePago',
             id_pago: parseInt(idPago),
-            id_estado: 3, 
+            id_estado: 3, // Estado 'Pendiente'
             foto: fotoBase64Comprimida
          };
 
-         // Enviar al servidor
          fetch('API.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -174,28 +179,42 @@ function enviarPagoAPI() {
          })
          .then(async respuesta => {
             const texto = await respuesta.text();
-            
             try {
                return JSON.parse(texto);
             } catch (err) {
-               mensajeEnvio = "Respuesta cruda de PHP (no es JSON):" + texto;
-               throw new Error("El servidor devolvió una respuesta no válida. Revisa la consola.");
+               if (mensajeEnvio) {
+                  mensajeEnvio.innerText = "Respuesta del servidor no es JSON: " + texto;
+                  mensajeEnvio.style.display = "block";
+               }
+               throw new Error("Respuesta no válida del servidor.");
             }
          })
          .then(datos => {
             if (datos.mensaje) {
-               mensajeEnvio = "¡Pago enviado con éxito!";
+               if (mensajeEnvio) {
+                  mensajeEnvio.innerText = "¡Pago enviado con éxito!";
+                  mensajeEnvio.style.display = "block";
+               }
                if (typeof mostrar === "function") mostrar('pasarela');
 
                const elementosEstado = document.querySelectorAll('#verEstado, #verEstadoPendiente');
                elementosEstado.forEach(el => el.textContent = 'Pendiente');
+
+               // Deshabilitar/habilitar botones según el nuevo estado "Pendiente"
+               desactivarBotones('Pendiente');
             } else {
-               mensajeEnvio = "Error: " + (datos.error || "No se pudo actualizar el pago.");
+               if (mensajeEnvio) {
+                  mensajeEnvio.innerText = "Error: " + (datos.error || "No se pudo actualizar el pago.");
+                  mensajeEnvio.style.display = "block";
+               }
             }
          })
          .catch(error => {
             console.error("Detalle del error:", error);
-            mensajeEnvio = "Ocurrió un error al enviar el pago." + error;
+            if (mensajeEnvio) {
+               mensajeEnvio.innerText = "Ocurrió un error al enviar el pago: " + error.message;
+               mensajeEnvio.style.display = "block";
+            }
          });
       };
    };
