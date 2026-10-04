@@ -133,8 +133,15 @@ function cargarAlumnos() {
             const tdBoton = document.createElement('td');
             const btnInactivo = document.createElement('button');
             btnInactivo.className = 'btn-inactivo';
-            btnInactivo.innerHTML = '<img src="iconos/inactivo.png" alt="Inactivo">';
-            btnInactivo.onclick = () => marcarInactivo(dni);
+
+            // Según el estado, mostramos una imagen u otra
+            const activo = usuarios.activo == 1; // 1 = activo, 0 = inactivo
+            btnInactivo.innerHTML = activo
+                ? '<img src="iconos/inactivo.png" alt="Inactivar">'
+                : '<img src="iconos/activo.png" alt="Activar">';
+
+            // Al clickear, alternamos el estado
+            btnInactivo.onclick = () => cambiarEstadoActivo(usuarios.id, activo);
             tdBoton.appendChild(btnInactivo);
 
             fila.appendChild(tdDni);
@@ -196,8 +203,16 @@ function cargarVoluntarios() {
             const tdBoton = document.createElement('td');
             const btnInactivo = document.createElement('button');
             btnInactivo.className = 'btn-inactivo';
-            btnInactivo.innerHTML = '<img src="iconos/inactivo.png" alt="Inactivo">';
-            btnInactivo.onclick = () => marcarInactivo(dni);
+
+            // Según el estado, mostramos una imagen u otra
+            const activo = usuarios.activo == 1; 
+            btnInactivo.className =  'btn-inactivo';
+            btnInactivo.innerHTML = activo
+                ? '<img src="iconos/inactivo.png" alt="Inactivar">'
+                : '<img src="iconos/activo.png" alt="Activar">';
+
+            // Al clickear, alternamos el estado
+            btnInactivo.onclick = () => cambiarEstadoActivo(usuarios.id, activo);
             tdBoton.appendChild(btnInactivo);
 
             fila.appendChild(tdDni);
@@ -213,6 +228,103 @@ function cargarVoluntarios() {
     });
 }
 
+function cambiarEstadoActivo(idUsuario, activo) {
+    const consulta = activo ? 'Inactivate' : 'Activate';
+
+    fetch('API.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            recurso: 'usuarios',
+            consulta: consulta,
+            id: idUsuario
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            console.error('Error:', data.error);
+            return;
+        }
+        // Recargamos la tabla para reflejar el nuevo estado
+        cargarAlumnos();
+        cargarVoluntarios();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+function editarDNI(dni) {
+    fetch('API.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            recurso: 'usuarios',
+            consulta: 'ReadByDNI',
+            dni: dni
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            console.error('Error:', data.error);
+            return;
+        }
+        // Guardamos el id del usuario que vamos a editar
+        usuarioEditando = data.id;
+
+        // Prellenamos el input con el DNI actual
+        document.getElementById('nuevoDni').value = data.DNI || '';
+
+        // Mostramos el formulario de edición
+        mostrar('editarDni');
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+function guardarDni() {
+    const nuevoDni = document.getElementById('nuevoDni').value.trim();
+
+    if (!usuarioEditando) {
+        alert('No hay ningún usuario seleccionado para editar.');
+        return;
+    }
+    if (!nuevoDni) {
+        alert('Ingresá un DNI.');
+        return;
+    }
+
+    fetch('API.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            recurso: 'usuarios',
+            consulta: 'UpdateDNI',
+            id: usuarioEditando,
+            dni: nuevoDni
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            alert('Error: ' + data.error);
+            return;
+        }
+        alert('DNI actualizado correctamente.');
+        // Recargamos las tablas
+        cargarAlumnos();
+        cargarVoluntarios();
+        // Volvemos al inicio
+        mostrar('inicio');
+        usuarioEditando = null;
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
 // carreras
 
 // monto actual

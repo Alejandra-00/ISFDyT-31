@@ -427,6 +427,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                     break;
 
+                     case "ReadByDNI":
+                        $dni = trim($datos["dni"] ?? '');
+                        $stmt = $conexion->prepare("SELECT * FROM usuarios WHERE DNI = ?");
+                        $stmt->bind_param("s", $dni);
+                        $stmt->execute();
+                        $resultado = $stmt->get_result();
+
+                        if ($fila = $resultado->fetch_assoc()) {
+                            echo json_encode($fila);
+                        } else {
+                            http_response_code(404);
+                            echo json_encode(["error" => "Usuario no encontrado."]);
+                        }
+                        $stmt->close();
+                    break;
+
+                    case "UpdateDNI":
+                        $id = (int)$datos["id"];
+                        $dni = trim($datos["dni"]);
+
+                        // Verificar que el nuevo DNI no esté en uso por otro usuario
+                        $stmt_check = $conexion->prepare("SELECT id FROM usuarios WHERE DNI = ? AND id != ?");
+                        $stmt_check->bind_param("si", $dni, $id);
+                        $stmt_check->execute();
+                        $res_check = $stmt_check->get_result();
+
+                        if ($res_check->num_rows > 0) {
+                            http_response_code(409);
+                            echo json_encode(["error" => "El DNI ya se encuentra registrado."]);
+                            $stmt_check->close();
+                            break;
+                        }
+                        $stmt_check->close();
+
+                        $stmt = $conexion->prepare("UPDATE usuarios SET DNI = ? WHERE id = ?");
+                        $stmt->bind_param("si", $dni, $id);
+                        $stmt->execute();
+                        if ($stmt->affected_rows >= 0) {
+                            echo json_encode(["mensaje" => "DNI actualizado correctamente."]);
+                        } else {
+                            http_response_code(500);
+                            echo json_encode(["error" => "Error al actualizar el DNI."]);
+                        }
+                        $stmt->close();
+                    break;
+
+
                     case "Login":
                         $dni = trim($datos["dni"] ?? '');
                         $contrasena = $datos["contrasena"] ?? '';
@@ -456,7 +503,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $stmt->close();
                     break;
 
-                    case "Inactivate":
+                      case "Inactivate":
                         $id = $datos["id"];
                         $sql = "UPDATE usuarios
                                 SET activo = 0
@@ -469,6 +516,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         } else {
                             http_response_code(500);
                         }
+                    break;
+
+                    case "Activate":
+                        $id = $datos["id"];
+                        $sql = "UPDATE usuarios
+                                SET activo = 1
+                                WHERE id = $id";
+                        $resultado = mysqli_query($conexion, $sql);
+                        if ($resultado) {
+                            echo json_encode([
+                                "mensaje" => "Usuario activo."
+                            ]);
+                        } else {
+                            http_response_code(500);
+                        }
+                
                     break;
 
                     case "ExportarExcelUsuarios":

@@ -382,21 +382,22 @@ body {
 
 /* SECCIÓN DE SOCIOS */
 .socios-header {
-    position: relative;
     display: flex;
+    justify-content: center;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 25px;
+    min-height: 40px;
 }
 
 .socios-header h3 {
     margin: 0;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    position: static;
+    transform: none;
     text-align: center;
-    white-space: nowrap;   /* evita que el título se parta en dos líneas */
+    color: #a9cd46;
+    font-size: 1.4rem;
+    font-weight: normal;
 }
-
 .dni-con-boton {
     display: flex;
     align-items: center;
@@ -419,17 +420,23 @@ body {
 
 /* Botón inactivo */
 .btn-inactivo {
-    background: transparent;
+    width: 36px;
+    height: 36px;
+    background: #a9cd46;
     border: none;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
+    margin: 0 auto;
     padding: 4px;
 }
 
 .btn-inactivo img {
-    width: 28px;
-    height: 22px;
-    display: block;
-    margin: 0 auto;
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
 }
 
 #sociosAlumnos,
@@ -457,6 +464,7 @@ body {
     cursor: pointer;
 }
 
+
 #sociosAlumnos h3,
 #sociosVoluntarios h3 {
     color: #b8d46e;
@@ -471,50 +479,72 @@ body {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
+    table-layout: fixed;
 }
 
 /* Encabezado fijo */
 #sociosAlumnos thead,
 #sociosVoluntarios thead {
-    display: table;              /* Mantiene el encabezado como tabla */
+    display: table;
     width: 100%;
-    table-layout: fixed;         /* Fija el ancho de columnas */
+    table-layout: fixed;     /* Fija el ancho de columnas */
+}
+
+#sociosAlumnos thead th,
+#sociosVoluntarios thead th {
+    border: 2px solid #a9cd46;
+    border-bottom: 2px solid #a9cd46;
+    font-weight: bold;
+
 }
 
 /* Cuerpo con scroll */
 #sociosAlumnos tbody,
 #sociosVoluntarios tbody {
-    display: block;              /* Permite que el scroll funcione solo en el cuerpo */
-    max-height: 450px;           /* Altura máxima del área con scroll */
-    overflow-y: auto;            /* Barra de scroll vertical */
-    width: 100%;
+    display: table-row-group;
 }
+
+#sociosAlumnos thead,
+#sociosVoluntarios thead,
+#sociosAlumnos tbody,
+#sociosVoluntarios tbody {
+    display: table-header-group;
+}
+
 
 
 #sociosAlumnos th,
 #sociosAlumnos td,
 #sociosVoluntarios th,
 #sociosVoluntarios td {
-    width: 33.33%;               /* 3 columnas iguales */
+    width: 33.33%;
     box-sizing: border-box;
+    padding: 12px;
     text-align: center;
-    padding: 10px 12px;
-    padding-right: 150px; 
-    text-align: left;
-    border-bottom: 1px solid rgba(169, 205, 70, 0.3);
-    text-align: center;
+    color: #a9cd46;
 }
+
 
 #sociosAlumnos th,
 #sociosVoluntarios th {
-    font-weight: bold;
+    border: 2px solid #a9cd46;
     color: #a9cd46;
-    border-bottom: 2px solid #a9cd46;
+    font-weight: bold;
+    font-size: 1.1rem;
+    padding: 22px 10px;
+    text-align: center;
+    vertical-align: middle;
+    width: 33.33%;
 }
 
 #sociosAlumnos td,
 #sociosVoluntarios td {
+    padding: 16px 10px;
+    text-align: center;
     color: #a9cd46;
+    border-bottom: 1px solid rgba(169, 205, 70, 0.3);
+    vertical-align: middle;
+    width: 33.33%;
 }
 
 /* Botón de marcar como inactivo */
@@ -523,90 +553,73 @@ body {
     text-align: center;
 }
 
-/* SECCIÓN DESCARGAR DATOS */
-#descargarDatos.descargar-card {
-    opacity: 1;
+.editar-dni-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
     width: 100%;
-    max-width: 650px; /* Limita el ancho del panel */
-    min-height: auto;
-    align-self: center;
-    margin: auto 0; /* 'auto' arriba y abajo lo centra verticalmente en el espacio disponible */
-    padding: 20px 25px;
-    color: #a9cd46;
-    background: #0049acd4;
-    border-radius: 10px;
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 30px 40px;
+    background: rgba(11, 85, 178, 0.88);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
     box-sizing: border-box;
 }
 
-#descargarDatos.descargar-card.activo {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.descargar-header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 15px;
+.editar-dni-form h3,
+.editar-dni-form h2 {
     width: 100%;
-}
-
-.titulo-descargar {
-    color: #a9cd46;
-    font-size: 18px;
-    font-weight: normal;
     text-align: center;
-}
-
-.descargar-body {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    gap: 20px; /* Separación horizontal entre el bloque 'Desde' y 'Hasta' */
-    width: 100%;
-    margin-top: 10px;
-}
-
-.descargar-label {
-    display: block;
     color: #a9cd46;
-    font-size: 14px;
+    font-size: 1.6rem;
+    font-weight: bold;
+    margin-bottom: 10px;
 }
 
-.input-descargar {
-    width: 220px;
-    box-sizing: border-box;
-    padding: 6px 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+.editar-dni-form label {
+    display: none;
 }
 
-.grupo-descargar {
-    display: flex;
-    flex-direction: column;
-    gap: 6px; /* Espacio entre el label y el input */
+.editar-dni-form input::placeholder {
+    color: #091887;
+    opacity: 0.8;
 }
 
-.btn-exportar {
-    width: 220px;
-    justify-self: start;
-    padding: 6px 20px;
-    color: #0049ac;
+/* Botón Guardar cambios (A la derecha) */
+.editar-dni-form button,
+.editar-dni-form input[type="submit"] {
+    padding: 12px 25px;
     background: #a9cd46;
-    border: 0;
-    border-radius: 6px;
+    color: #091887;
+    border: none;
+    border-radius: 8px;
     font-family: 'Tamrin', sans-serif;
-    font-size: 14px;
+    font-size: 0.95rem;
+    font-weight: bold;
     cursor: pointer;
+    transition: transform 0.1s ease, opacity 0.2s ease;
 }
 
-.descargar-acciones-button {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    margin-top: 20px;
-    gap: 12px;
-    width: 100%;
+.editar-dni-form button:hover,
+.editar-dni-form input[type="submit"]:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
 }
+
+.editar-dni-form input[type="text"], /* Campo de texto para el nombre */
+.editar-dni-form input[type="number"], /* Campo de texto para el DNI */
+.editar-dni-form input {
+    width: 220px;
+    padding: 12px 20px;
+    background: #a9cd46;
+    color: #091887;
+    border: none;
+    border-radius: 25px;
+    font-family: 'Tamrin', sans-serif;
+    font-size: 1rem;
+    font-weight: bold;
+    outline: none;
+} 

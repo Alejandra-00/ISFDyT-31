@@ -86,9 +86,8 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- Socios alumnos -->
-             <div id="sociosAlumnos"  class="formulario tarjeta">
+            <!-- Socios -->
+              <div id="sociosAlumnos"  class="formulario">
                 <div class="socios-header">
                     <h3>Socios alumnos</h3>
                 </div>
@@ -105,12 +104,11 @@
                 </table>
             </div>
 
-            <!-- Socios voluntarios -->
-            <div id="sociosVoluntarios" class="formulario tarjeta">
+            <div id="sociosVoluntarios" class="formulario">
                 <div class="socios-header">
                     <h3>Socios voluntarios</h3>
                 </div>
-                 <table>
+                <table>
                     <thead>
                         <tr>
                             <th>DNI</th>
@@ -121,6 +119,15 @@
                     <tbody id="tablasocios-Voluntario" ></tbody>
                    
                 </table>
+            </div>
+
+            <div id="editarDni" class="formulario">
+                <h3>Editar DNI</h3>
+                <div class="editar-dni-form">
+                    <label for="nuevoDni">DNI</label>
+                    <input type="text" id="nuevoDni" placeholder="Nuevo DNI">
+                    <button class="btn-editar" onclick="guardarDni()">Guardar cambios</button>
+                </div>
             </div>
             
             <!-- Carreras -->
