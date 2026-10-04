@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     break;
                     
                     case 'Readpagos':
-                        $id_pago = (int)($datos['id_pago']);
+                        $id_pago = (int)($datos['id_pago'] ?? 0);
 
                         if ($id_pago === 0) {
                             http_response_code(400);
@@ -95,7 +95,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $resultado = mysqli_stmt_get_result($stmt);
                             $pago = mysqli_fetch_assoc($resultado);
                             
-                            echo json_encode($pago);
+                            if ($pago) {
+                                echo json_encode($pago);
+                            } else {
+                                http_response_code(404);
+                                echo json_encode(["error" => "El pago no fue encontrado en la base de datos."]);
+                            }
                             mysqli_stmt_close($stmt);
                         } else {
                             http_response_code(500);
@@ -161,32 +166,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     break;
 
                     case 'Read':
-                                $sql = "SELECT
-                                registropagos.id,
-                                registropagos.id_estado,
-                                usuarios.nombre_completo,
-                                monto.importe,
-                                estadopago.nombre AS estado,
-                                comprobante.foto,
-                                socio.nombre AS tipo_socio,
-                                carrera.nombre AS carrera,
-                                meses.nombre AS mes,
-                                registropagos.fecha
-                                FROM registropagos
-                                LEFT JOIN usuarios ON registropagos.id_usuarios = usuarios.id
-                                LEFT JOIN monto ON registropagos.id_monto = monto.id
-                                LEFT JOIN estadopago ON registropagos.id_estado = estadopago.id
-                                LEFT JOIN comprobante ON registropagos.id_comprobante = comprobante.id
-                                LEFT JOIN socio ON usuarios.id_socio = socio.id
-                                LEFT JOIN meses ON registropagos.id_mes = meses.id_mes
-                                LEFT JOIN carrera ON usuarios.id_carrera = carrera.id";
+                        $sql = "SELECT 
+                            registropagos.id,
+                            registropagos.id_estado,
+                            usuarios.nombre_completo,
+                            monto.importe,
+                            estadopago.nombre AS estado,
+                            TO_BASE64(comprobante.foto) AS foto_base64,
+                            socio.nombre AS tipo_socio,
+                            carrera.nombre AS carrera,
+                            meses.nombre AS mes,
+                            registropagos.fecha
+                        FROM registropagos
+                        LEFT JOIN usuarios ON registropagos.id_usuarios = usuarios.id
+                        LEFT JOIN monto ON registropagos.id_monto = monto.id
+                        LEFT JOIN estadopago ON registropagos.id_estado = estadopago.id
+                        LEFT JOIN comprobante ON registropagos.id_comprobante = comprobante.id
+                        LEFT JOIN socio ON usuarios.id_socio = socio.id
+                        LEFT JOIN meses ON registropagos.id_mes = meses.id_mes
+                        LEFT JOIN carrera ON usuarios.id_carrera = carrera.id_carrera";
+
                         $resultado = mysqli_query($conexion, $sql);
                         if ($resultado) {
                             $pagos = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
                             echo json_encode($pagos);
                         } else {
-                            http_response_code(502);
-                            echo json_encode(["error" => "Error de lectura."]);
+                            http_response_code(500);
+                            echo json_encode(["error" => "Error de lectura en la base de datos."]);
                         }
                     break;
 
@@ -619,7 +625,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     case 'Delete':
                         $id = $datos["id"] ;
-                        $sql = "DELETE FROM carrera WHERE id_carrera = $id";
+                        $sql = "DELETE FROM carrera WHERE id = $id";
                         $resultado = mysqli_query($conexion, $sql);
                         if ($resultado) {
                             echo json_encode(["mensaje" => "Carrera eliminada con éxito."]);
@@ -632,7 +638,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     case 'Update':
                         $id = $datos["id"];
                         $nombre = $datos["nombre"];
-                        $sql = "UPDATE carrera SET nombre = '$nombre' WHERE id_carrera = $id";
+                        $sql = "UPDATE carrera SET nombre = '$nombre' WHERE id = $id";
                         $resultado = mysqli_query($conexion, $sql);
                         if ($resultado) {
                             echo json_encode(["mensaje" => "Actualizado correctamente."]);
