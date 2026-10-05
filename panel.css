@@ -380,6 +380,87 @@ body {
     cursor: pointer;
 }
 
+/* SECCIÓN DESCARGAR DATOS */
+#descargarDatos.descargar-card {
+    opacity: 1;
+    width: 100%;
+    max-width: 650px; /* Limita el ancho del panel */
+    min-height: auto;
+    align-self: center;
+    margin: auto 0; /* 'auto' arriba y abajo lo centra verticalmente en el espacio disponible */
+    padding: 20px 25px;
+    color: #a9cd46;
+    background: #0049acd4;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+#descargarDatos.descargar-card.activo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.descargar-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.descargar-body {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 20px; /* Separación horizontal entre el bloque 'Desde' y 'Hasta' */
+    width: 100%;
+    margin-top: 10px;
+}
+
+.descargar-label {
+    display: block;
+    color: #a9cd46;
+    font-size: 14px;
+}
+
+.input-descargar {
+    width: 220px;
+    box-sizing: border-box;
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.grupo-descargar {
+    display: flex;
+    flex-direction: column;
+    gap: 6px; /* Espacio entre el label y el input */
+}
+
+.btn-exportar {
+    width: 220px;
+    justify-self: start;
+    padding: 6px 20px;
+    color: #0049ac;
+    background: #a9cd46;
+    border: 0;
+    border-radius: 6px;
+    font-family: 'Tamrin', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.descargar-acciones-button {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 12px;
+    width: 100%;
+}
+
 /* SECCIÓN DE SOCIOS */
 .socios-header {
     display: flex;
