@@ -764,10 +764,12 @@ function cargarPagos() {
         data.forEach(pago => { //recorre data
             const fila = document.createElement('tr'); //crea una nueva fila por cada elemento
 
-             let comprobanteHTML = '';
+            // La API devuelve el contenido del BLOB en Base64 como pago.foto
+            // Si no hay imagen asociada, la celda queda vacia
+            let comprobanteHTML = '';
             if (pago.foto && pago.foto.trim() !== '') {
-               let mimeType = 'image/jpeg'; // tipo de archivo por defecto
-                // detecta la cabecera si el string viene en Base64
+                let mimeType = 'image/jpeg'; // tipo de archivo por defecto
+                // Infiere el tipo MIME por la firma Base64 para reconstruir la Data URL
                 if (pago.foto.startsWith('/9j/')) {
                     mimeType = 'image/jpeg'; // JPG / JPEG
                 } else if (pago.foto.startsWith('iVBORw0KGg')) {
@@ -777,15 +779,16 @@ function cargarPagos() {
                 } else if (pago.foto.startsWith('JVBERi0')) {
                     mimeType = 'application/pdf'; // PDF
                 }
-                // Construye el enlace Data URL completo
+                // Si la API ya devolvio una Data URL se reutiliza; si no, se agrega su cabecera
                 const srcFoto = pago.foto.startsWith('data:') 
                     ? pago.foto 
                     : `data:${mimeType};base64,${pago.foto}`;
 
-                comprobanteHTML = `<img 
-                        src="${srcFoto}" 
+                comprobanteHTML = `
+                    <img
+                        src="${srcFoto}"
                         alt="Comprobante"
-                        onclick="mostrarComprobante('${srcFoto}')"
+                        class="comprobante"
                         style="
                             width: 100px;
                             height: 80px;
@@ -827,7 +830,17 @@ function cargarPagos() {
     });
 }
 
+document.addEventListener('click', function(event) {
+    if (event.target.classList.contains('comprobante')) {
+        const srcFoto = event.target.src;
+        // Al seleccionar la miniatura se abre el comprobante en una vista ampliada
+        mostrarComprobante(srcFoto);
+    }
+
+});
+
 function mostrarComprobante(srcFoto) {
+    // Crea una capa temporal con la imagen; al hacer clic en cualquier parte se cierra
     const modal = document.createElement('div');
     modal.style.position = 'fixed';
     modal.style.top = '0';
@@ -840,7 +853,6 @@ function mostrarComprobante(srcFoto) {
     modal.style.alignItems = 'center';
     modal.style.zIndex = '9999';
     modal.style.cursor = 'pointer';
-
     modal.innerHTML = `
         <img src="${srcFoto}" style="
             max-width: 90%;
