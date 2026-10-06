@@ -83,93 +83,92 @@
     <div class="EsquinaCirculo"></div>
     <img src="curvas/curva.png" alt="" class="EsquinaCurva">
     
-     <div class="FondoVerde"></div>
-    <img src="curvas/curva2.png" alt="" class="fondoAzul">
-    
-    <div class="ContenedorLogo">
-    <img src="iconos/logo.jpg" alt="" class="Logo">
-    </div>
-    <div class="Cooperadora">
-    <h1><span class="Verde">A</span>SOCIACIÓN <span class="Verde">C</span>OOPERADORA</h1>
-    </div>
-
-    <div class="Instituto">
-    <h2>Instituto Superior de Formación Docente y Técnica n°31</h2>
-    </div>
-
-    <div class="ContenedorLogoNegro">
-    <img src="iconos/logoNegro.png" alt="" class="LogoNegro">
-    </div>
-
-    <div class="ISFDYT"><span class="Verde">ISFDYT N°31</span></div>
-    <div class="Necochea">Necochea</div>
-
-    <div class="Contenedor"> 
-        <form method="POST" action="" class="form">
-            <h2>REGISTRARSE</h2> 
-
-            <div class="campo"> 
-                <label>DNI</label>
-                <input type="text" name="dni" maxlength="8" minlength="8" placeholder="Ingrese su DNI" required> 
-            </div> 
-
-            <div class="campo">
-                <label>NOMBRE COMPLETO</label> 
-                <input type="text" name="nombre_completo" placeholder="Ingrese su nombre completo" required> 
-            </div> 
-
-            <div class="campo email"> 
-                <label>E-MAIL</label> 
-                <input type="email" name="email" placeholder="Ingrese su e-mail" required>
+    <div class="FondoVerde">
+        <img src="curvas/curva2.png" alt="" class="fondoAzul">
+        
+        <div class="ContenedorLogo">
+            <img src="iconos/logo.jpg" alt="" class="Logo">
+        
+            <div class="TextosLogo">
+                <h1 class="Cooperadora"><span class="Verde">A</span>SOCIACIÓN <span class="Verde">C</span>OOPERADORA</h1>
+                <h2 class="Instituto">Instituto Superior de Formación Docente y Técnica n°31</h2>
             </div>
+        </div>
 
-            <div class="campo"> 
-                <label>TIPO DE SOCIO</label>
-                <select id="socio" name="socio" onchange="mostrarCarrera()" required>
-                    <option value="" disabled selected hidden>¿Qué tipo de voluntario sos?</option>
-                    <?php 
-                        $sql_socio = "SELECT * FROM socio";
-                        $resultadosocio = mysqli_query($conexion, $sql_socio);
-                        while ($row = $resultadosocio->fetch_assoc()): ?>
-                        <option value="<?= $row['id'] ?>"><?= htmlspecialchars($row['nombre']) ?></option>
-                    <?php endwhile; ?>
-                </select> 
-            </div> 
+        <div class="ContenedorLogoNegro">
+            <img src="iconos/logoNegro.png" alt="" class="LogoNegro">
 
-            <div class="campo"> 
-                <label>CARRERA</label>
-                <select id="carrera" name="carrera" required> 
-                    <option value="" disabled selected hidden>Seleccione su carrera</option>
-                    <?php 
-                        $sql_carrera = "SELECT * FROM carrera";
-                        $resultadoCarrera = mysqli_query($conexion, $sql_carrera);
-                        while ($row = $resultadoCarrera->fetch_assoc()): ?>
-                        <option value="<?= $row['id'] ?>"><?= htmlspecialchars($row['nombre']) ?></option>
-                    <?php endwhile; ?>
-                </select> 
-            </div> 
+            <div class="ISFDYT"><span class="Verde">ISFDYT N°31</span></div>
+            <div class="Necochea">Necochea</div>
+        </div>
 
-            <div class="campo"> 
-                <label>CONTRASEÑA</label> 
-                <input type="password" name="contrasena" placeholder="Ingrese su contraseña" required>
-            </div> 
+        <div class="Contenedor"> 
+            <form method="POST" action="" class="form">
+                <h2>REGISTRARSE</h2> 
 
-            <div class="campo"> 
-                <label>TELÉFONO</label> 
-                <input type="tel" name="telefono" placeholder="Ingrese su teléfono" required> 
-            </div> 
+                <div class="campo"> 
+                    <label>DNI</label>
+                    <input type="text" name="dni" maxlength="8" minlength="8" placeholder="Ingrese su DNI" required> 
+                </div> 
 
-            <?php if (!empty($mensajeError)): ?>
-                <div class="error" style="color: red; margin-bottom: 10px;"><?= htmlspecialchars($mensajeError) ?></div>
-            <?php endif; ?>
+                <div class="campo">
+                    <label>NOMBRE COMPLETO</label> 
+                    <input type="text" name="nombre_completo" placeholder="Ingrese su nombre completo" required> 
+                </div> 
 
-            <input type="hidden" name="recurso" value="usuarios">
-            <input type="hidden" name="consulta" value="Create">
-            
-            <button type="submit">CREAR CUENTA</button> 
+                <div class="campo email"> 
+                    <label>E-MAIL</label> 
+                    <input type="email" name="email" placeholder="Ingrese su e-mail" required>
+                </div>
 
-            <p class="login"> ¿Ya tienes una cuenta? <a href="iniciarSesion.php">¡Inicia sesión!</a> </p>
-        </form> 
+                <div class="campo"> 
+                    <label>TIPO DE SOCIO</label>
+                    <select id="socio" name="socio" onchange="mostrarCarrera()" required>
+                        <option value="" disabled selected hidden>¿Qué tipo de voluntario sos?</option>
+                        <?php 
+                            $sql_socio = "SELECT * FROM socio";
+                            $resultadosocio = mysqli_query($conexion, $sql_socio);
+                            while ($row = $resultadosocio->fetch_assoc()): ?>
+                            <option value="<?= $row['id'] ?>"><?= htmlspecialchars($row['nombre']) ?></option>
+                        <?php endwhile; ?>
+                    </select> 
+                </div> 
+
+                <div class="campo"> 
+                    <label>CARRERA</label>
+                    <select id="carrera" name="carrera" required> 
+                        <option value="" disabled selected hidden>Seleccione su carrera</option>
+                        <?php 
+                            $sql_carrera = "SELECT * FROM carrera";
+                            $resultadoCarrera = mysqli_query($conexion, $sql_carrera);
+                            while ($row = $resultadoCarrera->fetch_assoc()): ?>
+                            <option value="<?= $row['id'] ?>"><?= htmlspecialchars($row['nombre']) ?></option>
+                        <?php endwhile; ?>
+                    </select> 
+                </div> 
+
+                <div class="campo"> 
+                    <label>CONTRASEÑA</label> 
+                    <input type="password" name="contrasena" placeholder="Ingrese su contraseña" required>
+                </div> 
+
+                <div class="campo"> 
+                    <label>TELÉFONO</label> 
+                    <input type="tel" name="telefono" placeholder="Ingrese su teléfono" required> 
+                </div> 
+
+                <?php if (!empty($mensajeError)): ?>
+                    <div class="error" style="color: red; margin-bottom: 10px;"><?= htmlspecialchars($mensajeError) ?></div>
+                <?php endif; ?>
+
+                <input type="hidden" name="recurso" value="usuarios">
+                <input type="hidden" name="consulta" value="Create">
+                
+                <button type="submit">CREAR CUENTA</button> 
+
+                <p class="login"> ¿Ya tienes una cuenta? <a href="iniciarSesion.php">¡Inicia sesión!</a> </p>
+            </form> 
+        </div>
     </div> 
     <script src="registrarse.js"></script>
 </body> 

@@ -460,7 +460,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                     break;
 
-                     case "ReadByDNI":
+                    case "ReadByDNI":
                         $dni = trim($datos["dni"] ?? '');
                         $stmt = $conexion->prepare("SELECT * FROM usuarios WHERE DNI = ?");
                         $stmt->bind_param("s", $dni);
@@ -561,7 +561,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $stmt->close();
                     break;
 
-
                     case "Login":
                         $dni = trim($datos["dni"] ?? '');
                         $contrasena = $datos["contrasena"] ?? '';
@@ -591,7 +590,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $stmt->close();
                     break;
 
-                      case "Inactivate":
+                    case "Inactivate":
                         $id = $datos["id"];
                         $sql = "UPDATE usuarios
                                 SET activo = 0

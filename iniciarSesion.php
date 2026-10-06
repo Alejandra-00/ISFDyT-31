@@ -68,27 +68,25 @@
 <body>
     <div class="EsquinaCirculo"></div>
     <img src="curvas/curva.png" alt="" class="EsquinaCurva">
-
-    <div class="FondoVerde"></div>
-    <img src="curvas/curva2.png" alt="" class="fondoAzul">
     
-    <div class="ContenedorLogo">
-        <img src="iconos/logo.jpg" alt="" class="Logo">
-    </div>
-    <div class="Cooperadora">
-        <h1><span class="Verde">A</span>SOCIACIÓN <span class="Verde">C</span>OOPERADORA</h1>
-    </div>
+    <div class="FondoVerde">
+        <img src="curvas/curva2.png" alt="" class="fondoAzul">
+        
+        <div class="ContenedorLogo">
+            <img src="iconos/logo.jpg" alt="" class="Logo">
+        
+            <div class="TextosLogo">
+                <h1 class="Cooperadora"><span class="Verde">A</span>SOCIACIÓN <span class="Verde">C</span>OOPERADORA</h1>
+                <h2 class="Instituto">Instituto Superior de Formación Docente y Técnica n°31</h2>
+            </div>
+        </div>
 
-    <div class="Instituto">
-        <h2>Instituto Superior de Formación Docente y Técnica N°31</h2>
-    </div>
+        <div class="ContenedorLogoNegro">
+            <img src="iconos/logoNegro.png" alt="" class="LogoNegro">
 
-    <div class="ContenedorLogoNegro">
-        <img src="iconos/logoNegro.png" alt="" class="LogoNegro">
-    </div>
-    
-    <div class="ISFDYT"><span class="Verde">ISFDYT N°31</span></div>
-    <div class="Necochea">Necochea</div>
+            <div class="ISFDYT"><span class="Verde">ISFDYT N°31</span></div>
+            <div class="Necochea">Necochea</div>
+        </div>
 
     <div class="ContenedorFormulario">
         <form class="formulario" action="" method="POST">

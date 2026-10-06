@@ -37,85 +37,98 @@ body {
     background-color: #a9cd46;
 }
 
-.fondoAzul {    
+.fondoAzul {
     position: absolute;
     height: 436px;
     width: 445px;
     top: 50%;
-    left: 36.8%;
+    left: 27.5%;
     transform: translate(-50%, -50%);
 }
 
-.ContenedorLogo {    
+/* Contenedor principal del encabezado (Logo + Textos) */
+.ContenedorLogo {
     position: absolute;
-    height: 75px;
-    width: 75px;
-    top: 24.8%;
-    left: 23.7%;
-    transform: translate(-50%, -50%);
+    top: 3%;           
+    left: 1%;         
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 2;
 }
 
+/* Imagen del Logo */
 .Logo {
     border-radius: 50%;
-    width: 100%;
-    height: 100%;
+    width: 70px;
+    height: 70px;
+}
+
+.TextosLogo {
+    display: flex;
+    flex-direction: column;
 }
 
 .Cooperadora {
-    position: absolute;
-    font-size: 5.6px;
-    top: 22%;
-    left: 26.9%;
-    font-family: 'Tamrin';
-    
+    font-family: 'Tamrin', sans-serif;
+    font-size: 8px;   /* Aumentado (antes era 11px) */
+    font-weight: bold;
+    color: black;
+    margin: 0;
+    white-space: nowrap;
+}
+
+.Instituto {
+    font-family: 'Tamrin', sans-serif;
+    font-size: 6px;    /* Aumentado (antes era 7px) */
+    color: black;
+    margin: 0;
+    white-space: nowrap;
 }
 
 .Verde {
     color: #a9cd46;
 }
 
-.Instituto {
-    font-family: 'Tamrin';
-    font-size: 3.6px;
-    position: absolute;
-    top: 24.6%;
-    left: 27%
-}
-
+/* --- ILUSTRACIÓN PUENTE Y TEXTO INFERIOR --- */
 .ContenedorLogoNegro {
     position: absolute;
-    height: 170px;
-    width: 287px;
-    top: 35%;
-    left: 22.5%;
+    top: 52%;          /* Ajuste leve para mantenerlo centrado verticalmente con su nuevo tamaño */
+    left: 24%;         /* Se conserva la posición original */
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 2;
 }
 
 .LogoNegro {
-    height: 100%;
-    width: 100%;
+    width: 260px;      
+    height: auto;
 }
 
 .ISFDYT {
-    position: absolute;
-    font-family: 'Tamrin';
-    font-size: 12px;
-    top: 60%;
-    left: 30.2%;
+    font-family: 'Tamrin', sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    color: #4d70bc; /* o el azul de fondo */
+    margin-top: 10px;
+    letter-spacing: 1px;
 }
 
 .Necochea {
-    position: absolute;
-    font-family: 'Tamrin';
-    font-size: 6px;
-    top: 62.2%;
-    left: 32.3%;
+    font-family: 'Tamrin', sans-serif;
+    font-size: 9px;
+    color: black;
+    text-transform: lowercase;
+    margin-top: 2px;
 }
 
 .ContenedorFormulario {
     position: absolute;
     width: 300px; 
     top: 52.5%;     
-    left: 65%;    
+    left: 73%;    
     transform: translate(-50%, -50%);
     display: flex;
     flex-direction: column;
@@ -289,50 +302,12 @@ input[type="text"] {
     text-align: center;
 }
 
-@media screen and (max-width: 1400px) and (min-width:768px), screen and (max-height: 800px) {
+@media screen and (max-width: 768px) and (min-width:768px), screen and (max-height: 800px) {
     /* 1. Mantener la tarjeta fija y escalada */
     .FondoVerde {
         width: 782px;
-        height: 456px;
-        transform: translate(-50%, -50%) scale(0.95);
-    }
-
-    /* 2. Acomodar Logo y Textos de la Cooperadora */
-    .ContenedorLogo {
-        top: 18.8%;
-        left: 20%;
-        width: 75px;
-        height: 75px;
-        transform: none;
-    }
-
-    .Cooperadora {
-        top: 21.4%;
-        left: 26.1%;
-        font-size: 6px;
-    }
-
-    .Instituto {
-        top: 24%;
-        left: 26.1%;
-        font-size: 4px;
-    }
-
-    .ContenedorLogoNegro {
-        top: 35%;
-        left: 22%;
-    }
-
-    .ISFDYT {
-        font-size: 12px;
-        top: 59.4%;
-        left: 29.6%;
-    }
-
-    .Necochea {
-        font-size: 6px;
-        top: 61.6%;
-        left: 32%;
+        height: 436px;
+        transform: translate(-50%, -50%) scale(0.9);
     }
 
     /* Centrar el Formulario dentro del lado verde */
@@ -439,15 +414,15 @@ input[type="text"] {
     }
 
     /* Contenedor del Formulario */
-    .ContenedorFormulario {
+    .Contenedor {
         position: relative !important;
         top: 0 !important;
         left: 0 !important;
-        width: 100% !important;
+        width: 85% !important;
         max-width: 380px !important;
         margin: 0 auto !important;
-        padding-top: 400px !important; /* <--- Subí o bajá este valor en píxeles para ubicar REGISTRARSE donde quieras */
-        transform: scale(1.5) !important;
+        padding-top: 450px !important;  
+        transform: none !important;
         z-index: 5 !important;
     }
 
