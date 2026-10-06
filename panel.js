@@ -82,10 +82,6 @@ function cargarInicio() {
                 listaVoluntarios.push(usuario);
             }
         });
-        usuarios.forEach(usuario => {
-            if (usuario.nombre_socio === 'Alumno') { alumnos++; }
-            if (usuario.nombre_socio === 'Voluntario') { voluntarios++; }
-        });
         document.getElementById('cantAlumnos').textContent = alumnos;
         document.getElementById('cantVoluntarios').textContent = voluntarios;
         document.getElementById('cantCarreras').textContent = carreras.length;
@@ -782,7 +778,7 @@ function cargarPagos() {
             const estadoSelect = `
                 <select onchange="cambiarEstadoPago(${pago.id}, this.value)" class="estado">
                     <option value="1" ${idEstadoActual === 1 ? 'selected' : ''}>Paga</option>
-                    <option value="2" ${idEstadoActual === 2 ? 'selected' : ''}>Inpaga</option>
+                    <option value="2" ${idEstadoActual === 2 ? 'selected' : ''}>Impaga</option>
                     <option value="3" ${idEstadoActual === 3 ? 'selected' : ''}>Pendiente</option>
                 </select>
             `; // onchange llama a la funcion y le pasa el id del pago y la opcion seleccionada
