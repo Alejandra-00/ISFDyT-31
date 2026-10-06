@@ -69,7 +69,7 @@
                     <div class="card-listado">
                         <div class="listado-header">
                             <h4>Socio alumno</h4>
-                            <button class="ver-todos" onclick="mostrar('sociosAlumnos')">Ver todos</button>
+                            <button class="ver-todos" onclick="mostrar('alumno')">Ver todos</button>
                         </div>
                         <div class="listado-item" id="socAlumno">
                         </div>
@@ -77,7 +77,7 @@
                     <div class="card-listado">
                         <div class="listado-header">
                             <h4>Socio voluntario</h4>
-                            <button class="ver-todos" onclick="mostrar('sociosVoluntarios')">Ver todos</button>
+                            <button class="ver-todos" onclick="mostrar('voluntario')">Ver todos</button>
                         </div>
                         <div class="listado-item" id="socVoluntario">
                         </div>
