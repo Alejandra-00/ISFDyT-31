@@ -69,17 +69,78 @@ function cargarInicio() {
             let alumnos = 0; 
             let voluntarios = 0;
 
+            const listaAlumnos = [];
+            const listaVoluntarios = [];
+
+        usuarios.forEach(usuario => {
+            if (usuario.nombre_socio === 'Alumno') { 
+                alumnos++; 
+                listaAlumnos.push(usuario);
+            }
+            if (usuario.nombre_socio === 'Voluntario') { 
+                voluntarios++; 
+                listaVoluntarios.push(usuario);
+            }
+        });
         usuarios.forEach(usuario => {
             if (usuario.nombre_socio === 'Alumno') { alumnos++; }
             if (usuario.nombre_socio === 'Voluntario') { voluntarios++; }
         });
         document.getElementById('cantAlumnos').textContent = alumnos;
         document.getElementById('cantVoluntarios').textContent = voluntarios;
-        document.getElementById('cantCarreras').textContent = carreras.length -1;
+        document.getElementById('cantCarreras').textContent = carreras.length;
 
         if (montos.length > 0) { // devuelve cuantos elementos hay
             const ultimoMonto = montos[montos.length - 1]; //obtiene el ultimo monto
             document.getElementById('montoActual').textContent = '$' + ultimoMonto.importe;
+        }
+
+        //obtiene los ultimos 5 alumnos y volunatarios registrados
+        const ultimosAlumnos = listaAlumnos
+            .sort((a, b) => b.id - a.id)
+            .slice(0, 5);
+
+        const ultimosVoluntarios = listaVoluntarios
+            .sort((a, b) => b.id - a.id)
+            .slice(0, 5);
+            
+        // Renderizar en HTML
+        const contAlumnos = document.getElementById('socAlumno');
+        if (contAlumnos) {
+            contAlumnos.innerHTML = '';
+            if (ultimosAlumnos.length === 0) {
+                contAlumnos.innerHTML = '<div class="listado-item"><span class="item-email">No hay alumnos registrados</span></div>';
+            } else {
+                ultimosAlumnos.forEach(alumno => {
+                    const item = document.createElement('div');
+                    item.className = 'listado-item';
+                    const dni = alumno.DNI ?? '';
+                    item.innerHTML = `
+                        <strong>${escapeHtml(alumno.nombre_completo)}</strong>
+                        <span class="item-dato">DNI: ${escapeHtml(dni)}</span>
+                    `;
+                    contAlumnos.appendChild(item);
+                });
+            }
+        }
+
+        const contVoluntarios = document.getElementById('socVoluntario');
+        if (contVoluntarios) {
+            contVoluntarios.innerHTML = '';
+            if (ultimosVoluntarios.length === 0) {
+                contVoluntarios.innerHTML = '<div class="listado-item"><span class="item-email">No hay voluntarios registrados</span></div>';
+            } else {
+                ultimosVoluntarios.forEach(voluntario => {
+                    const item = document.createElement('div');
+                    item.className = 'listado-item';
+                    const dni = voluntario.DNI ?? '';
+                    item.innerHTML = `
+                        <strong>${escapeHtml(voluntario.nombre_completo)}</strong>
+                        <span class="item-dato">DNI: ${escapeHtml(dni)}</span>
+                    `;
+                    contVoluntarios.appendChild(item);
+                });
+            }
         }
     })
     .catch(error => {

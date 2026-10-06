@@ -124,6 +124,7 @@ body {
     width: 15%;
 }
 
+
 .listados {
     margin-top: 10%;
     width: 100%;
@@ -147,12 +148,22 @@ body {
     align-items: center;
     margin-bottom: 15px;
 }
+.listado-item {
+    color: #a9cd46;
+    margin-bottom: 10px;
+}
 
-.listado-header h4, .item-email, .ver-todos {
+.listado-item strong {
+    font-size: 0.8rem;
+    color: #a9cd46;
+    font-family: 'Tamrin';
+}
+
+.listado-header h4, .item-dato, .ver-todos {
     color: #a9cd46;
 }
 
-.item-email {
+.item-dato {
     font-size: 0.7rem;
 }
 
@@ -208,6 +219,7 @@ body {
 .tabla-pagos {
     width: 100%;
     margin-top: 10px;
+    table-layout: auto;
     border-collapse: collapse;
     color: #a9cd46;
 }
@@ -219,6 +231,8 @@ body {
     text-align: center;
     vertical-align: middle;
     font-size: 15px;
+    word-wrap: break-word;   /* o overflow-wrap: break-word */
+    overflow-wrap: break-word;
 }
 
 .tabla-pagos th {

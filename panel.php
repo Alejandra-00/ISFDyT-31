@@ -72,7 +72,6 @@
                             <button class="ver-todos" onclick="mostrar('sociosAlumnos')">Ver todos</button>
                         </div>
                         <div class="listado-item" id="socAlumno">
-                            <span class="item-email">nombre@gmail.com</span>
                         </div>
                     </div>
                     <div class="card-listado">
@@ -81,7 +80,6 @@
                             <button class="ver-todos" onclick="mostrar('sociosVoluntarios')">Ver todos</button>
                         </div>
                         <div class="listado-item" id="socVoluntario">
-                            <span class="item-email">nombre@gmail.com</span>
                         </div>
                     </div>
                 </div>
