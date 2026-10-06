@@ -17,7 +17,7 @@
                 </a>
             </div>
             <nav>
-                <button onclick="mostrar('inicio')"><img src="iconos/proximo.png" alt="" style = "width: 19%">Inicio</button>
+                <button onclick="mostrar('inicio')"><img src="iconos/proximo.png" alt="" style = "width: 20%">Inicio</button>
                 <button onclick="mostrar('alumno'); cargarAlumnos()"><img src="iconos/usuario-azul.png" alt="Usuario" style= "width: 17%">Socios alumnos</button>
                 <button onclick="mostrar('voluntario'); cargarVoluntarios()"><img src="iconos/usuario-azul.png" alt="Usuario" style= "width: 17%">Socios voluntarios</button>
                 <button onclick="mostrar('carreras')"><img src="iconos/graduacion.png" alt="Carreras" style= "width: 19%">Carreras</button>
@@ -65,6 +65,7 @@
                         Cooperadora actual
                     </div>
                 </div>
+
                 <div class="listados">
                     <div class="card-listado">
                         <div class="listado-header">
@@ -193,7 +194,10 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
+                <div id="visorComprobante" class="visor-comprobante" onclick="cerrarComprobante()">
+                    <span class="cerrar-comprobante">&times;</span>
+                    <img id="imagenComprobante" class="imagen-comprobante-grande" onclick="event.stopPropagation()">
+                </div>
 
             <!-- Gráficos -->
             <div id="graficos" class="formulario tarjeta">

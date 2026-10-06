@@ -10,9 +10,10 @@
 body {
     margin: 0;
     padding: 0;
-    font-family: 'Tamrin';
+    font-family: 'Tamrin', sans-serif;
 }
 
+/* --- SECCIÓN INICIO --- */
 .inicio {
     min-height: 100vh;
     background-image: url('fondo/fondoISFDyT31.jpeg');
@@ -39,8 +40,6 @@ body {
     text-align: center;
     background-color: rgba(253, 253, 253, 0.671);
     border-radius: 40px;
-    transition: transform 0.8s;
-    transform-style: preserve-3d;
 }
 
 .card p {
@@ -52,6 +51,7 @@ body {
     font-size: 20px;
 }
 
+/* Seccion de preguntas frecuentes */
 .preguntas {
     background-color: #4d70bc;
     display: flex;
@@ -79,18 +79,56 @@ body {
     margin-top: 100px;
 }
 
-.pregunta {
+/* Cards giratorias (FLIP) */
+.pregunta-flip {
     width: 400px;
-    min-height: 180px;
+    height: 180px;
+    perspective: 1000px;
+    cursor: pointer;
+}
+
+.pregunta-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.6s ease-in-out;
+    transform-style: preserve-3d;
+}
+
+.pregunta-flip:hover .pregunta-inner {
+    transform: rotateY(180deg);
+}
+
+.pregunta-front, .pregunta-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: 20px;
+    padding: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
-    background-color: #a9cd46;
-    border-radius: 20px;
-    padding: 20px;
+    font-family: 'Tamrin', sans-serif;
     font-size: 18px;
     font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Frente de la tarjeta */
+.pregunta-front {
+    background-color: #a9cd46;
+    color: #000000;
+}
+
+/* Card parte de atras*/
+.pregunta-back {
+    background-color: #a9cd46;
+    color: #000000;
+    transform: rotateY(180deg);
 }
 
 .footer_separacion {

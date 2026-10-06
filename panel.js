@@ -27,18 +27,14 @@ function mostrar(id) {
     document.querySelectorAll('.formulario')
         .forEach(f => f.classList.remove('activo'));
     formulario.classList.add('activo');
-
-    if (id === 'verPagos') {
-        cargarPagos();
-    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     cargarInicio();
-    cargarPagos();
-    cargarMonto();
     cargarVoluntarios();
     cargarAlumnos();
+    cargarMonto();
+    cargarPagos();
 });
 
 // Inicio del panel
@@ -768,10 +764,37 @@ function cargarPagos() {
         data.forEach(pago => { //recorre data
             const fila = document.createElement('tr'); //crea una nueva fila por cada elemento
 
-            let comprobanteHTML = 'Sin archivo';
-            if (pago.foto) {
-                const srcFoto = pago.foto.startsWith('data:') ? pago.foto : `uploads/${pago.foto}`;
-                comprobanteHTML = `<a href="${srcFoto}" target="_blank"><img src="${srcFoto}" alt="Comprobante" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;"></a>`;
+             let comprobanteHTML = '';
+            if (pago.foto && pago.foto.trim() !== '') {
+               let mimeType = 'image/jpeg'; // tipo de archivo por defecto
+                // detecta la cabecera si el string viene en Base64
+                if (pago.foto.startsWith('/9j/')) {
+                    mimeType = 'image/jpeg'; // JPG / JPEG
+                } else if (pago.foto.startsWith('iVBORw0KGg')) {
+                    mimeType = 'image/png'; // PNG
+                } else if (pago.foto.startsWith('R0lGOD')) {
+                    mimeType = 'image/gif'; // GIF
+                } else if (pago.foto.startsWith('JVBERi0')) {
+                    mimeType = 'application/pdf'; // PDF
+                }
+                // Construye el enlace Data URL completo
+                const srcFoto = pago.foto.startsWith('data:') 
+                    ? pago.foto 
+                    : `data:${mimeType};base64,${pago.foto}`;
+
+                comprobanteHTML = `<img 
+                        src="${srcFoto}" 
+                        alt="Comprobante"
+                        onclick="mostrarComprobante('${srcFoto}')"
+                        style="
+                            width: 100px;
+                            height: 80px;
+                            object-fit: contain;
+                            cursor: pointer;
+                            border-radius: 5px;
+                        "
+                    >
+                `;
             }
 
             const idEstadoActual = parseInt(pago.id_estado); // obtiene id del estado y lo convierte a entero para comprarlo
@@ -802,6 +825,36 @@ function cargarPagos() {
         const tbody = document.getElementById('tablapagos');
         tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">Error al cargar los pagos.</td></tr>';
     });
+}
+
+function mostrarComprobante(srcFoto) {
+    const modal = document.createElement('div');
+    modal.style.position = 'fixed';
+    modal.style.top = '0';
+    modal.style.left = '0';
+    modal.style.width = '100%';
+    modal.style.height = '100%';
+    modal.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+    modal.style.display = 'flex';
+    modal.style.justifyContent = 'center';
+    modal.style.alignItems = 'center';
+    modal.style.zIndex = '9999';
+    modal.style.cursor = 'pointer';
+
+    modal.innerHTML = `
+        <img src="${srcFoto}" style="
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            cursor: default;
+            border-radius: 5px;
+        ">
+    `;
+    modal.onclick = function () {
+        modal.remove();
+    };
+
+    document.body.appendChild(modal);
 }
 
 function cambiarEstadoPago(idPago, idEstado) {

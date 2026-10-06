@@ -166,13 +166,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     break;
 
                     case 'Read':
+                        // Indicamos que la respuesta SIEMPRE es JSON
+                        header('Content-Type: application/json; charset=utf-8');
                         $sql = "SELECT 
                             registropagos.id,
                             registropagos.id_estado,
                             usuarios.nombre_completo,
                             monto.importe,
                             estadopago.nombre AS estado,
-                            TO_BASE64(comprobante.foto) AS foto_base64,
+                            TO_BASE64(comprobante.foto) AS foto,
                             socio.nombre AS tipo_socio,
                             carrera.nombre AS carrera,
                             meses.nombre AS mes,
@@ -185,14 +187,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         LEFT JOIN socio ON usuarios.id_socio = socio.id
                         LEFT JOIN meses ON registropagos.id_mes = meses.id_mes
                         LEFT JOIN carrera ON usuarios.id_carrera = carrera.id";
-
                         $resultado = mysqli_query($conexion, $sql);
                         if ($resultado) {
                             $pagos = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
-                            echo json_encode($pagos);
+                            $json = json_encode($pagos);
+                            // Si json_encode falla por caracteres o datos binarios corruptos
+                            if ($json === false) {
+                                http_response_code(500);
+                                echo json_encode(["error" => "Error al codificar JSON: " . json_last_error_msg()]);
+                            } else {
+                                echo $json;
+                            }
                         } else {
                             http_response_code(500);
-                            echo json_encode(["error" => "Error de lectura en la base de datos."]);
+                            echo json_encode(["error" => "Error en la consulta MySQL: " . mysqli_error($conexion)]);
                         }
                     break;
 

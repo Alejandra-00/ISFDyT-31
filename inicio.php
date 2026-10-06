@@ -13,13 +13,13 @@
             <section class="card">
                 <p>
                     Monto actual<br>
-                    <strong id="montoActual">$$$$</strong>
+                    <strong id="montoActual"></strong>
                 </p>
             </section>
             <section class="card">
                 <p>
                     Monto anterior<br>
-                    <strong id="montoAnterior">$$$$</strong>
+                    <strong id="montoAnterior"></strong>
                 </p>
             </section>
         </div>
@@ -29,14 +29,40 @@
         <div class="preguntas_contenido">
             <h1>Preguntas frecuentes</h1>
             <div class="preguntas_contenedor">
-                <div class="pregunta">
-                    Si tenes hermanos acercate a biblioteca
+                <!-- Card 1 -->
+                <div class="pregunta-flip">
+                    <div class="pregunta-inner">
+                        <div class="pregunta-front">
+                            ¿Tenes hermanos?
+                        </div>
+                        <div class="pregunta-back">
+                            Se registra uno y paga por los dos
+                        </div>
+                    </div>
                 </div>
-                <div class="pregunta">
-                    Dejar de pagar cooperadora
+
+                <!-- Card 2 -->
+                <div class="pregunta-flip">
+                    <div class="pregunta-inner">
+                        <div class="pregunta-front">
+                            ¿Dejás de pagar la cooperadora?
+                        </div>
+                        <div class="pregunta-back">
+                            Acercate a bibliota y solicitá en dirección darte de baja del sistema
+                        </div>
+                    </div>
                 </div>
-                <div class="pregunta">
-                    Si tu DNI es incorrecto solicita darte de baja en biblioteca
+
+                <!-- Card 3 -->
+                <div class="pregunta-flip">
+                    <div class="pregunta-inner">
+                        <div class="pregunta-front">
+                            ¿Tu DNI es incorrecto?
+                        </div>
+                        <div class="pregunta-back">
+                            Solicita darte de baja en biblioteca
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
