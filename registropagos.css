@@ -78,3 +78,40 @@ body {
     font-weight: bold;
     color: white;
 }
+
+/* ============ PANTALLAS PEQUEÑAS ============ */
+@media screen and (max-width: 768px) {
+    .cont {
+        width: 90%;
+        height: auto;
+        padding: 15px;
+    }
+
+    .registro td {
+        font-size: clamp(10px, 1.4vw,  ​12px);
+        padding: 8px 10px;
+    }
+
+    .registro tbody tr {
+        height: auto;
+        min-height: 44px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .cont {
+        width: 95%;
+        padding: 10px;
+        border-radius: 15px;
+    }
+
+    .registro td {
+        font-size: clamp(9px, 1.2vw,  ​11px);
+        padding: 6px 8px;
+    }
+
+    .registro tbody tr {
+        height: auto;
+        min-height: 40px;
+    }
+}

@@ -23,12 +23,11 @@ if (!isset($_SESSION['usuario'])) {
     <div class="cont">
         <form id="formPago" action="pagarCooperadora.php" method="POST">
             <input type="hidden" name="id_pago" id="id_pago" value="">
-            
-            <table class="registro">
-                <tbody id="tablapagos">
-                    
-                </tbody>
-            </table>
+                <table class="registro">
+                    <tbody id="tablapagos">
+                        
+                    </tbody>
+                </table>
         </form>
     </div>
     <script src="registropagos.js"></script>
