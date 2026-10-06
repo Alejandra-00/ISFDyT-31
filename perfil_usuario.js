@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Si no pasamos id, la API usará la sesión iniciada en el servidor
     // Obtener el ID del input oculto presente en nav.php
-    const idUsuario = document.getElementById('usuario')?.value;
+    const idusuario = document.getElementById('usuario')?.value;
     obtenerDatosUsuario(idusuario);
 });
 
