@@ -507,8 +507,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     break;
                     
                     case "Buscar":
-                        $busqueda = trim($datos["busqueda"] ?? '');
-                        $id_socio = (int)($datos["id_socio"] ?? 0);
+                        $busqueda = trim($datos["busqueda"] ?? ''); // obtener el la cadena de búsqueda del JSON
+                        $id_socio = (int)($datos["id_socio"] ?? 0); // obtener el id_socio del JSON, si no viene, será 0
 
                         if ($busqueda === '') {
                             http_response_code(400);
@@ -530,13 +530,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 FROM usuarios 
                                 INNER JOIN socio ON usuarios.id_socio = socio.id
                                 INNER JOIN carrera ON usuarios.id_carrera = carrera.id
-                                WHERE (usuarios.nombre_completo LIKE ? OR usuarios.DNI LIKE ?)";
+                                WHERE (usuarios.nombre_completo LIKE ? OR usuarios.DNI LIKE ?)"; // like sirve para buscar coincidencias parciales en la base de datos
 
                         // Si viene id_socio, filtrar por tipo (alumno o voluntario)
                         if ($id_socio > 0) {
-                            $sql .= " AND usuarios.id_socio = ?";
+                            $sql .= " AND usuarios.id_socio = ?"; // pregunta si el id_socio es mayor a 0, si es así, filtra por tipo de socio
                             $stmt = $conexion->prepare($sql);
-                            $stmt->bind_param("ssi", $busqueda, $busqueda, $id_socio);
+                            $stmt->bind_param("ssi", $busqueda, $busqueda, $id_socio); 
                         } else {
                             $stmt = $conexion->prepare($sql);
                             $stmt->bind_param("ss", $busqueda, $busqueda);

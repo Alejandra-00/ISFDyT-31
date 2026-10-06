@@ -173,8 +173,8 @@ function cargarVoluntarios() {
         const tbody = document.getElementById('tablasocios-Voluntario');
         tbody.innerHTML = '';
         data.forEach(usuarios => {
-            const dni = usuarios.DNI ?? '';
-            const nombre = usuarios.nombre_completo ?? '';
+            const dni = usuarios.DNI ?? ''; //llama el dni, si no tiene mostramos vacío
+            const nombre = usuarios.nombre_completo ?? ''; // llama el nombre, si no tiene nombre, mostramos vacío
 
             const fila = document.createElement('tr');
 
@@ -183,7 +183,7 @@ function cargarVoluntarios() {
             const contDni = document.createElement('div');
             contDni.className = 'dni-con-boton';
 
-            const spanDni = document.createElement('span');
+            const spanDni = document.createElement('span'); // span para mostrar el DNI
             spanDni.textContent = escapeHtml(dni);
 
             const btnEditar = document.createElement('button');
@@ -205,15 +205,15 @@ function cargarVoluntarios() {
             btnInactivo.className = 'btn-inactivo';
 
             // Según el estado, mostramos una imagen u otra
-            const activo = usuarios.activo == 1; 
-            btnInactivo.className =  'btn-inactivo';
+            const activo = usuarios.activo == 1;  
+            btnInactivo.className =  'btn-inactivo'; 
             btnInactivo.innerHTML = activo
-                ? '<img src="iconos/inactivo.png" alt="Inactivar">'
+                ? '<img src="iconos/inactivo.png" alt="Inactivar">' 
                 : '<img src="iconos/activo.png" alt="Activar">';
 
             // Al clickear, alternamos el estado
             btnInactivo.onclick = () => cambiarEstadoActivo(usuarios.id, activo);
-            tdBoton.appendChild(btnInactivo);
+            tdBoton.appendChild(btnInactivo); 
 
             fila.appendChild(tdDni);
             fila.appendChild(tdNombre);
@@ -229,7 +229,7 @@ function cargarVoluntarios() {
 }
 
 function cambiarEstadoActivo(idUsuario, activo) {
-    const consulta = activo ? 'Inactivate' : 'Activate';
+    const consulta = activo ? 'Inactivate' : 'Activate'; 
 
     fetch('API.php', {
         method: 'POST',
@@ -257,7 +257,7 @@ function cambiarEstadoActivo(idUsuario, activo) {
 
 // Refresca alumnos: si hay búsqueda activa, la repite; si no, carga todos
 function refrescarAlumnos() {
-    const busqueda = document.getElementById("barraBusquedaAlumnos").value.trim();
+    const busqueda = document.getElementById("barraBusquedaAlumnos").value.trim(); 
     if (busqueda === "") {
         cargarAlumnos();
     } else {
@@ -323,7 +323,7 @@ function guardarDni() {
         alert('No hay ningún usuario seleccionado para editar.');
         return;
     }
-    if (!nuevoDni) {
+    if (!nuevoDni) { 
         alert('Ingresá un DNI.');
         return;
     }
@@ -348,16 +348,16 @@ function guardarDni() {
         // Recargamos las tablas
         cargarAlumnos();
         cargarVoluntarios();
-        // Volver a donde estábamos, no al inicio
+        // Volver a donde estábamos
         setTimeout(() => {
             mostrar(seccionAnterior || 'inicio');
-            document.getElementById('mensajeEditarDni').textContent = '';
+            document.getElementById('mensajeEditarDni').textContent = ''; 
         }, 1500);
         usuarioEditando = null;
     })
 }
 
-async function buscarUsuariosAlumnos() {
+async function buscarUsuariosAlumnos() { 
     const busqueda = document.getElementById("barraBusquedaAlumnos").value.trim();
 
     // Si está vacío, recargar todos los alumnos
