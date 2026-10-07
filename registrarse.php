@@ -83,6 +83,7 @@
     <div class="EsquinaCirculo"></div>
     <img src="curvas/curva.png" alt="" class="EsquinaCurva">
     
+    <div class="fondoAzul-Celular"><img src="curvas/curva2 - celular.png" alt="fondoCelular"></div>
     <div class="FondoVerde">
         <img src="curvas/curva2.png" alt="" class="fondoAzul">
         

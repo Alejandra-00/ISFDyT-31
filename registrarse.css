@@ -38,6 +38,10 @@ body {
     background-color: #a9cd46;
 }
 
+.fondoAzul-Celular {
+    display: none;
+}
+
 .fondoAzul {
     position: absolute;
     height: 436px;
@@ -224,10 +228,8 @@ body {
     
 }
 
-/* =========================================================
-   RESPONSIVE - PANTALLAS MEDIANAS / TABLETS (1200px a 768px)
-   ========================================================= */
-@media screen and (max-width: 1200px) and (min-width: 768px), screen and (max-height: 800px) {
+@media screen and (max-width: 1400px) and (min-width: 768px), screen and (max-height: 800px) {
+    /* Escalado proporcional de la tarjeta de fondo */
     .FondoVerde {
         width: 90%;
         max-width: 782px;
@@ -235,6 +237,7 @@ body {
         transform: translate(-50%, -50%) scale(0.9);
     }
 
+    /* Contenedor alineado verticalmente al centro sin desfases */
     .Contenedor {
         right: 15px;
         top: 50%;
@@ -243,62 +246,74 @@ body {
     }
 }
 
-/* =========================================================
-   RESPONSIVE - MÓVILES (Hasta 767px)
-   ========================================================= */
 @media screen and (max-width: 767px) {
     html, body {
         width: 100% !important;
         min-height: 100vh !important;
         height: auto !important;
         overflow-x: hidden !important;
+        overflow-y: auto !important;
         background-color: #8dae6b !important;
         margin: 0 !important;
-        padding: 0 0 40px 0 !important;
+        padding: 0 0 50px 0 !important;
         display: block !important;
+        position: relative !important;
     }
 
-    /* Ocultar elementos decorativos del escritorio */
+    /* Ocultar únicamente las decoraciones de escritorio */
     .EsquinaCirculo,
     .EsquinaCurva,
-    .FondoVerde,
-    .ContenedorLogoNegro,
-    .ISFDYT,
-    .Necochea {
+    .fondoAzul,
+    .ContenedorLogoNegro {
         display: none !important;
     }
 
-    /* Imagen Curva Azul superior */
-    .fondoAzul {
-        content: url('curvas/curva2 - celular.png') !important;
-        position: relative !important;
-        top: 0 !important;
-        left: 0 !important;
+    /* Transformar el FondoVerde en un contenedor transparente para mostrar su contenido */
+    .FondoVerde {
+        position: static !important;
         width: 100% !important;
         height: auto !important;
-        max-width: 100vw !important;
+        max-width: none !important;
+        background-color: transparent !important;
+        border-radius: 0 !important;
         transform: none !important;
+        box-shadow: none !important;
         display: block !important;
+    }
+
+    .fondoAzul-Celular {
+        display: block !important;
+        position: relative !important;
+        width: 100% !important;
+        max-width: 100vw !important;
+        line-height: 0 !important;
         z-index: 1 !important;
     }
 
-    /* Encabezado centrador (Logo + Textos) */
+    .fondoAzul-Celular img {
+        width: 100% !important;
+        height: auto !important;
+        display: block !important;
+    }
+
     .ContenedorLogo {
         position: absolute !important;
-        top: 25px !important;
+        top: 18px !important;
         left: 50% !important;
         transform: translateX(-50%) !important;
-        width: 90% !important;
+        width: 92% !important;               /* Ocupa el área disponible sin salirse */
+        max-width: 360px !important;
         display: flex !important;
         justify-content: center !important;
         align-items: center !important;
-        gap: 12px !important;
-        z-index: 10 !important;
+        gap: clamp(4px, 1.5vw, 8px) !important;
+        z-index: 99 !important;
     }
 
+    /* Imagen del logo */
     .Logo {
-        width: 55px !important;
-        height: 55px !important;
+        width: clamp(26px, 8vw, 40px) !important;
+        height: clamp(26px, 8vw, 40px) !important;
         border-radius: 50% !important;
         flex-shrink: 0 !important;
     }
@@ -306,50 +321,63 @@ body {
     .TextosLogo {
         display: flex !important;
         flex-direction: column !important;
+        min-width: 0 !important;              /* Permite achicarse dentro de Flexbox */
+        flex-shrink: 1 !important;
     }
 
+    /* Título principal */
     .Cooperadora {
-        font-size: 11px !important;
-        font-weight: bold !important;
+        position: static !important;
+        transform: none !important;
+        font-size: clamp(6.5px, 2.1vw, 9.5px) !important;
         color: #000000 !important;
-        white-space: nowrap !important;
+        white-space: normal !important;        /* Permite adaptarse sin cortarse */
+        line-height: 1.1 !important;
+        margin: 0 !important;
     }
 
+    /* Subtítulo */
     .Instituto {
-        font-size: 8px !important;
+        position: static !important;
+        transform: none !important;
+        font-size: clamp(5px, 1.5vw, 6.5px) !important;
         color: #000000 !important;
-        white-space: nowrap !important;
+        white-space: normal !important;        /* Permite adaptarse sin cortarse */
+        line-height: 1.1 !important;
+        margin: 1px 0 0 0 !important;
     }
 
-    /* Contenedor del Formulario */
+    /* Formulario centrado abajo */
     .Contenedor {
         position: relative !important;
         top: 0 !important;
         left: 0 !important;
         width: 85% !important;
-        max-width: 380px !important;
-        margin: 40px auto 0 auto !important;
+        max-width: 360px !important;
+        margin: 25px auto 0 auto !important;
+        padding-top: 0 !important;
         transform: none !important;
         z-index: 5 !important;
     }
 
     .form {
         width: 100% !important;
-        display: grid !important;
-        grid-template-columns: 1fr !important;
-        gap: 12px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+        transform: none !important;
     }
 
     .form h2 {
-        grid-column: 1 / 2 !important;
-        font-size: 24px !important;
+        font-size: 22px !important;
         font-weight: bold !important;
         text-align: center !important;
-        margin-bottom: 15px !important;
+        margin-top: 0 !important;
+        margin-bottom: 10px !important;
     }
 
     .campo, .email, .error, .form button, .login {
-        grid-column: 1 / 2 !important;
+        width: 100% !important;
     }
 
     .campo label {
@@ -359,20 +387,23 @@ body {
 
     .campo input, .campo select {
         width: 100% !important;
-        height: 36px !important;
+        height: 38px !important;
         font-size: 11px !important;
-        border-radius: 18px !important;
+        border-radius: 20px !important;
         padding: 0 12px !important;
+        box-sizing: border-box !important;
     }
 
     .form button {
-        width: 140px !important;
-        height: 32px !important;
-        font-size: 10px !important;
-        margin-top: 10px !important;
+        width: 160px !important;
+        height: 36px !important;
+        font-size: 11px !important;
+        margin: 15px auto 0 auto !important;
+        border-radius: 20px !important;
     }
 
-    .login {
+    .login, .login a {
+        color: #000000 !important;
         font-size: 11px !important;
         text-align: center !important;
     }
