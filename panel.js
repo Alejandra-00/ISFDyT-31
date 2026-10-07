@@ -988,3 +988,237 @@ function exportarExcelUsuarios() {
         if (mensaje) mensaje.innerText = "Error al exportar usuarios: " + error;
     });
 }
+
+// ==========================================
+// SECCIÓN CARRERAS
+// ==========================================
+
+// Variable global para almacenar el ID de la carrera que se está editando.
+// Si vale 'null', indica que se creará una carrera nueva.
+let carreraEnEdicionId = null;
+
+/**
+ * Obtiene el listado de carreras desde el servidor y las dibuja en la tabla HTML.
+ */
+function cargarCarreras() {
+    // Referencias a los elementos del DOM (mensaje informativo y cuerpo de la tabla)
+    const mensaje = document.getElementById('mensajeCarreras');
+    const tbody = document.getElementById('tablaCarreras');
+    if (!tbody) return; // Si la tabla no existe en el DOM, interrumpe la ejecución
+
+    // Petición HTTP POST al servidor enviando JSON
+    fetch('API.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            recurso: 'carreras',
+            consulta: 'Read' // Solicita la lectura/obtención de datos
+        })
+    })
+    .then(response => {
+        // Verifica si la respuesta HTTP fue exitosa (código status 200-299)
+        if (!response.ok) throw new Error(`Error HTTP ${response.status}`);
+        return response.json(); // Parsea la respuesta como objeto JavaScript/JSON
+    })
+    .then(data => {
+        tbody.innerHTML = ''; // Limpia el contenido previo de la tabla
+
+        // Valida que los datos recibidos sean un arreglo y contengan información
+        if (!Array.isArray(data) || data.length === 0) {
+            if (mensaje) mensaje.innerText = 'No se encontraron carreras.';
+            return;
+        }
+
+        if (mensaje) mensaje.innerText = ''; // Limpia mensajes de error o estados anteriores
+
+        // Recorre cada carrera recibida para construir su fila en la tabla
+        data.forEach(carrera => {
+            const fila = document.createElement('tr'); // Crea la fila de la tabla
+            
+            // --- Columna 1: Nombre de la Carrera ---
+            const celdaNombre = document.createElement('td');
+            celdaNombre.textContent = carrera.nombre ?? ''; // Muestra el nombre o un texto vacío
+            fila.appendChild(celdaNombre);
+
+            // --- Columna 2: Botón Editar ---
+            const celdaEditar = document.createElement('td');
+            const btnEditar = document.createElement('button');
+            btnEditar.type = 'button';
+            btnEditar.className = 'btn-editar-dni';
+            btnEditar.title = 'Editar carrera';
+            btnEditar.innerHTML = '<img src="iconos/dni.png" alt="Editar">';
+            // Al hacer clic, invoca la función para preparar la edición de esta carrera
+            btnEditar.onclick = () => editarCarrera(carrera);
+            celdaEditar.appendChild(btnEditar);
+            fila.appendChild(celdaEditar);
+
+            // --- Columna 3: Botón Eliminar ---
+            const celdaEliminar = document.createElement('td');
+            const btnEliminar = document.createElement('button');
+            btnEliminar.type = 'button';
+            btnEliminar.className = 'btn-cancelar';
+            btnEliminar.textContent = 'Eliminar';
+            // Al hacer clic, invoca la función de eliminación pasando el ID correspondiente
+            btnEliminar.onclick = () => eliminarCarrera(carrera.id);
+            celdaEliminar.appendChild(btnEliminar);
+            fila.appendChild(celdaEliminar);
+
+            // Añade la fila completa al cuerpo de la tabla
+            tbody.appendChild(fila);
+        });
+    })
+    .catch(error => {
+        // Captura e informa en pantalla cualquier error ocurrido durante la petición
+        if (mensaje) mensaje.innerText = 'Error al cargar las carreras: ' + error.message;
+    });
+}
+
+/**
+ * Muestra el formulario para AGREGAR una carrera nueva.
+ */
+function mostrarFormularioCarrera() {
+    carreraEnEdicionId = null; // Reinicia la variable global (modo alta nueva)
+    document.getElementById('tituloFormularioCarrera').textContent = 'Agregar carrera'; // Actualiza el título
+    document.getElementById('nombreCarrera').value = ''; // Limpia el campo de texto
+    
+    // Oculta la vista con la tabla y despliega la vista del formulario
+    document.getElementById('vistaTablaCarreras').style.display = 'none';
+    document.getElementById('formularioCarrera').style.display = 'flex';
+    
+    document.getElementById('nombreCarrera').focus(); // Posiciona el cursor en el input
+}
+
+/**
+ * Muestra el formulario relleno para EDITAR una carrera existente.
+ * @param {Object} carrera - Objeto con los datos de la carrera seleccionada (id, nombre).
+ */
+function editarCarrera(carrera) {
+    carreraEnEdicionId = carrera.id; // Almacena el ID de la carrera a modificar
+    document.getElementById('tituloFormularioCarrera').textContent = 'Editar carrera'; // Actualiza el título
+    document.getElementById('nombreCarrera').value = carrera.nombre ?? ''; // Carga el nombre actual
+    
+    // Oculta la vista con la tabla y despliega la vista del formulario
+    document.getElementById('vistaTablaCarreras').style.display = 'none';
+    document.getElementById('formularioCarrera').style.display = 'flex';
+    
+    document.getElementById('nombreCarrera').focus(); // Posiciona el cursor en el input
+}
+
+/**
+ * Cancela la operación actual, oculta el formulario y regresa a la vista de la tabla.
+ */
+function cancelarFormularioCarrera() {
+    // Oculta el formulario de carga/edición y muestra nuevamente la tabla principal
+    document.getElementById('formularioCarrera').style.display = 'none';
+    document.getElementById('vistaTablaCarreras').style.display = 'block';
+    
+    // Limpia el input y resetea el ID en memoria
+    document.getElementById('nombreCarrera').value = '';
+    carreraEnEdicionId = null;
+}
+
+/**
+ * Guarda los datos del formulario (Creación o Edición) en la base de datos.
+ */
+function guardarCarrera() {
+    // Obtiene el nombre ingresado quitándole los espacios al inicio y final
+    const nombre = document.getElementById('nombreCarrera').value.trim();
+    const mensaje = document.getElementById('mensajeCarreras');
+    
+    // Validar que el campo no esté vacío
+    if (!nombre) {
+        alert('El nombre de la carrera no puede estar vacío.');
+        return;
+    }
+
+    // Si 'carreraEnEdicionId' es null ejecutamos 'Create', de lo contrario 'Update'
+    const consulta = carreraEnEdicionId === null ? 'Create' : 'Update';
+    
+    // Construye el objeto de datos que enviará al servidor
+    const payload = {
+        recurso: 'carreras',
+        consulta: consulta,
+        nombre: nombre
+    };
+    
+    // Si estamos editando, agregamos el ID al payload
+    if (carreraEnEdicionId !== null) {
+        payload.id = carreraEnEdicionId;
+    }
+
+    // Petición al backend
+    fetch('API.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    })
+    .then(response => {
+        if (!response.ok) throw new Error(`Error HTTP ${response.status}`);
+        return response.json();
+    })
+    .then(data => {
+        if (data.error) throw new Error(data.error); // Lanza un error si la API retorna fallo
+        
+        // Cierra el formulario y regresa visualmente a la tabla
+        cancelarFormularioCarrera();
+        
+        // Muestra un mensaje de éxito en verde
+        if (mensaje) {
+            mensaje.style.color = '#a9cd46';
+            mensaje.innerText = data.mensaje ||
+                (consulta === 'Create' ? 'Carrera agregada correctamente.' : 'Carrera actualizada correctamente.');
+        }
+        
+        // Recarga la lista de carreras para refrescar los datos en pantalla
+        cargarCarreras();
+    })
+    .catch(error => {
+        // Alerta en pantalla en caso de que ocurra algún fallo durante la operación
+        alert(`Error al ${consulta === 'Create' ? 'agregar' : 'editar'} la carrera: ${error.message}`);
+    });
+}
+
+/**
+ * Elimina una carrera según su ID previa confirmación del usuario.
+ * @param {number|string} id - El identificador único de la carrera a borrar.
+ */
+function eliminarCarrera(id) {
+    // Solicita confirmación al usuario mediante ventana modal
+    if (!confirm('¿Está seguro de que desea eliminar esta carrera?')) return;
+
+    const mensaje = document.getElementById('mensajeCarreras');
+    
+    // Envía la solicitud de eliminación a la API
+    fetch('API.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            recurso: 'carreras',
+            consulta: 'Delete',
+            id: id
+        })
+    })
+    .then(response => {
+        if (!response.ok) throw new Error(`Error HTTP ${response.status}`);
+        return response.json();
+    })
+    .then(data => {
+        if (data.error) throw new Error(data.error);
+        
+        // Notifica el éxito del borrado en verde
+        if (mensaje) {
+            mensaje.style.color = '#a9cd46';
+            mensaje.innerText = data.mensaje || 'Carrera eliminada correctamente.';
+        }
+        
+        // Vuelve a consultar y actualizar la tabla sin la carrera eliminada
+        cargarCarreras();
+    })
+    .catch(error => {
+        // Muestra mensaje de error en rojo en caso de fallar el borrado
+        if (mensaje) {
+            mensaje.style.color = 'red';
+            mensaje.innerText = 'Error al eliminar la carrera: ' + error.message;
+        }
+    });
+}

@@ -799,3 +799,82 @@ body {
    font-size:12px; 
    color: yellow; 
 }
+
+/* SECCIÓN CARRERAS */
+
+/* Estilo base para el input de carrera */
+#nombreCarrera {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 15px;
+    font-size: 16px;
+    border-radius: 8px; /* Redondea los bordes del input */
+    border: 1px solid #ccc; /* Define un borde suave cuando no está enfocado */
+    outline: none; /* Elimina el borde/contorno negro por defecto al seleccionar */
+}
+
+/* Estilo cuando el input está seleccionado/enfocado */
+#nombreCarrera:focus {
+    outline: none; /* Asegura eliminar el contorno negro */
+    border-color: #a9cd46; /* Opcional: cambia a un color personalizado al seleccionar */
+    box-shadow: 0 0 5px rgba(169, 205, 70, 0.5); /* Opcional: le da un ligero brillo visual */
+}
+
+.tabla-carreras {
+    width: 100%;
+    margin-top: 10px;
+    border-collapse: collapse;
+    color: #a9cd46;
+}
+
+.tabla-carreras th,
+.tabla-carreras td {
+    padding: 16px 10px;
+    border: 2px solid #a9cd46;
+    text-align: left;
+}
+
+.tabla-carreras th {
+    font-size: 15px;
+}
+
+.tabla-carreras td {
+    font-size: 15px;
+}
+
+.tabla-carreras input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 4px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#carreras {
+    opacity: 1;
+    width: 100%;
+    max-width: 1050px;
+    margin: auto;
+    padding: 20px 25px;
+    color: #a9cd46;
+    background: #0049acd4;
+    border-radius: 10px;
+    padding: 20px 25px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    color: #b8d46e;
+    box-sizing: border-box;
+    margin-top: 10%;
+}
+.editar-dni-form[hidden] {
+    display: none;
+}
+
+.formulario-carrera h3 {
+    color: #091887;
+    font-size: 1.6rem;
+    margin: 20px 0 0;
+}
+
+.formulario-carrera .editar-dni-form {
+    margin-top: 20px;
+}
