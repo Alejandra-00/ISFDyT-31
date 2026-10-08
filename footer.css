@@ -148,8 +148,55 @@
 }
 
 /* ===================================================
-   RESPONSIVE PARA PANTALLAS PEQUEÑAS / MÓVILES (<= 850px)
+   MEDIA QUERY PARA PANTALLAS 4K / ULTRA-HD (>= 2560px)
    =================================================== */
+@media screen and (min-width: 2560px) {
+    .section {
+        gap: 40px;
+        padding: 60px 120px 80px 120px;
+    }
+
+    .logo {
+        gap: 40px;
+    }
+
+    .logo-identificacion {
+        gap: 40px;
+    }
+
+    .ContenedorLogo {
+        height: 120px;
+        width: 120px;
+    }
+
+    .Cooperadora h1 {
+        font-size: 32px;
+    }
+
+    .Instituto h2 {
+        font-size: 22px;
+    }
+
+    .footer-content h3 {
+        margin-bottom: 10px;
+        font-size: 36px;
+    }
+
+    .footer-content h4 {
+        font-size: 24px;
+    }
+
+    .social-icons {
+        gap: 24px;
+    }
+
+    .social-icons .social-icon {
+        width: 64px;
+        height: 64px;
+        font-size: 28px;
+    }
+}
+
 @media screen and (max-width: 767px) {
     .footer {
         background-image: url("fondo/footer - celular.png");

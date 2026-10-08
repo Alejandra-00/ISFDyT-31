@@ -371,6 +371,32 @@ input[type="text"] {
     }
 }
 
+/* ===================================================
+   RESPONSIVE PARA PANTALLAS ULTRA ANCHAS (2K Y 4K)
+   =================================================== */
+
+/* Para monitores 2K (2560px) */
+@media screen and (min-width: 2000px) and (max-width: 2825px) {
+    .FondoVerde {
+        /* Agranda la tarjeta al doble de tamaño (200%) */
+        transform: translate(-50%, -50%) scale(2) !important;
+    }
+
+    .EsquinaCirculo {
+        transform: scale(2);
+        transform-origin: bottom left;
+    }
+
+    .EsquinaCurva {
+        transform: scale(2);
+        transform-origin: top right;
+    }
+
+    .modal-contenido {
+        transform: scale(1.8);
+    }
+}
+
 @media screen and (max-width: 767px) {
     html, body {
         width: 100% !important;
@@ -470,9 +496,10 @@ input[type="text"] {
     .Instituto {
         position: static !important;
         transform: none !important;
-        font-size: clamp(5.5px, 1.6vw, 7px) !important; /* Se ajusta entre 5.5px y 7px según la pantalla */
+        /* Forzamos a que mantenga 1 sola línea siempre */
+        white-space: nowrap !important;
+        font-size: clamp(5px, 1.8vw, 7.5px) !important;
         color: #000000 !important;
-        white-space: normal !important;        /* PERMITE adaptarse si es necesario */
         line-height: 1.1 !important;
         margin: 0 !important;
     }

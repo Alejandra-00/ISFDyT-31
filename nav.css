@@ -150,6 +150,51 @@
     display: block;
 }
 
+/* ===================================================
+   MEDIA QUERY PARA PANTALLAS 4K / ULTRA-HD (>= 2560px)
+   =================================================== */
+@media screen and (min-width: 2560px) {
+    .nav-contenedor {
+        padding-top: 20px;
+    }
+
+    .nav-barra {
+        height: 100px;
+        width: 1400px;
+        margin-top: 10px;
+    }
+
+    .nav-lista li {
+        margin-right: 30px;
+        margin-left: 30px;
+    }
+
+    .nav-lista a {
+        font-size: 26px;
+        padding-bottom: 4px;
+    }
+
+    .nav-lista a::after {
+        height: 4px;
+    }
+
+    .usuarios {
+        height: 64px;
+        width: 64px;
+    }
+
+    .dropdown-menu {
+        border-radius: 16px;
+        padding: 16px 0;
+        min-width: 320px;
+    }
+
+    .dropdown-menu a {
+        padding: 16px 32px;
+        font-size: 24px;
+    }
+}
+
 @media screen and (max-width: 767px) {
     .nav-contenedor {
         padding-top: 0;
