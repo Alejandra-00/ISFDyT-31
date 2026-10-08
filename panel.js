@@ -27,6 +27,16 @@ function mostrar(id) {
     document.querySelectorAll('.formulario')
         .forEach(f => f.classList.remove('activo'));
     formulario.classList.add('activo');
+
+    //Garantiza que al entrar a la sección de "Gráficos" o "Ver Pagos", 
+    // se vuelva a consultar a la API.php y se rendericen los datos más recientes para los graficos.
+    if (id === 'verPagos') {
+        cargarPagos();
+    }
+    // INVOCACIÓN AGREGADA PARA LA SECCIÓN GRÁFICOS
+    if (id === 'graficos') {
+        cargarGraficos();
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -35,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cargarAlumnos();
     cargarMonto();
     cargarPagos();
+    cargarGraficos();
 });
 
 // Inicio del panel
@@ -1219,6 +1230,160 @@ function eliminarCarrera(id) {
         if (mensaje) {
             mensaje.style.color = 'red';
             mensaje.innerText = 'Error al eliminar la carrera: ' + error.message;
+        }
+    });
+}
+
+// ==========================================
+// SECCIÓN GRÁFICOS
+// ==========================================
+
+// Variables para conservar las instancias de los gráficos y destruirlas antes de redibujar
+let chartUsuarios = null;
+let chartCarreras = null;
+let chartVoluntarios = null;
+
+// Registro global del plugin datalabels para mostrar números/porcentajes en las porciones
+if (typeof ChartDataLabels !== 'undefined') {
+    Chart.register(ChartDataLabels);
+}
+
+function cargarGraficos() {
+    // Registros de pagos para procesar (Paga: id_estado === 1)
+    fetch('API.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+            recurso: 'registroPagos', 
+            consulta: 'Read' })
+    })
+    .then(response => response.json())
+    .then(pagos => {
+        if (!Array.isArray(pagos)) return;
+
+        // Filtrar solo los pagos en estado "Paga" (id_estado = 1)
+        const pagosAprobados = pagos.filter(p => parseInt(p.id_estado) === 1);
+
+        renderGraficoUsuariosPagan(pagosAprobados);
+        renderGraficoCarrerasPagan(pagosAprobados);
+        renderGraficoVoluntariosPagan(pagosAprobados);
+    })
+    .catch(error => console.error('Error al procesar datos para gráficos:', error));
+}
+
+// 1. Gráfico: Cantidad de usuarios registrados que pagan (Pagaron vs No Pagaron/Otros)
+function renderGraficoUsuariosPagan(pagosAprobados) {
+    // Extraer IDs únicos de usuarios que tienen al menos 1 pago aprobado
+    const usuariosQuePagaron = new Set(pagosAprobados.map(p => p.nombre_completo)).size;
+
+    fetch('API.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ recurso: 'usuarios', consulta: 'Read' })
+    })
+    .then(res => res.json())
+    .then(usuarios => {
+        if (!Array.isArray(usuarios)) return;
+
+        const totalUsuarios = usuarios.length;
+        const usuariosNoPagan = Math.max(0, totalUsuarios - usuariosQuePagaron);
+
+        const ctx = document.getElementById('chartUsuariosPagan').getContext('2d');
+        if (chartUsuarios) chartUsuarios.destroy();
+
+        chartUsuarios = crearGraficoTorta(ctx, 
+            ['Usuarios que Pagan', 'Usuarios Sin Pago'], 
+            [usuariosQuePagaron, usuariosNoPagan],
+            ['#2563eb', '#f97316']
+        );
+    });
+}
+
+// 2. Gráfico: Cantidad de usuarios por carrera que pagan
+function renderGraficoCarrerasPagan(pagosAprobados) {
+    const conteoCarreras = {};
+
+    pagosAprobados.forEach(p => {
+        const carrera = p.carrera || 'Sin Carrera';
+        conteoCarreras[carrera] = (conteoCarreras[carrera] || 0) + 1;
+    });
+
+    const etiquetas = Object.keys(conteoCarreras);
+    const valores = Object.values(conteoCarreras);
+
+    const colores = ['#2563eb', '#84cc16', '#f97316', '#a855f7', '#ec4899', '#06b6d4', '#eab308'];
+
+    const ctx = document.getElementById('chartCarrerasPagan').getContext('2d');
+    if (chartCarreras) chartCarreras.destroy();
+
+    chartCarreras = crearGraficoTorta(ctx, etiquetas, valores, colores);
+}
+
+// 3. Gráfico: Cantidad de socios voluntarios que pagan (Voluntarios que pagan vs resto)
+function renderGraficoVoluntariosPagan(pagosAprobados) {
+    // Filtrar pagos realizados por usuarios de tipo "Voluntario"
+    const voluntariosPagan = pagosAprobados.filter(p => p.tipo_socio === 'Voluntario');
+    const cantidadVoluntariosPagan = new Set(voluntariosPagan.map(p => p.nombre_completo)).size;
+
+    fetch('API.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ recurso: 'usuarios', consulta: 'socios', id_socio: 2 })
+    })
+    .then(res => res.json())
+    .then(voluntarios => {
+        if (!Array.isArray(voluntarios)) return;
+
+        const totalVoluntarios = voluntarios.length;
+        const voluntariosSinPago = Math.max(0, totalVoluntarios - cantidadVoluntariosPagan);
+
+        const ctx = document.getElementById('chartVoluntariosPagan').getContext('2d');
+        if (chartVoluntarios) chartVoluntarios.destroy();
+
+        chartVoluntarios = crearGraficoTorta(ctx,
+            ['Voluntarios que Pagan', 'Voluntarios Sin Pago'],
+            [cantidadVoluntariosPagan, voluntariosSinPago],
+            ['#2563eb', '#84cc16']
+        );
+    });
+}
+
+// Función auxiliar constructora de los gráficos Chart.js
+function crearGraficoTorta(ctx, labels, data, colors) {
+    return new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: colors,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        color: '#000',
+                        font: { family: 'Tamrin', size: 12 }
+                    }
+                },
+                datalabels: {
+                    color: '#000',
+                    font: { weight: 'bold', family: 'Tamrin', size: 13 },
+                    formatter: (value, ctx) => {
+                        let sum = 0;
+                        let dataArr = ctx.chart.data.datasets[0].data;
+                        dataArr.map(data => { sum += data; });
+                        if (sum === 0) return '0%';
+                        let percentage = (value * 100 / sum).toFixed(0) + '%';
+                        return ctx.chart.data.labels[ctx.dataIndex] + '\n' + percentage;
+                    }
+                }
+            }
         }
     });
 }

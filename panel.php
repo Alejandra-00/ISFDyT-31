@@ -6,6 +6,8 @@
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <title>Panel de Administración</title>
     <link rel="stylesheet" href="panel.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 </head>
 <body>
     <div class="contenedor">
@@ -20,10 +22,10 @@
                 <button onclick="mostrar('inicio')"><img src="iconos/proximo.png" alt="" style = "width: 20%">Inicio</button>
                 <button onclick="mostrar('alumno'); cargarAlumnos()"><img src="iconos/usuario-azul.png" alt="Usuario" style= "width: 17%">Socios alumnos</button>
                 <button onclick="mostrar('voluntario'); cargarVoluntarios()"><img src="iconos/usuario-azul.png" alt="Usuario" style= "width: 17%">Socios voluntarios</button>
-                <button onclick="mostrar('carreras')"><img src="iconos/graduacion.png" alt="Carreras" style= "width: 19%">Carreras</button>
+                <button onclick="mostrar('carreras'); cargarCarreras()"><img src="iconos/graduacion.png" alt="Carreras" style= "width: 19%">Carreras</button>
                 <button onclick="mostrar('cooperadora')"><img src="iconos/dinero.png" alt="Cooperadora" style= "width: 19%">Cooperadora actual</button>
                 <button onclick="mostrar('verPagos')"><img src="iconos/dinero.png" alt="Pagos" style= "width: 19%">Ver pagos</button>
-                <button onclick="mostrar('graficos')"><img src="iconos/graficos.png" alt="Gráficos" style= "width: 18%">Gráficos</button>
+                <button onclick="mostrar('graficos'); cargarGraficos()"><img src="iconos/graficos.png" alt="Gráficos" style= "width: 18%">Gráficos</button>
                 <button onclick="mostrar('descargarDatos')"><img src="iconos/descargarDatos.png" alt="Descargar" style= "width: 17%">Descargar datos</button>
             </nav>
         </aside>
@@ -234,10 +236,33 @@
                     <span class="cerrar-comprobante">&times;</span>
                     <img id="imagenComprobante" class="imagen-comprobante-grande" onclick="event.stopPropagation()">
                 </div>
+            </div>
 
             <!-- Gráficos -->
-            <div id="graficos" class="formulario tarjeta">
-                <h3>Gráficos</h3>
+            <!-- Reemplazar el apartado de Gráficos existente por este HTML -->
+            <div id="graficos" class="formulario">
+                <div class="contenedor-graficos">
+                    <div class="card-grafico">
+                        <h3>Usuarios Registrados que Pagan</h3>
+                        <div class="canvas-box">
+                            <canvas id="chartUsuariosPagan"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card-grafico">
+                        <h3>Usuarios por Carrera que Pagan</h3>
+                        <div class="canvas-box">
+                            <canvas id="chartCarrerasPagan"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card-grafico card-grafico-centrado">
+                        <h3>Socios Voluntarios que Pagan</h3>
+                        <div class="canvas-box">
+                            <canvas id="chartVoluntariosPagan"></canvas>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Descargar datos -->
