@@ -11,12 +11,19 @@
 ?>
 
 <link rel="stylesheet" href="nav.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <input type="hidden" id="usuario" value="<?php echo $_SESSION['id'] ?? ''; ?>">
 <div class="nav-contenedor">
     <nav class="nav-barra">
+
+        <button class="menu-hamburguesa" id="hamburguesa" onclick="menuHamburguesaMovil(event)">
+            <span class="icono-abrir"><img src="iconos/menu.png" alt="Abrir"></span>
+            <span class="icono-cerrar"><img src="iconos/cerrar.png" alt="Cerrar"></span>
+        </button>
+
         <ul class="nav-lista">
             <?php if (isset($_SESSION['admin']) && $_SESSION['admin'] == 1): ?>
-                <li><a href="panel.php" class="icono-nav">
+                <li class="item-admin"><a href="panel.php" class="icono-nav">
                         <img src="iconos/admin.png" alt="Admin" class="usuarios">
                     </a>
                 </li>
@@ -41,7 +48,7 @@
             </li>
             
             <?php if (isset($_SESSION['usuario'])): ?>
-                <li class="dropdown">
+                <li class="dropdown item-usuario">
                     <a href="#" class="icono-nav dropdown-toggle" onclick="toggleMenu(event)">
                         <img src="iconos/usuario.png" alt="Usuario" class="usuarios">
                     </a>
@@ -60,7 +67,7 @@
                     </ul>
                 </li> 
             <?php else: ?>
-                <li>
+                <li class="item-usuario">
                     <a href="iniciarSesion.php" class="icono-nav">
                         <img src="iconos/usuario.png" alt="Usuario" class="usuarios">
                     </a>

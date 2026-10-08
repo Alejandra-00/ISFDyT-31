@@ -1,158 +1,236 @@
 /* Registra la fuente personalizada Tamrin. */
 @font-face {
-    font-family: 'Tamrin'; /* Define el nombre que se usara en el CSS. */
-    src: url('fuentes/tamrin.ttf') format('truetype'); /* Carga el archivo de la fuente. */
-    font-weight: normal; /* Usa el grosor normal de la fuente. */
+    font-family: 'Tamrin';
+    src: url('fuentes/tamrin.ttf') format('truetype');
+    font-weight: normal;
 }
 
-/* Elimina los estilos de espaciado predeterminados del navegador. */
+/* Reset básico. */
 * {
-    margin: 0; /* Elimina el margen externo predeterminado. */
-    padding: 0; /* Elimina el relleno interno predeterminado. */
-    box-sizing: border-box; /* Incluye padding y borde dentro del tamaño total. */
-    
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-/* Configura la apariencia y el posicionamiento general del footer. */
+/* Configuración del contenedor principal */
 .footer {
-    background-image: url("fondo/fondot.png"); /* Usa la imagen como fondo. */
-    background-repeat: repeat-x; /* Repite el fondo solamente en el eje horizontal. */
-    background-size: 100%; /* Ajusta el fondo al ancho disponible. */
-    background-position: bottom; /* Coloca el fondo en la parte inferior. */
-    width: 100%; /* Ocupa todo el ancho de la ventana. */
-    min-height: 100vh; /* Asegura una altura minima igual a la ventana. */
-    display: flex; /* Activa Flexbox. */
-    flex-direction: column; /* Ordena los elementos en columna. */
-    justify-content: flex-end; /* Coloca el contenido hacia abajo. */
-    align-items: center; /* Centra el contenido horizontalmente. */
-}
-/* Distribuye horizontalmente los contenidos principales del footer. */
-.section {
-    /* Activa Flexbox para organizar los elementos de la seccion. */
+    background-image: url("fondo/fondot.png");
+    background-repeat: no-repeat;
+    background-size: 100% auto;
+    background-position: bottom center;
+    width: 100%;
+    min-height: 100vh;
     display: flex;
-    /* Coloca el bloque logo y los iconos uno debajo del otro. */
     flex-direction: column;
-    /* Centra horizontalmente los elementos hijos. */
+    justify-content: flex-end;
     align-items: center;
-    justify-content: space-between; /* Distribuye espacio entre logo/texto y contacto */
-    gap: 20px; /* Separa verticalmente el logo y los iconos. */
-    padding: 40px; /* Deja espacio interno alrededor de la seccion. */
-    width: 100%; /* Permite que la seccion ocupe todo el ancho disponible. */
-    flex: 1; /* Hace que la seccion pueda crecer dentro del footer. */
-    justify-content: flex-end; /* Coloca el contenido hacia abajo. */
+    overflow-x: hidden; /* Evita cualquier scrollbar horizontal accidental */
 }
 
-/* Aplica la fuente Tamrin a todo el contenido del footer. */
+/* Distribución principal */
+.section {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: clamp(8px, 1.5vw, 24px);
+    padding: 2vw 4vw 2.5vw 4vw;
+    width: 100%;
+    max-width: 100%;
+}
+
+/* Tipografía global */
 .footer,
 .footer * {
-    font-family: 'Tamrin', sans-serif; /* Usa Tamrin y deja sans-serif como respaldo. */
+    font-family: 'Tamrin', sans-serif;
 }
 
-/* Agrupa el logo y el texto en una fila. */
+/* Contenedor del Logo + Nombre */
 .logo {
-    display: flex; /* Activa Flexbox dentro del bloque. */
-    align-items: center; /* Centra verticalmente logo y texto. */
-    justify-content: space-between; /* Distribuye logo, textos y contacto horizontalmente. */
-    gap: 30px; /* Separa el logo del texto. */
-    width: 100%; /* Hace que el bloque ocupe todo el ancho disponible. */
-    position: relative; /* Permite mover el bloque respecto a su posicion normal. */
-    top: 25px; /* Desplaza el bloque 25 pixeles hacia abajo. */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: clamp(8px, 1.5vw, 25px);
+    position: relative;
+    max-width: 55%; /* Evita que el logo invada el área de contacto en escritorio */
 }
 
-/* Define el tamaño del contenedor circular del logo. */
+.logo-identificacion {
+    display: flex;
+    align-items: center;
+    gap: clamp(8px, 1.5vw, 25px);
+}
+
+/* Logo circular */
 .ContenedorLogo {    
-    height: 100px; /* Establece la altura del contenedor. */
-    width: 100px; /* Establece el ancho del contenedor. */
-    flex-shrink: 0; /* Evita que el contenedor se comprima. */
+    height: clamp(38px, 5.5vw, 90px);
+    width: clamp(38px, 5.5vw, 90px);
+    flex-shrink: 0;
 }
 
-/* Ajusta la imagen para ocupar completamente su contenedor. */
 .Logo {
-    border-radius: 50%; /* Convierte la imagen en circular. */
-    width: 100%; /* Ocupa todo el ancho del contenedor. */
-    height: 100%; /* Ocupa toda la altura del contenedor. */
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
-/* Configura el bloque del nombre de la cooperadora. */
-.Cooperadora {
-    font-size: 14px; /* Define el tamaño base del texto. */
-}
-
-/* Estiliza el titulo principal de la cooperadora. */
+/* Títulos del Logo */
 .Cooperadora h1 {
-    margin: 0; /* Elimina el margen predeterminado del titulo. */
-    padding: 0; /* Elimina el relleno predeterminado del titulo. */
-    font-size: 18px; /* Define el tamaño del titulo. */
-    line-height: 1.2; /* Controla la altura de cada linea. */
+    margin: 0;
+    padding: 0;
+    font-size: clamp(9px, 1.1vw, 17px);
+    line-height: 1.15;
+    white-space: normal; /* Permite adaptarse en pantallas intermedias */
 }
 
-/* Configura el bloque con el nombre del instituto. */
-.Instituto {
-    font-size: 10px; /* Define el tamaño base del texto. */
-}
-
-/* Estiliza el subtitulo del instituto. */
 .Instituto h2 {
-    margin: 0; /* Elimina el margen predeterminado. */
-    padding: 0; /* Elimina el relleno predeterminado. */
-    font-size: 12px; /* Define el tamaño del subtitulo. */
-    line-height: 1.5; /* Controla la separacion entre lineas. */
+    margin: 0;
+    padding: 0;
+    font-size: clamp(6.5px, 0.8vw, 12px);
+    line-height: 1.3;
+    white-space: normal;
 }
 
-/* Organiza verticalmente los elementos del texto del logo. */
-.logo-text-wrapper {
-    display: flex; /* Activa Flexbox. */
-    flex-direction: column; /* Apila los textos verticalmente. */
-    justify-content: center; /* Centra el contenido en su eje vertical. */
+.logo-text-wrapper,
+#footer-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
-/* Alinea la informacion de contacto a la derecha. */
+/* Información de contacto */
 .footer-content {
-    text-align: right; /* Alinea el texto a la derecha. */
-    white-space: nowrap; /* Evita que los datos de contacto se dividan en varias lineas. */
+    text-align: right;
+    max-width: 42%;
 }
 
-/* Estiliza el titulo de contacto. */
 .footer-content h3 {
-    margin: 0 0 10px 0; /* Deja diez pixeles debajo del titulo. */
-    font-size: 20px; /* Define el tamaño del titulo. */
+    margin: 0 0 0.3vw 0;
+    font-size: clamp(10px, 1.2vw, 19px);
+    line-height: 1.2;
 }
 
-/* Estiliza los datos de contacto. */
 .footer-content h4 {
-    font-size: 14px; /* Define el tamaño de los datos. */
-    font-weight: normal; /* Mantiene un grosor de texto normal. */
-    margin: 0; /* Elimina el margen predeterminado. */
-    line-height: 1.9; /* Mejora la separacion entre lineas. */
-    white-space: nowrap; /* Evita que cada dato se divida en varias lineas. */
+    font-size: clamp(7.5px, 0.85vw, 13px);
+    font-weight: normal;
+    margin: 0;
+    line-height: 1.45;
 }
 
-
-/* Organiza horizontalmente los iconos de redes sociales. */
+/* Redes Sociales */
 .social-icons {
-    display: flex; /* Activa Flexbox para organizar los iconos. */
-    flex-direction: row; /* Coloca los iconos uno junto al otro. */
-    gap: 10px; /* Deja diez pixeles entre los iconos. */
-    justify-content: center; /* Centra los iconos horizontalmente. */
+    display: flex;
+    flex-direction: row;
+    gap: clamp(6px, 0.8vw, 10px);
+    justify-content: center;
+    width: 100%;
 }
 
-/* Define la apariencia de cada enlace social. */
 .social-icons .social-icon {
-    width: 35px; /* Define el ancho del boton circular. */
-    height: 35px; /* Define la altura del boton circular. */
-    border-radius: 50%; /* Convierte el enlace en un circulo. */
-    background: rgba(255, 255, 255, 0.3); /* Aplica un fondo blanco semitransparente. */
-    display: flex; /* Activa Flexbox para centrar el icono. */
-    align-items: center; /* Centra el icono verticalmente. */
-    justify-content: center; /* Centra el icono horizontalmente. */
-    font-size: 16px; /* Define el tamaño del icono. */
-    color: #1a3a52; /* Define el color del icono. */
-    text-decoration: none; /* Elimina el subrayado del enlace. */
-    transition: all 0.3s ease; /* Suaviza los cambios al interactuar. */
+    width: clamp(20px, 2.2vw, 34px);
+    height: clamp(20px, 2.2vw, 34px);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(9px, 1vw, 15px);
+    color: #1a3a52;
+    text-decoration: none;
+    transition: all 0.3s ease;
 }
 
-/* Cambia el aspecto de los iconos cuando el cursor pasa sobre ellos. */
 .social-icons .social-icon:hover {
-    background: rgba(255, 255, 255, 0.6); /* Aumenta la opacidad del fondo. */
-    transform: scale(1.1); /* Agranda ligeramente el icono. */
+    background: rgba(255, 255, 255, 0.6);
+    transform: scale(1.1);
+}
+
+/* ===================================================
+   RESPONSIVE PARA PANTALLAS PEQUEÑAS / MÓVILES (<= 850px)
+   =================================================== */
+@media screen and (max-width: 767px) {
+    .footer {
+        background-image: url("fondo/footer - celular.png");
+        background-repeat: no-repeat;
+        background-size: 100% auto;
+        background-position: bottom center;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+    }
+
+    .section {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        width: 100%;
+        padding: 0 4vw 3vw 4vw;
+        gap: 0;
+    }
+
+    /* El logo flota arriba a la izquierda sobre la onda */
+    .logo {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 2.5vw;
+        width: 100%;
+        max-width: 100%;
+        margin-bottom: clamp(15px, 6.5vw, 40px); /* Ajuste dinámico de distancia */
+    }
+
+    .logo-identificacion {
+        gap: 2.5vw;
+    }
+
+    .ContenedorLogo {
+        height: clamp(30px, 8.5vw, 46px);
+        width: clamp(30px, 8.5vw, 46px);
+        flex-shrink: 0;
+    }
+
+    .Cooperadora h1 {
+        font-size: clamp(8px, 2.5vw, 12px);
+        font-weight: bold;
+        line-height: 1.1;
+        white-space: nowrap;
+        color: #000;
+    }
+
+    .Instituto h2 {
+        font-size: clamp(5.5px, 1.7vw, 8.5px);
+        font-weight: normal;
+        line-height: 1.2;
+        white-space: nowrap;
+        color: #000;
+    }
+
+    /* Contacto queda abajo a la derecha */
+    .footer-content {
+        width: 100%;
+        max-width: 100%;
+        text-align: right;
+    }
+
+    .footer-content h3 {
+        font-size: clamp(11px, 3.4vw, 16px);
+        font-weight: bold;
+        margin-bottom: 2px;
+        color: #000;
+    }
+
+    .footer-content h4 {
+        font-size: clamp(6.5px, 2vw, 9.5px);
+        font-weight: bold;
+        line-height: 1.25;
+        color: #000;
+    }
+
+    .social-icons {
+        display: none;
+    }
 }

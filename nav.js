@@ -20,3 +20,9 @@ document.addEventListener('click', function(event) {
       document.querySelector('.dropdown-menu').classList.remove('mostrar');
    }
 });
+
+function menuHamburguesaMovil(event) {
+   if (event) event.stopPropagation();
+   const navBarra = document.querySelector('.nav-barra');
+   navBarra.classList.toggle('menu-abierto');
+}

@@ -23,6 +23,19 @@
     border-radius: 999px;
 }
 
+.menu-hamburguesa {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #000;
+}
+
+.menu-hamburguesa .icono-cerrar {
+    display: none;
+}
+
 .nav-lista {
     display: flex;
     justify-content: center;
@@ -135,4 +148,111 @@
 
 .dropdown-menu.mostrar {
     display: block;
+}
+
+@media screen and (max-width: 767px) {
+    .nav-contenedor {
+        padding-top: 0;
+    }
+
+    .nav-barra {
+        width: 100%;
+        height: 55px;
+        background-color: transparent;
+        border-radius: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 15px;
+        box-sizing: border-box;
+        position: relative;
+    }
+
+    /* Botón hamburguesa alineado a la izquierda */
+    .menu-hamburguesa {
+        display: block;
+        z-index: 1001;
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+    }
+
+    .menu-hamburguesa img {
+        width: 25px;
+        height: 25px;
+        object-fit: contain;
+    }
+
+    /* Contenedor principal del menú desplegable */
+    .nav-lista {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        position: absolute;
+        top: 55px;
+        left: 20px;
+        width: auto;
+        height: auto;
+        margin: 0;
+        padding: 0;
+        z-index: 1000;
+    }
+
+    /* Enlaces de texto del menú */
+    .nav-barra:not(.menu-abierto) .nav-lista li:not(.item-admin):not(.item-usuario) {
+        display: none !important;
+    }
+
+    .nav-barra.menu-abierto .nav-lista li:not(.item-admin):not(.item-usuario) {
+        display: flex !important;
+        margin: 8px 0;
+        height: auto;
+    }
+
+    .nav-lista a {
+        font-size: 14px;
+        padding-bottom: 0;
+    }
+
+    .nav-lista a::after {
+        display: none !important;
+    }
+
+    /* ==========================================
+       UBICACIÓN FIJA DE LOS ÍCONOS DERECHA
+       ========================================== */
+    .nav-lista li.item-admin,
+    .nav-lista li.item-usuario {
+        display: flex !important;
+        position: fixed;
+        top: 15px; /* Fijado a 15px de la parte superior del celular */
+        height: 30px;
+        margin: 0;
+        z-index: 1001;
+    }
+
+    .nav-lista li.item-admin {
+        right: 55px; /* Ícono de Admin al lado del de Usuario */
+    }
+
+    .nav-lista li.item-usuario {
+        right: 15px; /* Ícono de Usuario al borde derecho */
+    }
+
+    .usuarios {
+        height: 28px !important;
+        width: 28px !important;
+        object-fit: contain;
+    }
+
+    /* Alternar el ícono del botón entre ☰ y ✕ */
+    .nav-barra.menu-abierto .menu-hamburguesa .icono-abrir {
+        display: none;
+    }
+
+    .nav-barra.menu-abierto .menu-hamburguesa .icono-cerrar {
+        display: inline;
+    }
 }

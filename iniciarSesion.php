@@ -70,6 +70,7 @@
     <img src="curvas/curva.png" alt="" class="EsquinaCurva">
     
     <div class="fondoAzul-Celular"><img src="curvas/curva2 - celular.png" alt="fondoCelular"></div>
+    
     <div class="FondoVerde">
         <img src="curvas/curva2.png" alt="" class="fondoAzul">
         
@@ -89,33 +90,34 @@
             <div class="Necochea">Necochea</div>
         </div>
 
-    <div class="ContenedorFormulario">
-        <form class="formulario" action="" method="POST">
-            <h2 class="titulo">INICIAR SESIÓN</h2>
+        <div class="ContenedorFormulario">
+            <form class="formulario" action="" method="POST">
+                <h2 class="titulo">INICIAR SESIÓN</h2>
 
-            <div class="grupoInput">
-                <label for="dni" class="label">DNI</label>
-                <input type="text" name="dni" maxlength="8" minlength="8" placeholder="Ingrese su DNI" class="input">
-            </div>
-            
-            <div class="grupoInput">
-                <label for="contraseña" class="label">CONTRASEÑA</label>
-                <div class="contra">
-                    <input type="password" name="contrasena" placeholder="Ingrese su contraseña" class="input input-password">
-                    <i class="ojo" onclick="verClave(this)"><img id="iconoOjo" src="iconos/ojo.png" alt=""></i>
+                <div class="grupoInput">
+                    <label for="dni" class="label">DNI</label>
+                    <input type="text" name="dni" maxlength="8" minlength="8" placeholder="Ingrese su DNI" class="input">
                 </div>
-                <p class="linkOlvido"><a href="#" id="btnOlvido">Olvidé mi contraseña</a></p>
-                <?php if (isset($mensajeError)): ?>
-                    <p class="error"><?= $mensajeError ?></p>
-                <?php endif; ?>
-            </div>
+                
+                <div class="grupoInput">
+                    <label for="contraseña" class="label">CONTRASEÑA</label>
+                    <div class="contra">
+                        <input type="password" name="contrasena" placeholder="Ingrese su contraseña" class="input input-password">
+                        <i class="ojo" onclick="verClave(this)"><img id="iconoOjo" src="iconos/ojo.png" alt=""></i>
+                    </div>
+                    <p class="linkOlvido"><a href="#" id="btnOlvido">Olvidé mi contraseña</a></p>
+                    <?php if (isset($mensajeError)): ?>
+                        <p class="error"><?= $mensajeError ?></p>
+                    <?php endif; ?>
+                </div>
 
-            <input type="text" hidden name="recurso" value="usuarios">
-            <input type="text" hidden name="consulta" value="Login">
-            
-            <button class="btn">Iniciar sesión</button>
-            <p class="linkRegistro">¿No tienes una cuenta?<a href="registrarse.php">¡Registrate!</a></p>
-        </form>
+                <input type="text" hidden name="recurso" value="usuarios">
+                <input type="text" hidden name="consulta" value="Login">
+                
+                <button class="btn">Iniciar sesión</button>
+                <p class="linkRegistro">¿No tienes una cuenta?<a href="registrarse.php">¡Registrate!</a></p>
+            </form>
+        </div>
     </div>
 
     <div id="modalOlvido" class="modal-olvido" style="display: none;">
