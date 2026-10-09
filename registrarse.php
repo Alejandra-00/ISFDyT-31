@@ -11,8 +11,8 @@
         $dni = trim($_POST["dni"] ?? '');
         $nombreCompleto = trim($_POST["nombre_completo"] ?? '');
         $mail = trim($_POST["email"] ?? '');
-        $socio = !empty($_POST["socio"]) ? $_POST["socio"] : '1'; 
-        $carrera = !empty($_POST["carrera"]) ? $_POST["carrera"] : '10';
+        $socio = !empty($_POST["socio"]) ? $_POST["socio"] : null; 
+        $carrera = !empty($_POST["carrera"]) ? $_POST["carrera"] : null;
         $contrasena = $_POST["contrasena"] ?? '';
         $telefono = trim($_POST["telefono"] ?? '');
         $recurso = $_POST["recurso"] ?? 'usuarios';

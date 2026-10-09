@@ -19,10 +19,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $recurso = $datos['recurso'] ?? '';
         $consulta = $datos['consulta'] ?? '';
         
-        switch ($recurso) {
-            
+        switch ($recurso) {   
             case 'registroPagos':
                 switch ($consulta) {
+                    case 'GenerarCuotasAnuales':
+                        $id_monto_inicial = (int)($datos['id_monto'] ?? 0);
+
+                        if ($id_monto_inicial === 0) {
+                            http_response_code(400);
+                            echo json_encode(["error" => "Debe indicar el id_monto inicial."]);
+                            break;
+                        }
+
+                        // Insertar exactamente 9 cuotas (meses 3 al 11) solo para los usuarios que no las tengan
+                        $sql = "
+                            INSERT INTO registropagos (id_usuarios, id_monto, id_estado, id_mes)
+                            SELECT 
+                                u.id,
+                                ? AS id_monto,
+                                COALESCE((SELECT id FROM estadopago WHERE nombre LIKE '%PENDIENTE%' OR nombre LIKE '%IMPAG%' LIMIT 1), 1) AS id_estado,
+                                m.id_mes
+                            FROM usuarios u
+                            CROSS JOIN (
+                                SELECT 3 AS id_mes UNION SELECT 4 UNION SELECT 5 
+                                UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 
+                                UNION SELECT 9 UNION SELECT 10 UNION SELECT 11
+                            ) m
+                            WHERE u.activo = 1 AND u.admin = 0
+                            AND NOT EXISTS (
+                                SELECT 1 FROM registropagos rp 
+                                WHERE rp.id_usuarios = u.id AND rp.id_mes = m.id_mes
+                            )
+                        ";
+
+                        $stmt = $conexion->prepare($sql);
+                        if ($stmt) {
+                            $stmt->bind_param("i", $id_monto_inicial);
+                            if ($stmt->execute()) {
+                                echo json_encode([
+                                    "mensaje" => "Se generaron las 9 cuotas (Marzo a Noviembre) para los usuarios.",
+                                    "registros_creados" => $stmt->affected_rows
+                                ]);
+                            } else {
+                                http_response_code(500);
+                                echo json_encode(["error" => "Error al ejecutar la inserción masiva."]);
+                            }
+                            $stmt->close();
+                        }
+                    break;
+
                     case 'Readusuarios':
                         $id_usuarios = (int)($datos['id_usuario'] ?? 0);
 
@@ -32,17 +77,76 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             break;
                         }
 
+                        // 1. VERIFICAR SI EL USUARIO ES ADMIN
+                        $stmtCheckAdmin = $conexion->prepare("SELECT admin FROM usuarios WHERE id = ?");
+                        if ($stmtCheckAdmin) {
+                            $stmtCheckAdmin->bind_param("i", $id_usuarios);
+                            $stmtCheckAdmin->execute();
+                            $resAdmin = $stmtCheckAdmin->get_result();
+                            $usrData = $resAdmin->fetch_assoc();
+                            $stmtCheckAdmin->close();
+
+                            // Si es administrador, devolvemos un array vacío o un mensaje aclaratorio sin generar registros
+                            if ($usrData && (int)$usrData['admin'] === 1) {
+                                echo json_encode([]);
+                                break;
+                            }
+                        }
+
+                        // 2. OBTENER ID DEL ÚLTIMO MONTO Y ESTADO INICIAL
+                        $resMonto = mysqli_query($conexion, "SELECT id FROM monto ORDER BY id DESC LIMIT 1");
+                        $filaMonto = mysqli_fetch_assoc($resMonto);
+                        $idMontoActual = (int)($filaMonto['id'] ?? 1);
+
+                        $resEstado = mysqli_query($conexion, "SELECT id FROM estadopago WHERE nombre LIKE '%IMPAG%' OR nombre LIKE '%PENDIENTE%' LIMIT 1");
+                        $filaEstado = mysqli_fetch_assoc($resEstado);
+                        $idEstadoInicial = (int)($filaEstado['id'] ?? 1);
+
+                        // 3. INSERT IGNORE (Solo corre para usuarios no-administradores)
+                        $sqlAutoGenerar = "
+                            INSERT IGNORE INTO registropagos (id_usuarios, id_monto, id_estado, id_mes)
+                            VALUES 
+                                (?, ?, ?, 1),
+                                (?, ?, ?, 2),
+                                (?, ?, ?, 3),
+                                (?, ?, ?, 4),
+                                (?, ?, ?, 5),
+                                (?, ?, ?, 6),
+                                (?, ?, ?, 7),
+                                (?, ?, ?, 8),
+                                (?, ?, ?, 9)
+                        ";
+                        
+                        $stmtGen = mysqli_prepare($conexion, $sqlAutoGenerar);
+                        if ($stmtGen) {
+                            mysqli_stmt_bind_param($stmtGen, "iiiiiiiiiiiiiiiiiiiiiiiiiii", 
+                                $id_usuarios, $idMontoActual, $idEstadoInicial,
+                                $id_usuarios, $idMontoActual, $idEstadoInicial,
+                                $id_usuarios, $idMontoActual, $idEstadoInicial,
+                                $id_usuarios, $idMontoActual, $idEstadoInicial,
+                                $id_usuarios, $idMontoActual, $idEstadoInicial,
+                                $id_usuarios, $idMontoActual, $idEstadoInicial,
+                                $id_usuarios, $idMontoActual, $idEstadoInicial,
+                                $id_usuarios, $idMontoActual, $idEstadoInicial,
+                                $id_usuarios, $idMontoActual, $idEstadoInicial
+                            );
+                            mysqli_stmt_execute($stmtGen);
+                            mysqli_stmt_close($stmtGen);
+                        }
+
+                        // 4. CONSULTA DE LECTURA
                         $sql = "SELECT 
                             registropagos.id, 
                             registropagos.fecha, 
-                            monto.importe AS monto, 
-                            estadopago.nombre AS estadopago, 
-                            meses.nombre AS meses
+                            COALESCE(monto.importe, 0) AS monto, 
+                            COALESCE(estadopago.nombre, 'Impaga') AS estadopago, 
+                            COALESCE(meses.nombre, CONCAT('Mes ', registropagos.id_mes)) AS meses
                             FROM registropagos
                             LEFT JOIN monto ON registropagos.id_monto = monto.id
                             LEFT JOIN estadopago ON registropagos.id_estado = estadopago.id
                             LEFT JOIN meses ON registropagos.id_mes = meses.id_mes
                             WHERE registropagos.id_usuarios = ?
+                            ORDER BY registropagos.id_mes ASC
                         ";
 
                         $stmt = mysqli_prepare($conexion, $sql);
@@ -112,7 +216,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $id_pago = (int)($datos["id_pago"] ?? 0);
                         $id_estado = (int)($datos["id_estado"] ?? 0);
                         $fotoBase64 = $datos["foto"] ?? ""; 
-                        $fecha = date('Y-m-d');
 
                         if ($id_pago === 0 || empty($fotoBase64)) {
                             http_response_code(400);
@@ -141,10 +244,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 $id_comprobante = $stmtFoto->insert_id;
                                 $stmtFoto->close();
 
-                                // Actualizar registropagos con el nuevo comprobante y estado
-                                $stmtPago = $conexion->prepare("UPDATE registropagos SET id_estado = ?, fecha = ?, id_comprobante = ? WHERE id = ?");
+                                // Usamos CURDATE() directamente en el SQL para que MySQL guarde la fecha local del servidor DB
+                                $stmtPago = $conexion->prepare("UPDATE registropagos SET id_estado = ?, fecha = CURDATE(), id_comprobante = ? WHERE id = ?");
                                 if ($stmtPago) {
-                                    $stmtPago->bind_param("isii", $id_estado, $fecha, $id_comprobante, $id_pago);
+                                    $stmtPago->bind_param("iii", $id_estado, $id_comprobante, $id_pago);
                                     
                                     if ($stmtPago->execute()) {
                                         echo json_encode(["mensaje" => "Pago actualizado correctamente"]);
@@ -176,7 +279,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             estadopago.nombre AS estado,
                             TO_BASE64(comprobante.foto) AS foto,
                             socio.nombre AS tipo_socio,
-                            carrera.nombre AS carrera,
+                            COALESCE(carrera.nombre, 'Sin carrera') AS carrera,
                             meses.nombre AS mes,
                             registropagos.fecha
                         FROM registropagos
@@ -259,7 +362,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             usuarios.DNI,
                             usuarios.nombre_completo,
                             socio.nombre AS socio,
-                            carrera.nombre AS carrera,
+                            COALESCE(carrera.nombre, 'Sin carrera') AS carrera,
                             monto.importe AS monto,
                             registropagos.fecha
                         FROM registropagos
@@ -316,7 +419,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     u.activo,
                                     u.admin,
                                     s.nombre AS nombre_socio,
-                                    c.nombre AS nombre_carrera
+                                    COALESCE(c.nombre, 'Sin carrera') AS nombre_carrera
                                 FROM usuarios u
                                 LEFT JOIN socio s ON u.id_socio = s.id
                                 LEFT JOIN carrera c ON u.id_carrera = c.id
@@ -344,10 +447,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     case "socios":
                         $id_socio = $datos['id_socio'] ?? null;
-                        $sql ="SELECT usuarios.id, usuarios.nombre_completo, usuarios.email, usuarios.telefono, usuarios.DNI, usuarios.activo, socio.nombre AS nombre_socio, carrera.nombre AS nombre_carrera
-                               FROM usuarios 
-                               INNER JOIN socio ON usuarios.id_socio = socio.id
-                               INNER JOIN carrera ON usuarios.id_carrera = carrera.id";
+                        $sql ="SELECT usuarios.id, usuarios.nombre_completo, usuarios.email, usuarios.telefono, usuarios.DNI, usuarios.activo, socio.nombre AS nombre_socio, COALESCE(carrera.nombre, 'Sin carrera') AS nombre_carrera
+                                FROM usuarios 
+                                LEFT JOIN socio ON usuarios.id_socio = socio.id
+                                LEFT JOIN carrera ON usuarios.id_carrera = carrera.id
+                                WHERE (usuarios.admin = 0)";
                            
                            if ($id_socio) {
                                $sql .= " WHERE usuarios.id_socio = " . intval($id_socio);
@@ -363,10 +467,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     break;
                     
                     case "Read":
-                        $sql = "SELECT usuarios.id, usuarios.nombre_completo, usuarios.email, usuarios.telefono, usuarios.DNI, usuarios.activo, socio.nombre AS nombre_socio, carrera.nombre AS nombre_carrera
+                        $sql = "SELECT usuarios.id, usuarios.nombre_completo, usuarios.email, usuarios.telefono, usuarios.DNI, usuarios.activo, socio.nombre AS nombre_socio, COALESCE(carrera.nombre, 'Sin carrera') AS nombre_carrera
                                 FROM usuarios 
-                                INNER JOIN socio ON usuarios.id_socio = socio.id
-                                INNER JOIN carrera ON usuarios.id_carrera = carrera.id";
+                                LEFT JOIN socio ON usuarios.id_socio = socio.id
+                                LEFT JOIN carrera ON usuarios.id_carrera = carrera.id
+                                WHERE (usuarios.admin = 0)";
                         $resultado = mysqli_query($conexion, $sql);
                         if ($resultado) {
                             $usuarios = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
@@ -378,7 +483,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     break;
 
                     case "Create":
-                        $camposObligatorios = ['dni', 'nombre_completo', 'email', 'socio', 'carrera', 'contrasena', 'telefono'];
+                        $camposObligatorios = ['dni', 'nombre_completo', 'email', 'socio', 'contrasena', 'telefono'];
                         $errores = [];
 
                         foreach ($camposObligatorios as $campo) {
@@ -399,7 +504,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $telefono = trim($datos["telefono"]);
                         $contrasena = password_hash($datos["contrasena"], PASSWORD_BCRYPT); // Encriptación segura de contraseña
                         $id_socio = (int)$datos["socio"];
-                        $id_carrera = (int)$datos["carrera"];
+                        $id_carrera = !empty($datos["carrera"]) ? (int)$datos["carrera"] : null;
                         $activo = 1;
 
                         // Comprobar si el email o DNI ya existen con Prepared Statement
@@ -444,7 +549,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $telefono = $datos["telefono"];
                         $contrasena = $datos["contrasena"];
                         $id_socio = $datos["socio"];
-                        $id_carrera = $datos["carrera"];
+                        $id_carrera = !empty($datos["carrera"]) ? (int)$datos["carrera"] : null;
                         $contrasena = password_hash($contrasena, PASSWORD_BCRYPT); // Encriptación segura de contraseña 
                         $sql = "UPDATE usuarios
                                 SET DNI = '$DNI',
@@ -534,11 +639,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     usuarios.DNI,
                                     usuarios.activo,
                                     socio.nombre AS nombre_socio,
-                                    carrera.nombre AS nombre_carrera
+                                    COALESCE(carrera.nombre, 'Sin carrera') AS nombre_carrera
                                 FROM usuarios 
-                                INNER JOIN socio ON usuarios.id_socio = socio.id
-                                INNER JOIN carrera ON usuarios.id_carrera = carrera.id
-                                WHERE (usuarios.nombre_completo LIKE ? OR usuarios.DNI LIKE ?)"; // like sirve para buscar coincidencias parciales en la base de datos
+                                LEFT JOIN socio ON usuarios.id_socio = socio.id
+                                LEFT JOIN carrera ON usuarios.id_carrera = carrera.id
+                                WHERE (usuarios.admin = 0) 
+                                AND (usuarios.nombre_completo LIKE ? OR usuarios.DNI LIKE ?)"; // like sirve para buscar coincidencias parciales en la base de datos
 
                         // Si viene id_socio, filtrar por tipo (alumno o voluntario)
                         if ($id_socio > 0) {
@@ -634,11 +740,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             usuarios.DNI,
                             usuarios.nombre_completo,
                             socio.nombre AS socio,
-                            carrera.nombre AS carrera
+                            COALESCE(carrera.nombre, 'Sin carrera') AS carrera
                             FROM usuarios
                             LEFT JOIN socio ON usuarios.id_socio = socio.id
                             LEFT JOIN carrera ON usuarios.id_carrera = carrera.id
-                        WHERE usuarios.activo = 1;";
+                        WHERE usuarios.activo = 1 AND (usuarios.admin = 0);";
                         
                         $resultado = mysqli_query($conexion, $sql);
 
@@ -786,21 +892,63 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     break;
 
                     case 'Update':
-                        $id = $datos["id"];
-                        $importe = $datos["importe"];
-                        $importeAnterior = $datos["importe_anterior"];
-                        $fechaEfecto = $datos["fecha_efecto"];
-                        $sql = "UPDATE monto
-                                SET importe = '$importe',
-                                    importe_anterior = '$importeAnterior',
-                                    fecha_efecto = '$fechaEfecto'
-                                WHERE id = $id";
-                        $resultado = mysqli_query($conexion, $sql);
-                        if ($resultado) {
-                            echo json_encode(["mensaje" => "Monto actualizado correctamente."]);
+                        $importe = $datos["importe"] ?? 0;
+                        $importeAnterior = $datos["importe_anterior"] ?? 0;
+                        $fechaEfecto = $datos["fecha_efecto"] ?? date('Y-m-d');
+
+                        if ($importe <= 0) {
+                            http_response_code(400);
+                            echo json_encode(["error" => "El importe ingresado debe ser mayor a 0."]);
+                            break;
+                        }
+
+                        // 1. Insertamos un NUEVO precio en la tabla monto (generando el nuevo id_monto)
+                        $stmtMonto = $conexion->prepare("INSERT INTO monto (importe, importe_anterior, fecha_efecto) VALUES (?, ?, ?)");
+                        $stmtMonto->bind_param("dds", $importe, $importeAnterior, $fechaEfecto);
+
+                        if ($stmtMonto->execute()) {
+                            $nuevo_id_monto = $stmtMonto->insert_id;
+                            $stmtMonto->close();
+
+                            // 2. Extraer el mes numérico desde la fecha_efecto (ej: '2026-05-01' -> mes 5)
+                            $mesNumeroCalendario = (int)date('n', strtotime($fechaEfecto));
+
+                            // Mapeo flexible: Si tus meses en la BD van del 1 al 9 (1=Marzo, 3=Mayo, etc.)
+                            // Convertimos el mes de calendario (ej. Mayo = 5) al id_mes de la BD (Mayo = 3).
+                            // Si en tu BD van del 1 al 9: Marzo(1), Abril(2), Mayo(3), Junio(4), Julio(5), Agosto(6), Septiembre(7), Octubre(8), Noviembre(9)
+                            $idMesTarget = $mesNumeroCalendario - 2; 
+                            if ($idMesTarget < 1) $idMesTarget = 1;
+
+                            // 3. Actualizamos registropagos:
+                            // Acepta tanto estados 'Impaga' como 'Pendiente' para asegurar el impacto
+                            $sqlPagos = "
+                                UPDATE registropagos 
+                                SET id_monto = ? 
+                                WHERE id_mes >= ? 
+                                AND id_estado IN (
+                                    SELECT id FROM estadopago WHERE nombre LIKE '%IMPAG%' OR nombre LIKE '%PENDIENTE%'
+                                )
+                            ";
+
+                            $stmtPagos = $conexion->prepare($sqlPagos);
+                            if ($stmtPagos) {
+                                $stmtPagos->bind_param("ii", $nuevo_id_monto, $idMesTarget);
+                                $stmtPagos->execute();
+                                $afectadas = $stmtPagos->affected_rows;
+                                $stmtPagos->close();
+
+                                echo json_encode([
+                                    "mensaje" => "Monto actualizado correctamente.",
+                                    "nuevo_id_monto" => $nuevo_id_monto,
+                                    "cuotas_actualizadas" => $afectadas
+                                ]);
+                            } else {
+                                http_response_code(500);
+                                echo json_encode(["error" => "Error al preparar actualización de registropagos."]);
+                            }
                         } else {
                             http_response_code(500);
-                            echo json_encode(["error" => "Error de actualización."]);
+                            echo json_encode(["error" => "Error al guardar el nuevo valor en la tabla monto."]);
                         }
                     break;
 
