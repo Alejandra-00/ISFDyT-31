@@ -98,9 +98,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $filaMonto = mysqli_fetch_assoc($resMonto);
                         $idMontoActual = (int)($filaMonto['id'] ?? 1);
 
-                        $resEstado = mysqli_query($conexion, "SELECT id FROM estadopago WHERE nombre LIKE '%IMPAG%' OR nombre LIKE '%PENDIENTE%' LIMIT 1");
+                        $resEstado = mysqli_query($conexion, "SELECT id FROM estadopago WHERE nombre LIKE '%IMPAG%' LIMIT 1");
                         $filaEstado = mysqli_fetch_assoc($resEstado);
-                        $idEstadoInicial = (int)($filaEstado['id'] ?? 1);
+                        $idEstadoInicial = (int)($filaEstado['id'] ?? 2);
 
                         // 3. INSERT IGNORE (Solo corre para usuarios no-administradores)
                         $sqlAutoGenerar = "
