@@ -307,31 +307,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                     break;
 
-                    case 'Create':
-                        // Extraemos y casteamos los IDs necesarios desde $datos
-                        $id_usuario = (int)($datos['id_usuario'] ?? 0);
-                        $id_monto = (int)($datos['id_monto'] ?? 0);
-                        $id_estado = (int)($datos['id_estado'] ?? 0);
-                        $id_comprobante = (int)($datos['id_comprobante'] ?? 0);
-
-                        if ($id_usuario === 0 || $id_monto === 0 || $id_estado === 0 || $id_comprobante === 0) {
-                            http_response_code(400);
-                            echo json_encode(["error" => "Faltan IDs obligatorios para registrar el pago."]);
-                            exit;
-                        }
-
-                        $stmt = $conexion->prepare("INSERT INTO registropagos (id_usuarios, id_monto, id_estado, id_comprobante) VALUES (?, ?, ?, ?)");
-                        $stmt->bind_param("iiii", $id_usuario, $id_monto, $id_estado, $id_comprobante);
-
-                        if ($stmt->execute()) {
-                            echo json_encode(["mensaje" => "Pago almacenado con éxito."]);
-                        } else {
-                            http_response_code(500);
-                            echo json_encode(["error" => "Error: No se pudo registrar el pago."]);
-                        }
-                        $stmt->close();
-                    break;
-
                     case 'Update':
                         $id_pago = (int)($datos["id_pago"] ?? 0);
                         $id_estado = (int)($datos["id_estado"] ?? 0);
@@ -816,39 +791,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                     break;
                     
-                    default:
-                        http_response_code(400);
-                        echo json_encode(["error" => "Consulta no válida"]);
-                    break;
-                }
-            break;
-
-            case 'comprobantes':
-                switch ($consulta) {
-                    case 'Read':
-                        $sql = "SELECT * FROM comprobante";
-                        //INNER JOIN SIRVE PARA OBTENER ATRAVEZ DE CLAVES FORANEAS, LOS DATOS DE OTRAS TABLAS RELACIONADAS
-                        $resultado = mysqli_query($conexion, $sql);
-                        if ($resultado) {
-                            echo json_encode(["mensaje" => "Ok."]);
-                        } else {
-                            http_response_code(502);
-                            echo json_encode(["error" => "Error de lectura."]);
-                        }
-                    break;
-
-                    case 'Create':
-                        $foto = $datos["foto"] ?? "";
-                        $sql = "INSERT INTO comprobante (foto) VALUES ('$foto')";
-                        $resultado = mysqli_query($conexion, $sql);
-                        if ($resultado) {
-                            echo json_encode(["mensaje" => "Comprobante almacenado con éxito."]);
-                        } else {
-                            http_response_code(502);
-                            echo json_encode(["error" => "Error: Comprobante no almacenado."]);
-                        }
-                    break;
-
                     default:
                         http_response_code(400);
                         echo json_encode(["error" => "Consulta no válida"]);

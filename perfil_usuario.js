@@ -33,8 +33,6 @@ function obtenerDatosUsuario(idusuario) {
             const selectCarrera = document.getElementById('editar_id_carrera');
             if (elTextoCarrera) elTextoCarrera.textContent = datos.nombre_carrera ?? datos.id_carrera ?? '-';
             if (selectCarrera && datos.id_carrera) selectCarrera.value = datos.id_carrera;
-            
-            
 
             // Rellenar Teléfono
             asignarValor('vertelefono', 'editar_telefono', datos.telefono);
@@ -68,7 +66,6 @@ function asignarValor(idVer, idEditar, valor) {
     if (elVer) elVer.textContent = val;
     if (elEditar) elEditar.value = val;
 }
-
 
 // Mapeo de texto a ID en caso de que los SELECTs tarden en cargar
 const mapaSocio = { "1": "Socio Activo", "2": "Socio Adherente", "3": "No Socio" };
