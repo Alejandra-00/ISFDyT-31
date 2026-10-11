@@ -426,10 +426,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 FROM usuarios 
                                 LEFT JOIN socio ON usuarios.id_socio = socio.id
                                 LEFT JOIN carrera ON usuarios.id_carrera = carrera.id
-                                WHERE (usuarios.admin = 0)";
+                                WHERE (usuarios.admin = 0)"; 
                            
                            if ($id_socio) {
-                               $sql .= " WHERE usuarios.id_socio = " . intval($id_socio);
+                               $sql .= " AND usuarios.id_socio = " . intval($id_socio);
                            }
                            $resultado = mysqli_query($conexion, $sql);
                            if ($resultado) {
@@ -614,7 +614,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     usuarios.DNI,
                                     usuarios.activo,
                                     socio.nombre AS nombre_socio,
-                                    COALESCE(carrera.nombre, 'Sin carrera') AS nombre_carrera
+                                    COALESCE(carrera.nombre, 'Sin carrera') AS nombre_carrera  /* Se utiliza COALESCE para manejar casos donde la carrera pueda ser NULL */
                                 FROM usuarios 
                                 LEFT JOIN socio ON usuarios.id_socio = socio.id
                                 LEFT JOIN carrera ON usuarios.id_carrera = carrera.id
