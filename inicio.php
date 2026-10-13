@@ -18,7 +18,7 @@
             </section>
             <section class="card">
                 <p>
-                    Monto anterior<br>
+                    Monto viejooo<br>
                     <strong id="montoAnterior"></strong>
                 </p>
             </section>
