@@ -276,7 +276,7 @@
                 </div>
             </div>
 
-            <<!-- Gráficos -->
+            <!-- Gráficos -->
             <div id="graficos" class="formulario">
                 <div class="contenedor-graficos">
                     <div class="card-grafico">
