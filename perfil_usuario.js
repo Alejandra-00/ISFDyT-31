@@ -20,6 +20,25 @@ function obtenerDatosUsuario(idusuario) {
         const datos = Array.isArray(respuestaApi) ? respuestaApi[0] : respuestaApi;
 
         if (datos && !datos.error) {
+            // Dentro de obtenerDatosUsuario(idusuario), justo después de rellenar los datos:
+
+            // Supongamos que la API te devuelve un campo como datos.tipo_usuario o datos.nombre_carrera
+            const esVoluntario = (datos.nombre_carrera === 'Sin carrera' || datos.tipo_usuario === 'voluntario' /* Ajusta según el campo de tu BD */);
+
+            const btnEditarCarrera = document.querySelector('form input[value="id_carrera"]')?.closest('form')?.querySelector('.editar-btn');
+
+            if (btnEditarCarrera) {
+                if (esVoluntario) {
+                    btnEditarCarrera.disabled = true;
+                    btnEditarCarrera.style.opacity = '0.5'; // Opcional: para que luzca deshabilitado
+                    btnEditarCarrera.style.cursor = 'not-allowed';
+                    btnEditarCarrera.title = 'Los voluntarios no pueden modificar la carrera';
+                } else {
+                    btnEditarCarrera.disabled = false;
+                    btnEditarCarrera.style.opacity = '1';
+                    btnEditarCarrera.style.cursor = 'pointer';
+                }
+            }
             // Rellenar Nombre Completo
             asignarValor('vernombrecompleto', 'editar_nombre_completo', datos.nombre_completo);
 

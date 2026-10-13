@@ -233,3 +233,10 @@ color: white;
     border-color: #ff5252 !important;
     box-shadow: 0 0 0 4px rgba(255, 82, 82, 0.2) !important;
 }
+
+.editar-btn:disabled {
+    background-color: #555 !important;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
