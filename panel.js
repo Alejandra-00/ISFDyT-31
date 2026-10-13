@@ -755,102 +755,158 @@ function restaurarBotones() {
     }
 }
 
-//Pagos
+//Ver pagos
+let todosLosPagos= []; // variable global que almacena todos los registros de pagos
+
+// esta funcion busca los datos al servidor
 function cargarPagos() {
-    fetch('API.php', { // peticion fetch a la api
+    fetch('API.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ recurso: 'registroPagos', consulta: 'Read' })
     })
-    .then(response => response.json()) // toma la respuesta y transforma el json a un array
-    .then(data => { //recibe los datos procesados
-        const tbody = document.getElementById('tablapagos');
-        tbody.innerHTML = '';
-
-        if (!Array.isArray(data) || data.length === 0) { // si data esta vacio corta las columnas y muestra por pantalla el error 
-            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">No hay pagos registrados.</td></tr>';
-            return;
-        }
-
-        data.forEach(pago => { //recorre data
-            const fila = document.createElement('tr'); //crea una nueva fila por cada elemento
-
-            // La API devuelve el contenido del BLOB en Base64 como pago.foto
-            // Si no hay imagen asociada, la celda queda vacia
-            let comprobanteHTML = '';
-            if (pago.foto && pago.foto.trim() !== '') {
-                let mimeType = 'image/jpeg'; // tipo de archivo por defecto
-                // Infiere el tipo MIME por la firma Base64 para reconstruir la Data URL
-                if (pago.foto.startsWith('/9j/')) {
-                    mimeType = 'image/jpeg'; // JPG / JPEG
-                } else if (pago.foto.startsWith('iVBORw0KGg')) {
-                    mimeType = 'image/png'; // PNG
-                } else if (pago.foto.startsWith('R0lGOD')) {
-                    mimeType = 'image/gif'; // GIF
-                } else if (pago.foto.startsWith('JVBERi0')) {
-                    mimeType = 'application/pdf'; // PDF
-                }
-                // Si la API ya devolvio una Data URL se reutiliza; si no, se agrega su cabecera
-                const srcFoto = pago.foto.startsWith('data:') 
-                    ? pago.foto 
-                    : `data:${mimeType};base64,${pago.foto}`;
-
-                comprobanteHTML = `
-                    <img
-                        src="${srcFoto}"
-                        alt="Comprobante"
-                        class="comprobante"
-                        style="
-                            width: 100px;
-                            height: 80px;
-                            object-fit: contain;
-                            cursor: pointer;
-                            border-radius: 5px;
-                        "
-                    >
-                `;
-            }
-
-            const idEstadoActual = parseInt(pago.id_estado); // obtiene id del estado y lo convierte a entero para comprarlo
-            const estadoSelect = `
-                <select onchange="cambiarEstadoPago(${pago.id}, this.value)" class="estado">
-                    <option value="1" ${idEstadoActual === 1 ? 'selected' : ''}>Paga</option>
-                    <option value="2" ${idEstadoActual === 2 ? 'selected' : ''}>Impaga</option>
-                    <option value="3" ${idEstadoActual === 3 ? 'selected' : ''}>Pendiente</option>
-                </select>
-            `; // onchange llama a la funcion y le pasa el id del pago y la opcion seleccionada
-              // le agregar la propiedad selected al option que coincia con el id del estado en la bd
-
-            fila.innerHTML = `
-                <td>${escapeHtml(pago.mes || '-')}</td>
-                <td>${escapeHtml(pago.fecha || '-')}</td>
-                <td>${escapeHtml(pago.nombre_completo || '-')}</td>
-                <td>$${escapeHtml(pago.importe || '0')}</td>
-                <td>${comprobanteHTML}</td>
-                <td>${estadoSelect}</td>
-                <td>${escapeHtml(pago.tipo_socio || '-')}</td>
-                <td>${escapeHtml(pago.carrera || '-')}</td>
-            `;
-            tbody.appendChild(fila); //agrega la fila al tbody y termina el foreach
-        });
+    .then(response => response.json()) // toma la respuesta y la transforma a json
+    .then(data => {
+    if (!Array.isArray(data)) { // verifica lo que devuelve la api sea un arreglo
+        throw new Error('La API no devolvió una lista de pagos válida.');
+    }
+    todosLosPagos = data; // guarda los datos recibidos en la variable global
+    mostrarPagos(todosLosPagos); // llama a la funcion para crear la tabla
     })
-    .catch(error => {
+    .catch(error => { // si la peticion falla, crea una fila para mostrar el error
         console.error('Error al cargar pagos:', error);
         const tbody = document.getElementById('tablapagos');
         tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">Error al cargar los pagos.</td></tr>';
     });
 }
 
-document.addEventListener('click', function(event) {
-    if (event.target.classList.contains('comprobante')) {
+// esta funcion toma el arreglo pagos y lo crea dentro del cuerpo de la tabla con id tablapagos
+function mostrarPagos(pagos) {
+    const tbody = document.getElementById('tablapagos');
+    const mensaje = document.getElementById('mensajeFiltrosPagos');
+    tbody.innerHTML = ''; // borra cualquier contenido que tuviera la tabla
+    if (pagos.length === 0) { // si el arreglo esta vacio
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="8" style="text-align:center;">
+                    No se encontraron pagos con esos filtros.
+                </td>
+            </tr>
+        `;
+        if (mensaje) {
+            mensaje.textContent = 'No hay pagos que coincidan con los filtros.';
+        }
+        return;
+    }
+    if (mensaje) {
+        mensaje.textContent = `Se encontraron ${pagos.length} pago(s).`;
+    }
+
+    pagos.forEach(pago => { //recorre pagos
+        const fila = document.createElement('tr'); //crea una nueva fila por cada elemento
+        // La API devuelve el contenido del BLOB en Base64 como pago.foto
+        // Si no hay imagen asociada, la celda queda vacia
+        let comprobanteHTML = '';
+        if (pago.foto && pago.foto.trim() !== '') {
+            let mimeType = 'image/jpeg'; // tipo de archivo por defecto
+            // Infiere el tipo MIME por la firma Base64 para reconstruir la Data URL
+            if (pago.foto.startsWith('/9j/')) {
+                mimeType = 'image/jpeg'; // JPG / JPEG
+            } else if (pago.foto.startsWith('iVBORw0KGg')) {
+                mimeType = 'image/png'; // PNG
+            } else if (pago.foto.startsWith('JVBERi0')) {
+                mimeType = 'application/pdf'; // PDF
+            }
+            // Si la API ya devolvio una Data URL se reutiliza; si no, se agrega su cabecera
+            const srcFoto = pago.foto.startsWith('data:') 
+                ? pago.foto 
+                : `data:${mimeType};base64,${pago.foto}`;
+            comprobanteHTML = `
+                <img
+                    src="${srcFoto}"
+                    alt="Comprobante"
+                    class="comprobante"
+                    style="
+                        width: 100px;
+                        height: 80px;
+                        object-fit: contain;
+                        cursor: pointer;
+                        border-radius: 5px;
+                    "
+                >
+            `;
+        }
+
+        const idEstadoActual = parseInt(pago.id_estado); // obtiene id del estado y lo convierte a entero para comprarlo
+        const estadoSelect = `
+            <select onchange="cambiarEstadoPago(${pago.id}, this.value)" class="estado">
+                <option value="1" ${idEstadoActual === 1 ? 'selected' : ''}>Pagado</option>
+                <option value="2" ${idEstadoActual === 2 ? 'selected' : ''}>Impago</option>
+                <option value="3" ${idEstadoActual === 3 ? 'selected' : ''}>Pendiente</option>
+            </select>
+        `; // onchange llama a la funcion y le pasa el id del pago y la opcion seleccionada
+            // le agregar la propiedad selected al option que coincia con el id del estado en la bd
+
+        fila.innerHTML = `
+            <td>${escapeHtml(pago.mes || '-')}</td>
+            <td>${escapeHtml(pago.fecha || '-')}</td>
+            <td>${escapeHtml(pago.nombre_completo || '-')}</td>
+            <td>$${escapeHtml(pago.importe || '0')}</td>
+            <td>${comprobanteHTML}</td>
+            <td>${estadoSelect}</td>
+            <td>${escapeHtml(pago.tipo_socio || '-')}</td>
+            <td>${escapeHtml(pago.carrera || '-')}</td>
+        `;
+        tbody.appendChild(fila); //agrega la fila al tbody y termina el foreach
+    });
+}
+
+function filtrarPagos() { // permite buscar y acotar los pagos según el mes y el estado seleccionados por el usuario
+    // captura los valores actuales de los elementos de filtros
+    const mesSeleccionado = document.getElementById('filtroMes').value.trim().toLowerCase();
+    const estadoSeleccionado = document.getElementById('filtroEstado').value;
+
+    // comprueba que coincida el mes y el estado o que el filtro este vacio
+    const pagosFiltrados = todosLosPagos.filter(pago => {
+        const mesPago = String(pago.mes || '').trim().toLowerCase();
+        const coincideMes = mesSeleccionado === '' || mesPago === mesSeleccionado;
+        const coincideEstado = estadoSeleccionado === '' || String(pago.id_estado) === estadoSeleccionado;
+        return coincideMes && coincideEstado;
+    });
+    
+    mostrarPagos(pagosFiltrados);
+    // Cambiar la imagen del filtro 
+    const icono = document.getElementById('iconoFiltro'); 
+    if (icono) { 
+        if (mesSeleccionado !== '' || estadoSeleccionado !== '') { 
+            icono.src = 'iconos/filtro-lleno.png'; 
+        } else { 
+            icono.src = 'iconos/filtro-vacio.png'; 
+        } 
+    }
+}
+
+function limpiarFiltrosPagos() {
+    // restablece los select
+    document.getElementById('filtroMes').value = '';
+    document.getElementById('filtroEstado').value = '';
+
+    // muestra los pagos
+    mostrarPagos(todosLosPagos);
+
+    // Vuelve al icono de filtro vacio 
+    document.getElementById('iconoFiltro').src = 'iconos/filtro-vacio.png';
+}
+
+document.addEventListener('click', function(event) { // permite hacer clic en cualquier miniatura de comprobante para verla en pantalla completa
+    if (event.target.classList.contains('comprobante')) { // solo actua si el elemento clickeado tiene la clase comprobante
         const srcFoto = event.target.src;
         // Al seleccionar la miniatura se abre el comprobante en una vista ampliada
         mostrarComprobante(srcFoto);
     }
-
 });
 
-function mostrarComprobante(srcFoto) {
+function mostrarComprobante(srcFoto) { // crea dinamicamente un div simulando una ventana modal
     // Crea una capa temporal con la imagen; al hacer clic en cualquier parte se cierra
     const modal = document.createElement('div');
     modal.style.position = 'fixed';
@@ -864,6 +920,7 @@ function mostrarComprobante(srcFoto) {
     modal.style.alignItems = 'center';
     modal.style.zIndex = '9999';
     modal.style.cursor = 'pointer';
+
     modal.innerHTML = `
         <img src="${srcFoto}" style="
             max-width: 90%;
@@ -873,14 +930,14 @@ function mostrarComprobante(srcFoto) {
             border-radius: 5px;
         ">
     `;
+    // al hacer click en cualquier parte el modal se elimina automaticamente
     modal.onclick = function () {
         modal.remove();
     };
-
     document.body.appendChild(modal);
 }
 
-function cambiarEstadoPago(idPago, idEstado) {
+function cambiarEstadoPago(idPago, idEstado) { // cuando un usuario cambia el estado del pago
     fetch('API.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -891,9 +948,15 @@ function cambiarEstadoPago(idPago, idEstado) {
     .then(res => res.json()) // convierte la respuesta
     .then(res => {
         if (res.mensaje) { // si la respuesta tiene la propiedad mensaje (api) imprime en la consola
-            console.log("Estado actualizado correctamente en BD");
+            if (mensaje) {
+                mensaje.style.color = '#a9cd46'; // Verde para éxito
+                mensaje.textContent = res.mensaje;
+            }
         } else if (res.error) {
-            alert("Error: " + res.error); //si no, muestra un mensaje de error
+            if (mensaje) { //si no, muestra un mensaje de error
+                mensaje.style.color = 'red'; // Rojo para error
+                mensaje.textContent = "Error: " + res.error;
+            } 
         }
     })
     .catch(err => console.error("Error en la petición:", err));

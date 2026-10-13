@@ -9,14 +9,20 @@
     src: url('fuentes/tamrin.ttf') format('truetype');
 }
 
-body {
+html, body {
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Evita que la página completa se desplace verticalmente */
     font-family: 'Tamrin', sans-serif;
-    min-height: 100vh;
     background: url("fondo/fondoISFDyT31.jpeg") center/cover no-repeat fixed;
 }
 
 .contenedor {
     display: flex;
+    height: 100vh; /* Ocupa exactamente el alto visible del navegador */
+    width: 100vw;
+    overflow: hidden;
 }
 
 .sideBar {
@@ -74,10 +80,12 @@ body {
 /* Contenido Principal */
 .contenido {
     flex: 1;
-    padding: 30px;
+    padding: 20px 30px;
     display: flex;
     flex-direction: column;
-    min-height: 100vh; /* Asegura que el área de contenido ocupe todo el alto */
+    height: 100vh;
+    box-sizing: border-box;
+    overflow: hidden; /* Mantiene fijos los bordes de la sección central */
 }
 
 /* Control de Secciones/Formularios */
@@ -124,7 +132,6 @@ body {
     width: 15%;
 }
 
-
 .listados {
     margin-top: 10%;
     width: 100%;
@@ -167,79 +174,70 @@ body {
     font-size: 0.7rem;
 }
 
-.ver-todos {
-    background: transparent;
-    border: none;
-    font-family: 'Tamrin', sans-serif;
-    font-size: 0.8rem;
-    cursor: pointer;
-}
-
-.ver-todos:hover {
-    text-decoration: underline;
-}
-
 /* Sección Pagos (Estilo idéntico a Cooperadora Actual) */
 #verPagos.pagos-card {
-    opacity: 1;
-    width: 100%;
-    max-width: 1050px;
-    margin: auto;
-    padding: 20px 25px;
-    color: #a9cd46;
     background: #0049acd4;
     border-radius: 10px;
+    padding: 20px 25px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    color: #b8d46e;
     box-sizing: border-box;
+    width: 100%;
+    max-width: 1050px;
+    margin: 20px auto 40px auto;
 }
 
-#verPagos.pagos-card.activo {
-    display: flex;
-    flex-direction: column;
-}
-
-.pagos-header {
+#verPagos .pagos-header {
     display: flex;
     justify-content: center;
     align-items: center;
     margin-bottom: 15px;
+    min-height: 40px;
 }
 
-.titulo-pagos {
-    color: #a9cd46;
-    font-size: 18px;
-    font-weight: normal;
+#verPagos .titulo-pagos {
+    margin: 0;
     text-align: center;
+    color: #a9cd46;
+    font-size: 1.4rem;
+    font-weight: normal;
 }
 
+/* Tabla con estructura idéntica a sociosAlumnos / sociosVoluntarios */
 .tabla-pagos-contenedor {
     width: 100%;
+    max-height: 400px;
+    overflow-y: auto;
     overflow-x: auto;
+    margin-top: 15px;
 }
-
 .tabla-pagos {
     width: 100%;
-    margin-top: 10px;
-    table-layout: auto;
     border-collapse: collapse;
+    table-layout: auto;
     color: #a9cd46;
 }
 
 .tabla-pagos th,
 .tabla-pagos td {
-    padding: 16px 10px;
+    padding: 14px 10px;
     border: 2px solid #a9cd46;
     text-align: center;
     vertical-align: middle;
-    font-size: 15px;
-    word-wrap: break-word;   /* o overflow-wrap: break-word */
+    font-size: 14px;
+    word-wrap: break-word;
     overflow-wrap: break-word;
 }
 
 .tabla-pagos th {
     font-weight: normal;
+    background: rgba(0, 73, 172, 0.7);
+    position: sticky;
+    top: 0;
+    z-index: 2;
 }
 
-/* Vista previa del Comprobante */
+/* Control del tamaño de los elementos dentro de las celdas */
 .tabla-pagos td img,
 .tabla-pagos .comprobante-preview {
     width: 45px;
@@ -250,15 +248,14 @@ body {
     margin: 0 auto;
 }
 
-/* Selector del Estado */
 .tabla-pagos select.estado {
     padding: 5px 8px;
     color: #a9cd46;
-    background: #0049acd4;
+    background: #0049ac;
     border: 1px solid #a9cd46;
     border-radius: 4px;
     font-family: 'Tamrin', sans-serif;
-    font-size: 14px;
+    font-size: 13px;
     cursor: pointer;
     outline: none;
 }
@@ -266,6 +263,52 @@ body {
 .tabla-pagos select.estado option {
     background: #0049ac;
     color: #a9cd46;
+}
+
+.filtros-pagos {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.filtro-grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.filtro-grupo label {
+    font-weight: bold;
+}
+
+.filtro-grupo select {
+    padding: 9px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.filtrar,
+.limpiar-filtros {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.filtrar {
+    background-color: #a9cd46;
+    color: white;
+}
+
+.limpiar-filtros {
+    background-color: #6c757d;
+    color: white;
+}
+
+#mensajeFiltrosPagos {
+    margin: 8px 0 15px;
 }
 
 /* Selector/Dropdown del Estado (Pendiente, Aprobado, etc.) */
@@ -333,6 +376,14 @@ body {
 
 .cerrar-comprobante:hover {
     color: #ccc;
+}
+
+.msj-error {
+    text-align:center; 
+    font-family:Tamrin; 
+    font-size:12px; 
+    color: red; 
+    margin-top: 10px;
 }
 
 /* SECCIÓN COOPERADORA */

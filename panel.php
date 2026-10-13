@@ -72,7 +72,7 @@
                     <div class="card-listado">
                         <div class="listado-header">
                             <h4>Socio alumno</h4>
-                            <button class="ver-todos" onclick="mostrar('alumno')">Ver todos</button>
+                            <button class="btn-editar" onclick="mostrar('alumno')">Ver todos</button>
                         </div>
                         <div class="listado-item" id="socAlumno">
                         </div>
@@ -80,13 +80,14 @@
                     <div class="card-listado">
                         <div class="listado-header">
                             <h4>Socio voluntario</h4>
-                            <button class="ver-todos" onclick="mostrar('voluntario')">Ver todos</button>
+                            <button class="btn-editar" onclick="mostrar('voluntario')">Ver todos</button>
                         </div>
                         <div class="listado-item" id="socVoluntario">
                         </div>
                     </div>
                 </div>
             </div>
+
             <!-- Socios -->
             <div id="alumno" class="formulario">
                 <input type="text" id="barraBusquedaAlumnos" placeholder="Buscar por DNI o nombre completo..." onkeydown="if(event.key === 'Enter') buscarUsuariosAlumnos()">
@@ -211,6 +212,47 @@
                 <div class="pagos-header">
                     <h2 class="titulo-pagos">Pagos registrados</h2>
                 </div>
+                <p id="mensajePagos" class="msj-error"></p>
+                <!-- Filtros de pagos -->
+                <div class="filtros-pagos">
+                    <div class="filtro-grupo">
+                        <label for="filtroMes">Mes:</label>
+                        <select id="filtroMes">
+                            <option value="">Todos los meses</option>
+                            <option value="Marzo">Marzo</option>
+                            <option value="Abril">Abril</option>
+                            <option value="Mayo">Mayo</option>
+                            <option value="Junio">Junio</option>
+                            <option value="Julio">Julio</option>
+                            <option value="Agosto">Agosto</option>
+                            <option value="Septiembre">Septiembre</option>
+                            <option value="Octubre">Octubre</option>
+                            <option value="Noviembre">Noviembre</option>
+                        </select>
+                    </div>
+
+                    <div class="filtro-grupo">
+                        <label for="filtroEstado">Estado:</label>
+                        <select id="filtroEstado">
+                            <option value="">Todos los estados</option>
+                            <option value="1">Pagado</option>
+                            <option value="2">Impago</option>
+                            <option value="3">Pendiente</option>
+                        </select>
+                    </div>
+
+                    <button type="button" class="filtrar" onclick="filtrarPagos()">
+                        <img id="iconoFiltro" src="iconos/filtro-vacio.png" alt="Filtro vacío" width="24" height="24"><br>
+                        Filtrar 
+                    </button>
+
+                    <button type="button" class="limpiar-filtros" onclick="limpiarFiltrosPagos()"><br>
+                        Limpiar <br>
+                        filtros 
+                    </button>
+                </div>
+                <p id="mensajeFiltrosPagos"></p>
+
                 <div class="tabla-pagos-contenedor">
                     <table class="tabla-pagos">
                         <thead>
@@ -231,10 +273,6 @@
                             </tr>
                         </tbody>
                     </table>
-                </div>
-                <div id="visorComprobante" class="visor-comprobante" onclick="cerrarComprobante()">
-                    <span class="cerrar-comprobante">&times;</span>
-                    <img id="imagenComprobante" class="imagen-comprobante-grande" onclick="event.stopPropagation()">
                 </div>
             </div>
 
