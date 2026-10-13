@@ -239,7 +239,6 @@ body {
 }
 /* Ajuste para pantallas responsive (móviles) */
 @media (max-width: 768px) {
-    /* Opción A: Si usas una barra con posición absoluta o fija */
     .top-bar, .header, nav.navbar {
         position: absolute; /* o fixed */
         top: 10px;          /* Disminuye este valor para subirla (ej. 5px u 8px) */
