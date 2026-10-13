@@ -448,7 +448,7 @@ body {
     .Instituto {
         position: static !important;
         transform: none !important;
-        font-size: clamp(5px, 1.5vw, 6.5px) !important;
+        font-size: clamp(5px, 1.5vw, 7px) !important;
         color: #000000 !important;
         white-space: normal !important;        /* Permite adaptarse sin cortarse */
         line-height: 1.1 !important;

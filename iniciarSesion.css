@@ -498,7 +498,7 @@ input[type="text"] {
         transform: none !important;
         /* Forzamos a que mantenga 1 sola línea siempre */
         white-space: nowrap !important;
-        font-size: clamp(5px, 1.8vw, 7.5px) !important;
+        font-size: clamp(5px, 1.8vw, 7px) !important;
         color: #000000 !important;
         line-height: 1.1 !important;
         margin: 0 !important;

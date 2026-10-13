@@ -7,7 +7,6 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Tamrin';
 }
 
 .nav-contenedor {
@@ -158,6 +157,7 @@
     color: #333;
     text-decoration: none;
     font-size: 12px;
+    font-family: 'Tamrin';
 }
 
 .dropdown-menu a::after,
@@ -251,6 +251,7 @@
     /* Posición fija del botón de Admin a la derecha */
     .item-admin {
         position: absolute;
+        left: auto !important;
         right: 55px;
         top: 13px;
         height: 30px;

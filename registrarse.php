@@ -92,7 +92,7 @@
         
             <div class="TextosLogo">
                 <h1 class="Cooperadora"><span class="Verde">A</span>SOCIACIÓN <span class="Verde">C</span>OOPERADORA</h1>
-                <h2 class="Instituto">Instituto Superior de Formación Docente y Técnica n°31</h2>
+                <h2 class="Instituto">Instituto Superior de Formación Docente y Técnica N°31</h2>
             </div>
         </div>
 
