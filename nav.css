@@ -23,7 +23,7 @@
     background-color: rgba(184, 185, 187, 0.2);
     border-radius: 999px;
     display: flex;
-    justify-content: space-between;
+    justify-content: center; /* Cambiado de space-between a center */
     align-items: center;
     padding: 0 20px;
     position: relative;
@@ -60,6 +60,16 @@
     display: flex;
     align-items: center;
     height: 100%;
+}
+
+.item-admin {
+    position: absolute;
+    left: 20px;
+}
+
+.acciones-usuarios-nav {
+    position: absolute;
+    right: 20px;
 }
 
 .nav-lista li {
@@ -162,20 +172,20 @@
     display: block;
 }
 
-/* ===================================================
-   MEDIA QUERY PARA MOVIL (< 768px)
-   =================================================== */
 @media screen and (max-width: 767px) {
     .nav-contenedor {
         padding-top: 0;
+        width: 100%;
     }
 
     .nav-barra {
         width: 100%;
-        height: 55px;
+        height: auto;               /* Permite que la barra crezca según su contenido */
+        min-height: 55px;           /* Altura base cerrada */
         background-color: transparent;
         border-radius: 0;
         display: flex;
+        flex-wrap: wrap;            /* Obliga a la lista a caer abajo al abrirse */
         justify-content: space-between;
         align-items: center;
         padding: 10px 15px;
@@ -199,17 +209,15 @@
         object-fit: contain;
     }
 
-    /* Menú desplegable hamburguesa (Solo páginas principales) */
+    /* Menú desplegable en el flujo del documento (EMPUJA SIEMPRE) */
     .nav-lista {
         display: none;
         flex-direction: column;
         align-items: flex-start;
         justify-content: flex-start;
-        position: absolute;
-        top: 55px;
-        left: 0;
+        position: static;           /* Quita absolute para que empuje el contenido real de la página */
         width: 100%;
-        padding: 10px 20px;
+        padding: 0;                 /* Sin padding superior para no dejar hueco con la X */
         margin: 0;
         z-index: 999;
     }
@@ -219,20 +227,27 @@
     }
 
     .nav-lista li {
-        margin: 10px 0;
+        margin: 6px 0;             /* Espaciado compacto entre enlaces */
         height: auto;
     }
 
+    /* "Inicio" pegado exactamente debajo del botón hamburguesa / X */
+    .nav-lista li:first-child {
+        margin-top: 2px;
+    }
+
     .nav-lista a {
+        font-family: 'Tamrin';
         font-size: 14px;
         padding-bottom: 0;
+        color: #000;
     }
 
     .nav-lista a::after {
         display: none !important;
     }
 
-    /* Posición fija del botón de Admin a la derecha (al lado del usuario) */
+    /* Posición fija del botón de Admin a la derecha */
     .item-admin {
         position: absolute;
         right: 55px;
@@ -252,13 +267,21 @@
         z-index: 1001;
     }
 
-    /* El submenú del usuario se abre e independiza completamente de la hamburguesa */
     .dropdown-menu {
         position: absolute !important;
         top: 35px !important;
         right: 0 !important;
         left: auto !important;
         z-index: 2000 !important;
+    }
+
+    .dropdown-menu a {
+        display: block;
+        padding: 10px 16px;
+        color: #333;
+        text-decoration: none;
+        font-size: 12px;
+        font-family: 'Tamrin', sans-serif;
     }
 
     .usuarios {
