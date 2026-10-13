@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Obtener el ID del input oculto presente en nav.php
     const idusuario = document.getElementById('usuario')?.value;
     obtenerDatosUsuario(idusuario);
+    cargarCarrerasEnSelect(); // <-- Carga las carreras al iniciar
 });
 
 function obtenerDatosUsuario(idusuario) {
@@ -146,6 +147,26 @@ function guardarCampo(campo) {
         alert('El campo no puede estar vacío.');
         return;
     }
+    // ==========================================
+    // VALIDACIONES ESPECÍFICAS POR CAMPO
+    // ==========================================
+
+    if (campo === 'email') {
+        // Validar que el email contenga el símbolo '@'
+        if (!valorNuevo.includes('@')) {
+            alert('Debes colocar el arroba (@) para guardar los cambios en el e-mail.');
+            return;
+        }
+    }
+
+    if (campo === 'telefono') {
+        // Validar que sean exactamente 10 dígitos (puedes usar una expresión regular)
+        const soloDigitos = /^\d{10}$/;
+        if (!soloDigitos.test(valorNuevo)) {
+            alert('El número de teléfono debe contener exactamente 10 dígitos numéricos.');
+            return;
+        }
+    }
 
     // Recopilar datos actuales del DOM
     const idUsuario = document.getElementById('usuario')?.value || '1';
@@ -213,4 +234,31 @@ function guardarCampo(campo) {
         console.error('Error al guardar:', error);
         alert('Ocurrió un error al intentar guardar.');
     });
+}
+
+// Nueva función para poblar el select de carreras desde la API
+function cargarCarrerasEnSelect() {
+    fetch('API.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ recurso: 'carreras', consulta: 'Read' })
+    })
+    .then(res => res.json())
+    .then(carreras => {
+        const selectCarrera = document.getElementById('editar_id_carrera');
+        if (!selectCarrera) return;
+
+        // Limpiar opciones previas por seguridad
+        selectCarrera.innerHTML = '<option value="">Seleccione una carrera</option>';
+
+        if (Array.isArray(carreras)) {
+            carreras.forEach(carrera => {
+                const option = document.createElement('option');
+                option.value = carrera.id;
+                option.textContent = carrera.nombre;
+                selectCarrera.appendChild(option);
+            });
+        }
+    })
+    .catch(error => console.error("Error al cargar las carreras:", error));
 }
