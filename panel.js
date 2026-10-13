@@ -946,6 +946,14 @@ function cambiarEstadoPago(idPago, idEstado) { // cuando un usuario cambia el es
     .then(res => res.json()) // convierte la respuesta
     .then(res => {
         if (res.mensaje) { // si la respuesta tiene la propiedad mensaje (api) imprime en la consola
+            // Actualiza el estado en el arreglo global
+            const pagoEncontrado = todosLosPagos.find(p => p.id == idPago);
+            if (pagoEncontrado) {
+                pagoEncontrado.id_estado = parseInt(idEstado);
+            }
+            // Re-ejecuta el filtro para actualizar la tabla al instante sin perder los filtros activos
+            filtrarPagos();   
+            
             if (mensaje) {
                 mensaje.style.color = '#a9cd46'; // Verde para éxito
                 mensaje.textContent = res.mensaje;
