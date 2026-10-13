@@ -26,55 +26,66 @@ html, body {
 }
 
 .sideBar {
-    width: 300px;
-    min-width: 300px; /* Asegura el ancho mínimo */
-    flex-shrink: 0;   /* EVITA QUE SE ACHIQUE cuando las tablas o contenidos crecen */
+    width: 320px;
+    min-width: 320px;
+    flex-shrink: 0;
     min-height: 100vh;
-    padding: 20px 15px;
     background: #b8d46ed4;
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
 }
+
 .sideBar .logo {
-    margin: 20px 0 25px;
+    margin: 0 0 10px 10px;
 }
 
 .sideBar .logo img {
-    width: 70px;
-    height: 70px;
+    width: 110px;
+    height: 110px;
     border-radius: 50%;
     background: #fff;
-    object-fit: cover;
+    object-fit: contain;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
 .sideBar nav {
+    width: 100%;
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Espaciado proporcional entre todos los botones */
 }
 
 .sideBar nav button {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 18px; /* Espacio entre el ícono y el texto */
     width: 100%;
-    padding: 12px 15px;
-    margin-bottom: 5px;
+    padding: 8px 10px;
     background: transparent;
     border: none;
-    color: #0049ac;
+    color: #0d47a1; /* Azul intenso visto en la imagen */
     font-family: 'Tamrin', sans-serif;
-    font-size: 0.85rem;
+    font-size: 1.05rem;
+    font-weight: bold;
     text-align: left;
     cursor: pointer;
     border-radius: 8px;
-    transition: background 0.2s;
+    transition: background 0.2s, transform 0.1s;
 }
 
 .sideBar nav button:hover {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateX(3px);
 }
 
+/* Ajuste unificado del tamaño de todos los íconos de la sidebar */
 .sideBar nav button img {
-    width: 18%;
+    width: 48px !important;  /* Tamaño uniforme e idéntico al de la imagen */
+    height: 48px !important;
+    object-fit: contain;
+    flex-shrink: 0;
 }
 
 /* Contenido Principal */
@@ -1048,4 +1059,162 @@ html, body {
     width: 100%;
     max-width: 380px;
     height: 300px;
+}
+
+@media screen and (min-width: 1024px) and (max-width: 1440px) {
+    .sideBar {
+        width: 280px;
+        min-width: 280px;
+        padding: 20px 15px;
+    }
+
+    .sideBar .logo img {
+        width: 90px;
+        height: 90px;
+    }
+
+    .sideBar nav {
+        gap: 12px;
+    }
+
+    .sideBar nav button {
+        font-size: 0.95rem;
+        gap: 14px;
+    }
+
+    .sideBar nav button img {
+        width: 38px !important;
+        height: 38px !important;
+    }
+
+    .contenido {
+        overflow-y: auto;
+    }
+
+    #sociosAlumnos tbody,
+    #sociosVoluntarios tbody {
+        max-height: calc(100vh - 330px);
+    }
+
+    .tabla-pagos-contenedor {
+        max-height: calc(100vh - 320px);
+    }
+}
+
+/* Monitores Full HD y 2K Quad HD (1441px a 2560px) */
+@media screen and (min-width: 1441px) and (max-width: 2560px) {
+    .sideBar {
+        width: 330px;
+        min-width: 330px;
+    }
+
+    .cards {
+        gap: 25px;
+    }
+
+    .card-chica, 
+    .card-listado, 
+    #verPagos.pagos-card, 
+    #carreras, 
+    .contenedor-graficos {
+        max-width: 1400px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #sociosAlumnos tbody,
+    #sociosVoluntarios tbody {
+        max-height: 520px;
+    }
+
+    .tabla-pagos-contenedor {
+        max-height: 550px;
+    }
+}
+
+/* Monitores Ultra-HD y 4K (A partir de 2561px) */
+@media screen and (min-width: 2561px) {
+    html {
+        font-size: 18px;
+    }
+
+    .sideBar {
+        width: 440px;
+        min-width: 440px;
+        padding: 40px 30px;
+    }
+
+    .sideBar .logo img {
+        width: 140px;
+        height: 140px;
+    }
+
+    .sideBar nav {
+        gap: 24px;
+    }
+
+    .sideBar nav button {
+        font-size: 1.25rem;
+        padding: 12px 15px;
+        gap: 22px;
+    }
+
+    .sideBar nav button img {
+        width: 62px !important;
+        height: 62px !important;
+    }
+
+    .contenido {
+        padding: 40px 60px;
+    }
+
+    .card-chica, 
+    .card-listado, 
+    #verPagos.pagos-card, 
+    #carreras, 
+    .contenedor-graficos,
+    #cooperadora.cooperadora-card {
+        max-width: 2000px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .card-numero {
+        font-size: 1.5rem;
+    }
+
+    .card-grafico {
+        flex: 1 1 600px;
+    }
+
+    .canvas-box {
+        max-width: 550px;
+        height: 450px;
+    }
+
+    #sociosAlumnos tbody,
+    #sociosVoluntarios tbody {
+        max-height: 680px;
+    }
+
+    .tabla-pagos-contenedor {
+        max-height: 700px;
+    }
+
+    .tabla-pagos th, 
+    .tabla-pagos td,
+    .tabla-cooperadora th, 
+    .tabla-cooperadora td,
+    .tabla-carreras th, 
+    .tabla-carreras td {
+        font-size: 1.1rem;
+        padding: 20px 14px;
+    }
+
+    #barraBusquedaAlumnos,
+    #barraBusquedaVoluntarios {
+        max-width: 900px;
+        font-size: 1.1rem;
+        padding: 18px 30px;
+    }
 }
