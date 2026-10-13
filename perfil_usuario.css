@@ -18,36 +18,38 @@ body {
     background-attachment: fixed;
 }
 
+/* Contenedor principal adaptativo */
 .contenedor-usuario {
-    width: 90%;
+    width: 92%;
     max-width: 900px;
-    margin: auto;
-    background-color: rgba(107, 160, 86, 0.90);
-    padding: 25px;
-    border-radius: 25px;
-    margin-bottom: 30px;
-    margin-top: 30px;
+    margin: 20px auto;
+    background-color: rgba(107, 160, 86, 0.92);
+    padding: 20px;
+    border-radius: 20px;
 }
 
+/* Filas generales adaptables */
 .fila {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.4); /* O usa un color sólido como #ffffff */
-    padding-bottom: 12px;
-    padding-top: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+    padding: 15px 0;
     display: flex;
-    justify-content: space-between; /* Empuja el texto a la izquierda y el botón a la derecha */
-    align-items: center;            /* Centra verticalmente el contenido */
-    gap: 28px;                      /* Separa la información de los botones */
-    width: 100%;                    /* Asegura que ocupe todo el ancho disponible */
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+    flex-wrap: wrap; /* Permite que los elementos bajen en pantallas chicas */
 }
 
+/* Adaptación cuando el campo está en modo edición */
 .fila.edicion {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
 }
 
 .fila.edicion .informacion {
-    display: contents;
+    display: block;
+    width: 100%;
 }
 
 .fila.edicion .informacion h3 {
@@ -79,43 +81,43 @@ body {
     border-bottom: none;
 }
 
+/* Estilo para la cabecera del perfil */
 .fila.perfil {
-    justify-content: flex-start;
-
+    justify-content: center;
+    text-align: center;
 }
-
 .fila.perfil .informacion {
     width: 100%;
 }
 
+.fila .informacion {
+    flex: 1;
+    min-width: 200px; /* Asegura que el texto no se aplaste demasiado */
+}
+
 .foto-perfil {
-    position: relative;
     display: flex;
+    flex-direction: column;
     align-items: center;
+    gap: 10px;
     width: 100%;
-    gap: 15px;
 }
 
 .foto-perfil img {
-    margin-top: none; 
-    width: 90px;
-    height: 90px;
+    width: 80px;
+    height: 80px;
     object-fit: cover;
     border-radius: 50%;
-    display: block;
     border: 3px solid white;
-    
 }
 
 .foto-perfil h2 {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    margin: 0;
+    position: static; /* Quitamos absolute para que no se superponga en móviles */
+    transform: none;
     color: black;
-    font-size: 21px;
+    font-size: 20px;
     text-align: center;
-    white-space: nowrap;
+    white-space: normal;
 }
 
 .informacion h3 {
@@ -135,14 +137,13 @@ body {
 .campo-edicion {
     margin-top: 8px;
     width: 100%;
-    min-height: 48px;
-    padding: 12px 15px;
+    min-height: 44px;
+    padding: 10px 14px;
     border: 2px solid rgba(54, 95, 45, 0.55);
     border-radius: 12px;
     background-color: #fff;
     color: #24351f;
-    font: 16px Arial, sans-serif;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    font: 15px Arial, sans-serif;
 }
 
 .campo-edicion:focus {
@@ -213,4 +214,29 @@ color: white;
 .editar-btn:focus-visible {
     outline: 3px solid rgba(255, 255, 255, 0.9);
     outline-offset: 2px;
+}
+
+/* Estilo para los mensajes de error integrados */
+.mensaje-error {
+    display: none;
+    color: #ffd2d2;
+    background-color: rgba(139, 61, 53, 0.8);
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    margin-top: 6px;
+    font-family: Arial, sans-serif;
+}
+
+/* Borde rojo para el campo cuando hay un error */
+.campo-edicion.error {
+    border-color: #ff5252 !important;
+    box-shadow: 0 0 0 4px rgba(255, 82, 82, 0.2) !important;
+}
+
+.editar-btn:disabled {
+    background-color: #555 !important;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
 }

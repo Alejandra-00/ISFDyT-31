@@ -10,21 +10,18 @@ body {
 
 /* Contenedor principal semi-transparente con tamaño fijo */
 .cont {
-    width: 40%;               /* Naikeddeng a lapad */
-    height: 600px;            /* Naikeddeng a kangato */
+    width: 40%;  
+    margin-top: 100px;                        
     margin: 30px auto;
     background-color: rgba(255, 255, 255, 0.65);
     padding: 25px;
     border-radius: 25px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); 
     display: flex;
     flex-direction: column;
     align-items: center;
-    backdrop-filter: blur(4px);
-    
-    /* Tapno saan a magabasan ti puraw a kahon no adu ti registro */
-    overflow-y: auto;          
-    box-sizing: border-box;
+    backdrop-filter: blur(4px); 
+    box-sizing: border-box;  /* Asegura que el padding no afecte al ancho total */
 }
 
 /* Formulario */
@@ -79,39 +76,45 @@ body {
     color: white;
 }
 
-
+/* ===================================================
+   MEDIA QUERY PARA MOVIL (< 768px)
+   =================================================== */
 @media screen and (max-width: 768px) {
     .cont {
-        width: 90%;
+        width: 95%;               /* Aprovecha más el ancho de la pantalla */
+        max-width: 450px;         /* Límite de ancho para que no se estire demasiado */
+        margin: 5px auto 20px auto; /* Posicionado bien arriba, igual que pagarCooperadora */
         height: auto;
-        padding: 15px;
+        padding: 18px 15px;       /* Relleno más cómodo */
+        border-radius: 20px;
     }
 
     .registro td {
-        font-size: clamp(10px, 1.4vw,  ​12px);
-        padding: 8px 10px;
+        font-size: 14px;          /* Texto más grande y legible (subió de ~10px a 14px) */
+        padding: 12px 14px;       /* Celdas con más área táctil para presionar la fila */
     }
 
     .registro tbody tr {
         height: auto;
-        min-height: 44px;
+        min-height: 48px;         /* Filas más anchas y cómodas para tocar en celular */
     }
 }
 
 @media screen and (max-width: 480px) {
     .cont {
-        width: 95%;
-        padding: 10px;
-        border-radius: 15px;
+        width: 96%;
+        padding: 15px 10px;
+        margin: 5px auto 15px auto;
+        border-radius: 16px;
     }
-
+    
     .registro td {
-        font-size: clamp(9px, 1.2vw,  ​11px);
-        padding: 6px 8px;
+        font-size: 13px;          /* Tamaño sutilmente ajustado en pantallas muy pequeñas */
+        padding: 10px 8px;
     }
 
     .registro tbody tr {
         height: auto;
-        min-height: 40px;
+        min-height: 44px;
     }
 }

@@ -338,119 +338,124 @@ button:disabled img {
     }
 }
 
+/* ===================================================
+   MEDIA QUERY PARA MOVIL (< 768px)
+   =================================================== */
 @media screen and (max-width: 768px) {
     .seccionPagos {
         width: 100%;
         display: flex;
         justify-content: center;
-        align-items: center;
-        padding: 10px;
+        align-items: flex-start;
+        padding: 5px 15px 20px 15px; /* Reducimos padding superior para que suba */
         box-sizing: border-box;
-        min-height: calc(100vh - 70px);
+        min-height: auto;
     }
 
     .contenedor {
-        width: 88%;
-        max-width: 310px;         /* Ancho más estilizado para celular */
-        margin: 0 auto;
-        padding: 14px 16px;       /* Relleno compacto */
-        border-radius: 16px;
+        width: 95%;               /* Un poco más ancho en pantalla móvil */
+        max-width: 380px;         /* Aumentado de 310px a 380px para dar más aire */
+        margin: 5px auto 0 auto;  /* Posicionado bien arriba */
+        padding: 20px 22px;       /* Relleno más espacioso */
+        border-radius: 20px;
         box-sizing: border-box;
         overflow: hidden; 
     }
 
     .titulo {
-        font-size: 16px;          /* Título más sutil */
-        margin-bottom: 10px;
+        font-size: 20px;          /* Aumentado de 16px a 20px */
+        margin-bottom: 14px;
         word-break: break-word;
     }
 
     .info {
         flex-direction: column-reverse;
         align-items: flex-start;
-        gap: 6px;
-        margin-bottom: 8px;
+        gap: 8px;
+        margin-bottom: 12px;
         width: 100%;
     }
 
     .datos {
         width: 100%;
-        gap: 2px;
+        gap: 4px;
     }
 
     .datos p {
-        font-size: 11px;          /* Texto de alias/CVU más delicado */
-        line-height: 1.3;
+        font-size: 14px;          /* Aumentado de 11px a 14px */
+        line-height: 1.4;
         overflow-wrap: anywhere;
         word-break: break-all;
     }
 
     .estado {
-        margin-bottom: 2px;
+        margin-bottom: 6px;
     }
 
     .estado p {
-        font-size: 10px;
-        padding: 2px 8px;
-        border-radius: 6px;
+        font-size: 12px;          /* Aumentado de 10px a 12px */
+        padding: 4px 10px;
+        border-radius: 8px;
     }
 
     .linea {
-        margin: 6px 0;
+        margin: 10px 0;
     }
 
+    /* Botones de Descargar Factura y Enviar Comprobante */
     .descargar button, 
     .enviar button:not(.btn) {
-        font-size: 11px;
-        padding: 2px 0;
+        font-size: 14px;          /* Aumentado de 11px a 14px */
+        padding: 6px 0;
     }
 
     .descargar button img, 
     .enviar button:not(.btn) img {
-        width: 15px;
-        height: 15px;
-        margin-right: 6px;
+        width: 20px;              /* Aumentado de 15px a 20px */
+        height: 20px;
+        margin-right: 10px;
         flex-shrink: 0;
     }
 
     .descargar button::after, 
     .enviar button:not(.btn)::after {
-        font-size: 12px;
+        font-size: 15px;          /* Flechita más visible */
     }
 
+    /* Botón verde "Enviar pago" */
     .enviar .btn {
-        font-size: 11px;
-        padding: 5px 14px;
-        border-radius: 6px;
-        margin-top: 6px;
+        font-size: 14px;          /* Aumentado de 11px a 14px */
+        padding: 8px 20px;
+        border-radius: 10px;
+        margin-top: 10px;
     }
 
-    /* Subir comprobante */
+    /* Sección Subir comprobante */
     .cargar {
-        margin: 8px 0;
+        margin: 12px 0;
     }
 
     .cargarImagen {
         width: 100%;
-        max-width: 200px;
-        height: 95px;
-        border-radius: 10px;
-        gap: 4px;
+        max-width: 240px;         /* Aumentado de 200px a 240px */
+        height: 110px;            /* Aumentado de 95px a 110px */
+        border-radius: 14px;
+        gap: 6px;
     }
 
     .cargarImagen img {
-        width: 26px;
-        height: 26px;
+        width: 34px;              /* Icono más grande */
+        height: 34px;
     }
 
     .texto {
-        font-size: 10px;
+        font-size: 12px;          /* Aumentado de 10px a 12px */
     }
 
     .btnEnviar {
-        font-size: 11px;
-        padding: 5px 20px;
-        border-radius: 6px;
-        margin-top: 8px;
+        font-size: 14px;          /* Aumentado de 11px a 14px */
+        padding: 8px 24px;
+        border-radius: 10px;
+        margin-top: 12px;
     }
 }

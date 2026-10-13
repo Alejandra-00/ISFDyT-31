@@ -27,8 +27,8 @@ function cargarPagos() {
       if (!tbody) return;
       tbody.innerHTML = '';
 
-      if (!Array.isArray(data)) {
-         console.error("Respuesta de la API no es una lista válida:", data);
+      if (!Array.isArray(data) || data.length === 0) {
+         tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Los administradores no poseen registros de cobro de cuotas.</td></tr>';
          return;
       }
 

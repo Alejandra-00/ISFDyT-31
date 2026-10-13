@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Obtener el ID del input oculto presente en nav.php
     const idusuario = document.getElementById('usuario')?.value;
     obtenerDatosUsuario(idusuario);
+    cargarCarrerasEnSelect(); // <-- Carga las carreras al iniciar
 });
 
 function obtenerDatosUsuario(idusuario) {
@@ -19,6 +20,25 @@ function obtenerDatosUsuario(idusuario) {
         const datos = Array.isArray(respuestaApi) ? respuestaApi[0] : respuestaApi;
 
         if (datos && !datos.error) {
+            // Dentro de obtenerDatosUsuario(idusuario), justo después de rellenar los datos:
+
+            // Supongamos que la API te devuelve un campo como datos.tipo_usuario o datos.nombre_carrera
+            const esVoluntario = (datos.nombre_carrera === 'Sin carrera' || datos.tipo_usuario === 'voluntario' /* Ajusta según el campo de tu BD */);
+
+            const btnEditarCarrera = document.querySelector('form input[value="id_carrera"]')?.closest('form')?.querySelector('.editar-btn');
+
+            if (btnEditarCarrera) {
+                if (esVoluntario) {
+                    btnEditarCarrera.disabled = true;
+                    btnEditarCarrera.style.opacity = '0.5'; // Opcional: para que luzca deshabilitado
+                    btnEditarCarrera.style.cursor = 'not-allowed';
+                    btnEditarCarrera.title = 'Los voluntarios no pueden modificar la carrera';
+                } else {
+                    btnEditarCarrera.disabled = false;
+                    btnEditarCarrera.style.opacity = '1';
+                    btnEditarCarrera.style.cursor = 'pointer';
+                }
+            }
             // Rellenar Nombre Completo
             asignarValor('vernombrecompleto', 'editar_nombre_completo', datos.nombre_completo);
 
@@ -33,8 +53,6 @@ function obtenerDatosUsuario(idusuario) {
             const selectCarrera = document.getElementById('editar_id_carrera');
             if (elTextoCarrera) elTextoCarrera.textContent = datos.nombre_carrera ?? datos.id_carrera ?? '-';
             if (selectCarrera && datos.id_carrera) selectCarrera.value = datos.id_carrera;
-            
-            
 
             // Rellenar Teléfono
             asignarValor('vertelefono', 'editar_telefono', datos.telefono);
@@ -68,7 +86,6 @@ function asignarValor(idVer, idEditar, valor) {
     if (elVer) elVer.textContent = val;
     if (elEditar) elEditar.value = val;
 }
-
 
 // Mapeo de texto a ID en caso de que los SELECTs tarden en cargar
 const mapaSocio = { "1": "Socio Activo", "2": "Socio Adherente", "3": "No Socio" };
@@ -149,6 +166,26 @@ function guardarCampo(campo) {
         alert('El campo no puede estar vacío.');
         return;
     }
+    // ==========================================
+    // VALIDACIONES ESPECÍFICAS POR CAMPO
+    // ==========================================
+
+    if (campo === 'email') {
+        // Validar que el email contenga el símbolo '@'
+        if (!valorNuevo.includes('@')) {
+            alert('Debes colocar el arroba (@) para guardar los cambios en el e-mail.');
+            return;
+        }
+    }
+
+    if (campo === 'telefono') {
+        // Validar que sean exactamente 10 dígitos (puedes usar una expresión regular)
+        const soloDigitos = /^\d{10}$/;
+        if (!soloDigitos.test(valorNuevo)) {
+            alert('El número de teléfono debe contener exactamente 10 dígitos numéricos.');
+            return;
+        }
+    }
 
     // Recopilar datos actuales del DOM
     const idUsuario = document.getElementById('usuario')?.value || '1';
@@ -216,4 +253,31 @@ function guardarCampo(campo) {
         console.error('Error al guardar:', error);
         alert('Ocurrió un error al intentar guardar.');
     });
+}
+
+// Nueva función para poblar el select de carreras desde la API
+function cargarCarrerasEnSelect() {
+    fetch('API.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ recurso: 'carreras', consulta: 'Read' })
+    })
+    .then(res => res.json())
+    .then(carreras => {
+        const selectCarrera = document.getElementById('editar_id_carrera');
+        if (!selectCarrera) return;
+
+        // Limpiar opciones previas por seguridad
+        selectCarrera.innerHTML = '<option value="">Seleccione una carrera</option>';
+
+        if (Array.isArray(carreras)) {
+            carreras.forEach(carrera => {
+                const option = document.createElement('option');
+                option.value = carrera.id;
+                option.textContent = carrera.nombre;
+                selectCarrera.appendChild(option);
+            });
+        }
+    })
+    .catch(error => console.error("Error al cargar las carreras:", error));
 }

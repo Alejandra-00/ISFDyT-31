@@ -378,8 +378,6 @@ function editarDNI(dni) {
     });
 }
 
-
-
 function guardarDni() {
     const nuevoDni = document.getElementById('nuevoDni').value.trim();
 
@@ -579,7 +577,6 @@ async function buscarUsuariosVoluntarios() {
     }
 }
 
-
 // carreras
 
 // monto actual
@@ -607,18 +604,19 @@ function cargarMonto() {
            return;
         }
 
-        data.forEach(monto => { 
-           const fila = document.createElement('tr');
-           if (monto.id) fila.dataset.id = monto.id;
+        // Tomamos ÚNICAMENTE el último monto guardado (el vigente)
+        const ultimoMonto = data[data.length - 1]; 
 
-           fila.innerHTML = `
-              <td>${monto.importe ?? ''}</td>
-              <td>${monto.importe_anterior ?? ''}</td>
-              <td>${monto.fecha_guardado ?? ''}</td>
-              <td>${monto.fecha_efecto ?? ''}</td>
-           `;
-           tbody.appendChild(fila);
-        });
+        const fila = document.createElement('tr');
+        if (ultimoMonto.id) fila.dataset.id = ultimoMonto.id;
+
+        fila.innerHTML = `
+           <td>${ultimoMonto.importe ?? ''}</td>
+           <td>${ultimoMonto.importe_anterior ?? ''}</td>
+           <td>${ultimoMonto.fecha_guardado ?? ''}</td>
+           <td>${ultimoMonto.fecha_efecto ?? ''}</td>
+        `;
+        tbody.appendChild(fila);
    })
    .catch(error => {
         if (mensaje) mensaje.innerText = 'Error al cargar el monto de la cooperadora: ' + error;
