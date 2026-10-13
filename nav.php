@@ -16,19 +16,20 @@
 <div class="nav-contenedor">
     <nav class="nav-barra">
 
+        <?php if (isset($_SESSION['admin']) && $_SESSION['admin'] == 1): ?>
+            <li class="item-admin">
+                <a href="panel.php" class="icono-nav">
+                    <img src="iconos/admin.png" alt="Admin" class="usuarios">
+                </a>
+            </li>
+        <?php endif; ?>
+
         <button class="menu-hamburguesa" id="hamburguesa" onclick="menuHamburguesaMovil(event)">
             <span class="icono-abrir"><img src="iconos/menu.png" alt="Abrir"></span>
             <span class="icono-cerrar"><img src="iconos/cerrar.png" alt="Cerrar"></span>
         </button>
 
         <ul class="nav-lista">
-            <?php if (isset($_SESSION['admin']) && $_SESSION['admin'] == 1): ?>
-                <li class="item-admin"><a href="panel.php" class="icono-nav">
-                        <img src="iconos/admin.png" alt="Admin" class="usuarios">
-                    </a>
-                </li>
-            <?php endif; ?>
-            
             <li>
                 <a href="inicio.php" onclick=CambioColor(this) class="<?= $pagina_actual == 'inicio.php' ? 'activo' : ''?>">
                     Inicio
@@ -47,6 +48,9 @@
                 </a>
             </li>
             
+        </ul>
+
+        <div class="acciones-usuarios-nav">
             <?php if (isset($_SESSION['usuario'])): ?>
                 <li class="dropdown item-usuario">
                     <a href="#" class="icono-nav dropdown-toggle" onclick="toggleMenu(event)">
@@ -72,8 +76,8 @@
                         <img src="iconos/usuario.png" alt="Usuario" class="usuarios">
                     </a>
                 </li>
-            <?php endif; ?>   
-        </ul>
+            <?php endif; ?>  
+        </div> 
     </nav>
 </div>
 <script src="nav.js"></script>

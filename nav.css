@@ -6,6 +6,7 @@
 *{
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
 .nav-contenedor {
@@ -21,6 +22,11 @@
     margin-top: 8px;
     background-color: rgba(184, 185, 187, 0.2);
     border-radius: 999px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    position: relative;
 }
 
 .menu-hamburguesa {
@@ -47,12 +53,18 @@
     height: 100%; 
 }
 
-.nav-lista li {
-    margin-right: 15px;
-    margin-left: 15px;
+.nav-lista li,
+.item-admin,
+.acciones-usuarios-nav {
+    list-style: none;
     display: flex;
     align-items: center;
     height: 100%;
+}
+
+.nav-lista li {
+    margin-right: 15px;
+    margin-left: 15px;
 }
 
 .nav-lista a {
@@ -113,7 +125,7 @@
     display: none;
     position: absolute;
     top: 100%;
-    left: 0;
+    right: 0;
     background-color: #fff;
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -151,50 +163,8 @@
 }
 
 /* ===================================================
-   MEDIA QUERY PARA PANTALLAS 4K / ULTRA-HD (>= 2560px)
+   MEDIA QUERY PARA MOVIL (< 768px)
    =================================================== */
-@media screen and (min-width: 2560px) {
-    .nav-contenedor {
-        padding-top: 20px;
-    }
-
-    .nav-barra {
-        height: 100px;
-        width: 1400px;
-        margin-top: 10px;
-    }
-
-    .nav-lista li {
-        margin-right: 30px;
-        margin-left: 30px;
-    }
-
-    .nav-lista a {
-        font-size: 26px;
-        padding-bottom: 4px;
-    }
-
-    .nav-lista a::after {
-        height: 4px;
-    }
-
-    .usuarios {
-        height: 64px;
-        width: 64px;
-    }
-
-    .dropdown-menu {
-        border-radius: 16px;
-        padding: 16px 0;
-        min-width: 320px;
-    }
-
-    .dropdown-menu a {
-        padding: 16px 32px;
-        font-size: 24px;
-    }
-}
-
 @media screen and (max-width: 767px) {
     .nav-contenedor {
         padding-top: 0;
@@ -213,7 +183,7 @@
         position: relative;
     }
 
-    /* Botón hamburguesa alineado a la izquierda */
+    /* Botón hamburguesa a la izquierda */
     .menu-hamburguesa {
         display: block;
         z-index: 1001;
@@ -229,30 +199,27 @@
         object-fit: contain;
     }
 
-    /* Contenedor principal del menú desplegable */
+    /* Menú desplegable hamburguesa (Solo páginas principales) */
     .nav-lista {
-        display: flex;
+        display: none;
         flex-direction: column;
         align-items: flex-start;
         justify-content: flex-start;
         position: absolute;
         top: 55px;
-        left: 20px;
-        width: auto;
-        height: auto;
+        left: 0;
+        width: 100%;
+        padding: 10px 20px;
         margin: 0;
-        padding: 0;
-        z-index: 1000;
+        z-index: 999;
     }
 
-    /* Enlaces de texto del menú */
-    .nav-barra:not(.menu-abierto) .nav-lista li:not(.item-admin):not(.item-usuario) {
-        display: none !important;
+    .nav-barra.menu-abierto .nav-lista {
+        display: flex;
     }
 
-    .nav-barra.menu-abierto .nav-lista li:not(.item-admin):not(.item-usuario) {
-        display: flex !important;
-        margin: 8px 0;
+    .nav-lista li {
+        margin: 10px 0;
         height: auto;
     }
 
@@ -265,25 +232,33 @@
         display: none !important;
     }
 
-    /* ==========================================
-       UBICACIÓN FIJA DE LOS ÍCONOS DERECHA
-       ========================================== */
-    .nav-lista li.item-admin,
-    .nav-lista li.item-usuario {
-        display: flex !important;
-        position: fixed;
-        top: 15px; /* Fijado a 15px de la parte superior del celular */
+    /* Posición fija del botón de Admin a la derecha (al lado del usuario) */
+    .item-admin {
+        position: absolute;
+        right: 55px;
+        top: 13px;
         height: 30px;
         margin: 0;
         z-index: 1001;
     }
 
-    .nav-lista li.item-admin {
-        right: 55px; /* Ícono de Admin al lado del de Usuario */
+    /* Posición fija del contenedor de Usuario a la extrema derecha */
+    .acciones-usuarios-nav {
+        position: absolute;
+        right: 15px;
+        top: 13px;
+        height: 30px;
+        margin: 0;
+        z-index: 1001;
     }
 
-    .nav-lista li.item-usuario {
-        right: 15px; /* Ícono de Usuario al borde derecho */
+    /* El submenú del usuario se abre e independiza completamente de la hamburguesa */
+    .dropdown-menu {
+        position: absolute !important;
+        top: 35px !important;
+        right: 0 !important;
+        left: auto !important;
+        z-index: 2000 !important;
     }
 
     .usuarios {
@@ -292,7 +267,7 @@
         object-fit: contain;
     }
 
-    /* Alternar el ícono del botón entre ☰ y ✕ */
+    /* Alternar el ícono entre abrir y cerrar */
     .nav-barra.menu-abierto .menu-hamburguesa .icono-abrir {
         display: none;
     }
