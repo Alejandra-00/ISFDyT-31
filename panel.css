@@ -972,3 +972,80 @@ html, body {
     max-width: 380px;
     height: 300px;
 }
+
+/* ==========================================
+   SECCIÓN CARRERAS (Con scroll interno)
+   ========================================== */
+#carreras {
+    opacity: 1;
+    width: 100%;
+    max-width: 1050px;
+    margin: auto;
+    padding: 20px 25px;
+    color: #a9cd46;
+    background: #0049acd4;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    box-sizing: border-box;
+    /* Ajustes para la barra de scroll vertical exclusiva */
+    max-height: calc(100vh - 80px); /* Evita que sobrepase el alto de la pantalla */
+    overflow-y: auto;              /* Activa la barra para subir y bajar solo aquí */
+    overflow-x: hidden;
+}
+
+/* Contenedor interno de la tabla de carreras para que también scrollee ordenado si crece */
+#vistaTablaCarreras {
+    max-height: 100%;
+}
+
+
+/* ==========================================
+   SECCIÓN GRÁFICOS (Con scroll interno exclusivo)
+   ========================================== */
+#graficos.formulario {
+    max-height: calc(100vh - 80px); /* Límite de altura respecto a la ventana */
+    overflow-y: auto;              /* Barra de desplazamiento vertical exclusiva */
+    overflow-x: hidden;
+    padding-right: 10px;           /* Espacio para que la barra no tape el contenido */
+}
+
+.contenedor-graficos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    justify-content: center;
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding-bottom: 20px; /* Margen inferior para comodidad visual al hacer scroll */
+}
+
+.card-grafico {
+    flex: 1 1 450px;
+    background: #b8d46ed4; 
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card-grafico-centrado {
+    max-width: 500px;
+}
+
+.card-grafico h3 {
+    color: #000;
+    font-family: 'Tamrin', sans-serif;
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.canvas-box {
+    position: relative;
+    width: 100%;
+    max-width: 380px;
+    height: 300px;
+}

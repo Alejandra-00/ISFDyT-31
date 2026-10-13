@@ -276,8 +276,7 @@
                 </div>
             </div>
 
-            <!-- Gráficos -->
-            <!-- Reemplazar el apartado de Gráficos existente por este HTML -->
+            <<!-- Gráficos -->
             <div id="graficos" class="formulario">
                 <div class="contenedor-graficos">
                     <div class="card-grafico">
