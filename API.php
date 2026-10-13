@@ -801,13 +801,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             case 'monto':
                 switch ($consulta) {
                     case 'Inicio':
-                        $sql = "SELECT importe, importe_anterior FROM monto ORDER BY fecha_efecto DESC 
-                        LIMIT 1";
+                        // Ordena por ID descendente para traer el registro más reciente
+                        $sql = "SELECT importe, importe_anterior FROM monto ORDER BY id DESC LIMIT 1";
                         $resultado = mysqli_query($conexion, $sql);
 
                         if ($resultado) {
                             $monto = mysqli_fetch_assoc($resultado);
-                            if ($monto) { echo json_encode($monto);
+                            if ($monto) { 
+                                echo json_encode($monto);
                             } else {
                                 http_response_code(404);
                                 echo json_encode(["error" => "No hay montos registrados."]);

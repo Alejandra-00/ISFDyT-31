@@ -13,8 +13,12 @@ fetch("API.php", {
 // hace el json y actualiza los montos visibles
 .then(respuesta => respuesta.json())
 .then(datos => {
-    document.getElementById("montoActual").textContent = "$" + datos.importe;
-    document.getElementById("montoAnterior").textContent = "$" + datos.importe_anterior;
+    if (datos.importe !== undefined) {
+        document.getElementById("montoActual").textContent = "$" + datos.importe;
+    }
+    if (datos.importe_anterior !== undefined) {
+        document.getElementById("montoAnterior").textContent = "$" + datos.importe_anterior;
+    }
 })
 
 // registra en la consola los errores durante la solicitud o procesamiento
