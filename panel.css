@@ -1009,7 +1009,6 @@ html, body {
     max-height: 100%;
 }
 
-
 /* ==========================================
    SECCIÓN GRÁFICOS (Con scroll interno exclusivo)
    ========================================== */
@@ -1061,11 +1060,69 @@ html, body {
     height: 300px;
 }
 
-@media screen and (min-width: 1024px) and (max-width: 1440px) {
+@media screen and (min-width: 992px) and (max-width: 1280px) {
     .sideBar {
-        width: 280px;
-        min-width: 280px;
-        padding: 20px 15px;
+        width: 260px;
+        min-width: 260px;
+        padding: 15px 12px;
+        background: #b8d46ed4;
+    }
+
+    .sideBar .logo {
+        margin: 0 0 6px 6px;
+    }
+
+    .sideBar .logo img {
+        width: 75px;
+        height: 75px;
+    }
+
+    .sideBar nav {
+        gap: 8px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .sideBar nav button {
+        font-size: 0.88rem;
+        font-weight: bold;
+        color: #0d47a1;
+        gap: 12px;
+        padding: 6px 8px;
+    }
+
+    .sideBar nav button img {
+        width: 34px !important;
+        height: 34px !important;
+        object-fit: contain;
+    }
+
+    .contenido {
+        padding: 15px 20px;
+        overflow-y: auto;
+    }
+
+    #sociosAlumnos tbody,
+    #sociosVoluntarios tbody {
+        max-height: calc(100vh - 310px);
+    }
+
+    .tabla-pagos-contenedor {
+        max-height: calc(100vh - 300px);
+    }
+}
+
+/* 2. Laptops estándar y monitores de escritorio medios (1281px a 1600px) */
+@media screen and (min-width: 1281px) and (max-width: 1600px) {
+    .sideBar {
+        width: 290px;
+        min-width: 290px;
+        padding: 18px 15px;
+        background: #b8d46ed4;
+    }
+
+    .sideBar .logo {
+        margin: 0 0 8px 8px;
     }
 
     .sideBar .logo img {
@@ -1075,16 +1132,21 @@ html, body {
 
     .sideBar nav {
         gap: 12px;
+        display: flex;
+        flex-direction: column;
     }
 
     .sideBar nav button {
-        font-size: 0.95rem;
+        font-size: 0.98rem;
+        font-weight: bold;
+        color: #0d47a1;
         gap: 14px;
     }
 
     .sideBar nav button img {
-        width: 38px !important;
-        height: 38px !important;
+        width: 40px !important;
+        height: 40px !important;
+        object-fit: contain;
     }
 
     .contenido {
@@ -1101,11 +1163,42 @@ html, body {
     }
 }
 
-/* Monitores Full HD y 2K Quad HD (1441px a 2560px) */
-@media screen and (min-width: 1441px) and (max-width: 2560px) {
+/* 3. Monitores Full HD y Quad HD / 2K (1601px a 2560px) */
+@media screen and (min-width: 1601px) and (max-width: 2560px) {
     .sideBar {
-        width: 330px;
-        min-width: 330px;
+        width: 340px;
+        min-width: 340px;
+        padding: 22px 20px;
+        background: rgba(169, 205, 70, 0.75);
+    }
+
+    .sideBar .logo {
+        margin: 0 0 10px 10px;
+    }
+
+    .sideBar .logo img {
+        width: 110px;
+        height: 110px;
+        border: 2px solid #000;
+    }
+
+    .sideBar nav {
+        gap: 16px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .sideBar nav button {
+        font-size: 1.05rem;
+        font-weight: bold;
+        color: #0d47a1;
+        gap: 18px;
+    }
+
+    .sideBar nav button img {
+        width: 48px !important;
+        height: 48px !important;
+        object-fit: contain;
     }
 
     .cards {
@@ -1117,7 +1210,7 @@ html, body {
     #verPagos.pagos-card, 
     #carreras, 
     .contenedor-graficos {
-        max-width: 1400px;
+        max-width: 1500px;
         margin-left: auto;
         margin-right: auto;
     }
@@ -1132,7 +1225,7 @@ html, body {
     }
 }
 
-/* Monitores Ultra-HD y 4K (A partir de 2561px) */
+/* 4. Monitores Ultra-HD y 4K (A partir de 2561px) */
 @media screen and (min-width: 2561px) {
     html {
         font-size: 18px;
@@ -1141,20 +1234,30 @@ html, body {
     .sideBar {
         width: 440px;
         min-width: 440px;
-        padding: 40px 30px;
+        padding: 30px 30px;
+        background: rgba(169, 205, 70, 0.75);
+    }
+
+    .sideBar .logo {
+        margin: 0 0 12px 12px;
     }
 
     .sideBar .logo img {
         width: 140px;
         height: 140px;
+        border: 3px solid #000;
     }
 
     .sideBar nav {
-        gap: 24px;
+        gap: 22px;
+        display: flex;
+        flex-direction: column;
     }
 
     .sideBar nav button {
         font-size: 1.25rem;
+        font-weight: bold;
+        color: #0d47a1;
         padding: 12px 15px;
         gap: 22px;
     }
@@ -1162,6 +1265,7 @@ html, body {
     .sideBar nav button img {
         width: 62px !important;
         height: 62px !important;
+        object-fit: contain;
     }
 
     .contenido {
@@ -1174,7 +1278,7 @@ html, body {
     #carreras, 
     .contenedor-graficos,
     #cooperadora.cooperadora-card {
-        max-width: 2000px;
+        max-width: 2100px;
         margin-left: auto;
         margin-right: auto;
     }
