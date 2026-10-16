@@ -2,7 +2,7 @@
 // Forzar encabezado en UTF-8 para que las respuestas del fetch lean bien eñes y tildes
 header("Content-Type: text/html; charset=UTF-8");
 
-$url_login = 'localhost/ISFDyT-31/iniciarSesion.php';
+$url_login = 'https://coopeinstituto31.ifree.page/iniciarSesion.php';
 
 // Incluir conexion a bbdd (conexion.php)
 require 'conexion.php';
