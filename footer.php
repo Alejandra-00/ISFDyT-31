@@ -68,13 +68,13 @@
             <!-- Abre el contenedor de los iconos de redes sociales. -->
             <div class="social-icons">
                 <!-- Abre el enlace hacia Facebook en una pestana nueva. -->
-                <a href="https://www.facebook.com" target="_blank" class="social-icon" title="Facebook">
+                <a href="https://www.facebook.com/profile.php?id=100063628540272" target="_blank" class="social-icon" title="Facebook">
                     <!-- Muestra el icono de Facebook mediante Font Awesome. -->
                     <i class="fab fa-facebook-f"></i>
                 <!-- Cierra el enlace de Facebook. -->
                 </a>
                 <!-- Abre el enlace hacia Instagram en una pestana nueva. -->
-                <a href="https://www.instagram.com" target="_blank" class="social-icon" title="Instagram">
+                <a href="https://www.instagram.com/instituto_31?utm_source=ig_web_button_share_sheet&srtk=ZDNlZDc0MzIxNw==" target="_blank" class="social-icon" title="Instagram">
                     <!-- Muestra el icono de Instagram mediante Font Awesome. -->
                     <i class="fab fa-instagram"></i>
                 <!-- Cierra el enlace de Instagram. -->

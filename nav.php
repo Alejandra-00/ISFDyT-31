@@ -3,6 +3,11 @@
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
+
+    if (!isset($_SESSION['usuario'])) {
+        header("Location: iniciarSesion.php");
+        exit();
+    }
     
     $usuario = $_SESSION['usuario'] ?? null;  
     $admin = $_SESSION['admin'] ?? 0;
