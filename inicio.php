@@ -15,12 +15,14 @@
                     Monto actual<br>
                     <strong id="montoActual"></strong>
                 </p>
+                <p id="mensajeMonto1" style="display:none; text-align:center; font-family:Tamrin; font-size:5px; color: yellow; margin-top: 10px;"></p>
             </section>
             <section class="card">
                 <p>
                     Monto Anterior<br>
                     <strong id="montoAnterior"></strong>
                 </p>
+                <p id="mensajeMonto1" style="display:none; text-align:center; font-family:Tamrin; font-size:5px; color: yellow; margin-top: 10px;"></p>
             </section>
         </div>
     </section>

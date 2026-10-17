@@ -6,10 +6,10 @@ function verClave(boton) {
 
    if (input.type === "password") {
       input.type = "text";
-      icono.src = "iconos/noOjo.png";
+      icono.src = "iconos/ojo.png";
    } else {
       input.type = "password";
-      icono.src = "iconos/ojo.png";
+      icono.src = "iconos/noOjo.png";
    }
 }
 

@@ -18,6 +18,7 @@
             <div class="foto-perfil">
                 <img src="iconos/logo.jpg" alt="Logo de perfil">
                 <h2>Perfil de Usuario</h2>
+                <p id="mensaje" style="display:none; text-align:center; font-family:Tamrin; font-size:12px; color: yellow; margin-top: 10px;"></p>
             </div>
         </div>
     </div>

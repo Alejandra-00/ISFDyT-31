@@ -51,6 +51,7 @@ function aceptarComprobante() {
 
 function obtenerDatosPagos() {
    const idPago = document.getElementById('idPagoActual').value;
+   const mensaje = document.getElementById('mensaje');
 
    fetch('API.php', { 
       method: 'POST',
@@ -73,7 +74,10 @@ function obtenerDatosPagos() {
          evaluarVistasSegunEstado(textoEstado);
       }
    })
-   .catch(error => console.error("Error al obtener los datos del pago:", error));
+   .catch(error => {
+      console.error(error);
+      if (mensaje) mensaje.innerText = 'Error al obtener los datos del pago.';
+   });
 }
 
 function evaluarVistasSegunEstado(estado) {
@@ -212,7 +216,7 @@ function enviarPagoAPI() {
          .catch(error => {
             console.error("Detalle del error:", error);
             if (mensajeEnvio) {
-               mensajeEnvio.innerText = "Ocurrió un error al enviar el pago: " + error.message;
+               mensajeEnvio.innerText = "Ocurrió un error al enviar el pago.";
                mensajeEnvio.style.display = "block";
             }
          });
@@ -256,7 +260,7 @@ function descargarFactura() {
       if (!res.ok) {
          // Si factura.php da un error (ej. 500), leemos el texto para saber la causa exacta
          return res.text().then(textoError => {
-            mensajeFactura.innerText = "Detalle del error en factura.php:", textoError;
+            console.error = textoError;
             mensajeFactura.style.display = "block";
             throw new Error("Error en el servidor al generar la factura.");
          });
@@ -275,7 +279,8 @@ function descargarFactura() {
       window.URL.revokeObjectURL(url);
    })
    .catch(error => {
-      mensajeFactura.innerText = "Ocurrió un error al intentar descargar la factura. Revisa la consola para más detalles." + error;
+      mensajeFactura.innerText = "Ocurrió un error al intentar descargar la factura. Revisa la consola para más detalles.";
       mensajeFactura.style.display = "block";
+      console.error(error);
    });
 }

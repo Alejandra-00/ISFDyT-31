@@ -53,5 +53,8 @@ function cargarPagos() {
          tbody.appendChild(fila);
       });
    })
-   .catch(error => console.error('Error al cargar la tabla de pagos:', error));
+   .catch(error => { 
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Error al cargar tabla de pagos.</td></tr>',
+      console.error(error)
+   });
 }

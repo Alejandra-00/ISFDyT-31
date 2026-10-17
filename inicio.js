@@ -23,5 +23,13 @@ fetch("API.php", {
 
 // registra en la consola los errores durante la solicitud o procesamiento
 .catch(error => {
-    console.error("Error al obtener los montos:", error);
+    console.error(error);
+    const mensaje1 = document.getElementById('mensajeMonto1');
+    const mensaje2 = document.getElementById('mensajeMonto2');
+    
+    if (mensaje1) mensaje1.innerText = 'Error al cargar el monto.';
+    if (mensaje2) mensaje2.innerText = 'Error al cargar el monto.';
+    
+    mensaje1.style.display = "block";
+    mensaje2.style.display = "block";
 });

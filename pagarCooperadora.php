@@ -31,6 +31,8 @@
         <div class="contenedor activo" id="pasarela">
             <h1 class="fuente titulo" id="verMes">Cargando...</h1>
 
+            <p id="mensaje" style="display:none; text-align:center; font-family:Tamrin; font-size:12px; color: yellow; margin-top: 10px;"></p>
+            
             <div class="info">
                 <div class="datos">
                     <p class="fuente">Monto a pagar</p>

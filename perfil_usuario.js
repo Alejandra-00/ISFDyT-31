@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function obtenerDatosUsuario(idusuario) {
+    const mensaje = document.getElementById('mensaje');
     fetch('API.php', { 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -60,10 +61,14 @@ function obtenerDatosUsuario(idusuario) {
             // Rellenar Tipo de Socio
             asignarValor('vertiposocio', 'editar_tiposocio', datos.nombre_socio);
         } else {
-            console.warn("No se encontraron datos de usuario en la respuesta.");
+            if (mensaje) mensaje.innerText = "No se encontraron datos de usuario en la respuesta.";
         }
     })
-    .catch(error => console.error("Error al procesar el JSON recibido:", error));
+    .catch(error => {
+        if (mensaje) mensaje.innerText = "Error, usuario no encontrado.";
+        mensaje.style.display = "block";
+        console.error(error);
+    });
 }
 
 // Transformar IDs a Texto durante la lectura inicial
@@ -154,6 +159,7 @@ function cancelarEdicion(campo) {
 function guardarCampo(campo) {
     // Recopilar datos actuales del DOM
     const idusuario = document.getElementById('usuario')?.value || '1'; // <-- AQUÍ
+    
     if (campo === 'dni' || campo === 'numero_documento') return;
 
     const form = document.querySelector(`input[name="campo"][value="${campo}"]`)?.closest('form');
@@ -173,7 +179,9 @@ function guardarCampo(campo) {
     if (campo === 'email') {
         // Validar que el email contenga el símbolo '@'
         if (!valorNuevo.includes('@')) {
-            alert('Debes colocar el arroba (@) para guardar los cambios en el e-mail.');
+            const mensaje = document.getElementById('mensaje');
+            if (mensaje) mensaje.innerText = 'Debes colocar el arroba (@) para guardar los cambios en el e-mail.';
+            mensaje.style.display = "block";
             return;
         }
     }
@@ -182,7 +190,9 @@ function guardarCampo(campo) {
         // Validar que sean exactamente 10 dígitos (puedes usar una expresión regular)
         const soloDigitos = /^\d{10}$/;
         if (!soloDigitos.test(valorNuevo)) {
-            alert('El número de teléfono debe contener exactamente 10 dígitos numéricos.');
+            const mensaje = document.getElementById('mensaje');
+            if (mensaje) mensaje.innerText = 'El número de teléfono debe contener exactamente 10 dígitos numéricos.';
+            mensaje.style.display = "block";
             return;
         }
     }
@@ -195,6 +205,7 @@ function guardarCampo(campo) {
     const telefonoActual = document.getElementById('editar_telefono')?.value || document.getElementById('vertelefono')?.textContent.trim();
     const socioActual = document.getElementById('editar_tipo_socio')?.value || '1';
     const carreraActual = document.getElementById('editar_id_carrera')?.value || '1';
+    const mensaje = document.getElementById('mensaje');
 
     // Construir payload completo para case "Update"
     const payload = {
@@ -246,12 +257,15 @@ function guardarCampo(campo) {
 
             cancelarEdicion(campo);
         } else {
-            alert('Error al actualizar: ' + (respuestaData?.error || 'No se pudo guardar los cambios.'));
+            if (mensaje) mensaje.innerText = 'Error al actualizar.';
+            mensaje.style.display = "block";
+            console.error(respuestaData.error);
         }
     })
     .catch(error => {
-        console.error('Error al guardar:', error);
-        alert('Ocurrió un error al intentar guardar.');
+        console.error(error);
+        if (mensaje) mensaje.innerText = 'Ocurrió un error al intentar guardar.';
+        mensaje.style.display = "block";
     });
 }
 
@@ -279,5 +293,10 @@ function cargarCarrerasEnSelect() {
             });
         }
     })
-    .catch(error => console.error("Error al cargar las carreras:", error));
+    .catch(error => {
+        console.error(error);
+        const mensaje = document.getElementById('mensaje');
+        if (mensaje) mensaje.innerText = 'Error al cargar carreras';
+        mensaje.style.display = "block";
+    });
 }

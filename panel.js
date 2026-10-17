@@ -56,14 +56,28 @@ function cargarInicio() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json'},
             body: JSON.stringify({ recurso: 'usuarios', consulta: 'Read'})
-        }).then(response => response.json()),
+        }).then(response => response.json())
+        
+        .catch(error => {
+            console.error(error);
+            const mensajeAlumnos = document.getElementById('mensajeAlumnos');
+            const mensajeVoluntarios = document.getElementById('mensajeVoluntarios');
+            if (mensajeAlumnos) mensajeAlumnos.innerText = 'Error al cargar.';
+            if (mensajeVoluntarios) mensajeVoluntarios.innerText = 'Error al cargar.';
+        }),
 
         // obtener carreras
         fetch('API.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json'},
             body: JSON.stringify({ recurso: 'carreras', consulta: 'Read'})
-        }).then(response => response.json()),
+        }).then(response => response.json())
+        
+        .catch(error => {
+            console.error(error);
+            const mensajeCarreras = document.getElementById('mensajeCarrera');
+            if (mensajeCarreras) mensajeCarreras.innerText = 'Error al cargar.'; 
+        }),
 
         // obtener montos
         fetch('API.php', {
@@ -71,6 +85,13 @@ function cargarInicio() {
             headers: { 'Content-Type': 'application/json'},
             body: JSON.stringify({ recurso: 'monto', consulta: 'Read'})
         }).then(response => response.json()) ])
+        
+        .catch(error => {
+            console.error(error);
+            const mensajeMonto = document.getElementById('mensajeMonto');
+            if (mensajeMonto) mensajeMonto.innerText = 'Error al cargar.'; 
+        })
+        
         .then(([usuarios, carreras, montos]) => {
             // cuenta los socios alumnos y voluntarios
             let alumnos = 0; 
@@ -79,15 +100,15 @@ function cargarInicio() {
             const listaAlumnos = [];
             const listaVoluntarios = [];
 
-        usuarios.forEach(usuario => {
-            if (usuario.nombre_socio === 'Alumno') { 
-                alumnos++; 
-                listaAlumnos.push(usuario);
-            }
-            if (usuario.nombre_socio === 'Voluntario') { 
-                voluntarios++; 
-                listaVoluntarios.push(usuario);
-            }
+            usuarios.forEach(usuario => {
+                if (usuario.nombre_socio === 'Alumno') { 
+                    alumnos++; 
+                    listaAlumnos.push(usuario);
+                }
+                if (usuario.nombre_socio === 'Voluntario') { 
+                    voluntarios++; 
+                    listaVoluntarios.push(usuario);
+                }
         });
         document.getElementById('cantAlumnos').textContent = alumnos;
         document.getElementById('cantVoluntarios').textContent = voluntarios;
@@ -145,9 +166,6 @@ function cargarInicio() {
                 });
             }
         }
-    })
-    .catch(error => {
-        console.error('Error al cargar el inicio:', error); 
     });
 }
 
@@ -215,7 +233,7 @@ function cargarAlumnos() {
         });
     })
     .catch(error => {
-        console.error('Error:', error);
+        console.error(error);
         const tbody = document.getElementById('tablasocios-Alumno');
         tbody.innerHTML = '<tr><td colspan="3">Error al cargar los socios.</td></tr>';
     });
@@ -286,7 +304,7 @@ function cargarVoluntarios() {
         });
     })
     .catch(error => {
-        console.error('Error:', error);
+        console.error(error);
         const tbody = document.getElementById('tablasocios-Voluntario');
         tbody.innerHTML = '<tr><td colspan="3">Error al cargar los socios.</td></tr>';
     });
@@ -307,7 +325,7 @@ function cambiarEstadoActivo(idUsuario, activo) {
     .then(response => response.json())
     .then(data => {
         if (data.error) {
-            console.error('Error:', data.error);
+            console.error(data.error);
             return;
         }
         // Refrescar según el estado de la barra de búsqueda
@@ -315,7 +333,11 @@ function cambiarEstadoActivo(idUsuario, activo) {
         refrescarVoluntarios();
     })
     .catch(error => {
-        console.error('Error:', error);
+        console.error(error);
+        const mensajeSocioAlumno = document.getElementById('mensajeSociosAlumnos');
+        const mensajeSocioVoluntario = document.getElementById('mensajeSociosVoluntarios');
+        if (mensajeSocioAlumno) mensajeSocioAlumno.innerText = 'Error al cambiar estado de usuario.';
+        if (mensajeSocioVoluntario) mensajeSocioVoluntario.innerText = 'Error al cambiar estado de usuario.';
     });
 }
 
@@ -343,7 +365,7 @@ let usuarioEditando = null;   //declaramos la variable global para almacenar el 
 let seccionAnterior = null;   //declaramos la variable global para almacenar la sección anterior antes de editar el DNI
 
 function editarDNI(dni) {
-     // Limpiar mensaje anterior
+    // Limpiar mensaje anterior
     document.getElementById('mensajeEditarDni').textContent = '';
 
     // Guardar de dónde venimos (alumno o voluntario)
@@ -361,7 +383,8 @@ function editarDNI(dni) {
     .then(response => response.json())
     .then(data => {
         if (data.error) {
-            console.error('Error:', data.error);
+            console.error(data.error);
+            document.getElementById('mensajeEditarDni').textContent = 'Usuario no encontrado.'
             return;
         }
         // Guardamos el id del usuario que vamos a editar
@@ -374,7 +397,8 @@ function editarDNI(dni) {
         mostrar('editarDni');
     })
     .catch(error => {
-        console.error('Error:', error);
+        console.log(error);
+        document.getElementById('mensajeEditarDni').textContent = 'Error al actualizar DNI.';
     });
 }
 
@@ -382,11 +406,11 @@ function guardarDni() {
     const nuevoDni = document.getElementById('nuevoDni').value.trim();
 
     if (!usuarioEditando) {
-        alert('No hay ningún usuario seleccionado para editar.');
+        document.getElementById('mensajeEditarDni').textContent = 'No hay ningún usuario seleccionado para editar.';
         return;
     }
     if (!nuevoDni) { 
-        alert('Ingresá un DNI.');
+        document.getElementById('mensajeEditarDni').textContent = 'Ingresá un DNI.';
         return;
     }
 
@@ -403,7 +427,8 @@ function guardarDni() {
     .then(response => response.json())
     .then(data => {
         if (data.error) {
-            document.getElementById('mensajeEditarDni').textContent = 'Error: ' + data.error;
+            document.getElementById('mensajeEditarDni').textContent = 'Error al actualizar usuario.';
+            console.error(data.error);
             return;
         }
         document.getElementById('mensajeEditarDni').textContent = 'DNI actualizado correctamente.';
@@ -492,7 +517,7 @@ async function buscarUsuariosAlumnos() {
             tbody.innerHTML = '<tr><td colspan="3">No se encontraron usuarios.</td></tr>';
         }
     } catch (error) {
-        console.error("Error:", error);
+        console.error(error);
         document.getElementById('tablasocios-Alumno').innerHTML = 
             '<tr><td colspan="3">Error al buscar.</td></tr>';
     }
@@ -571,7 +596,7 @@ async function buscarUsuariosVoluntarios() {
             tbody.innerHTML = '<tr><td colspan="3">No se encontraron usuarios.</td></tr>';
         }
     } catch (error) {
-        console.error("Error:", error);
+        console.error(error);
         document.getElementById('tablasocios-Voluntario').innerHTML = 
             '<tr><td colspan="3">Error al buscar.</td></tr>';
     }
@@ -655,7 +680,8 @@ function cargarCarreras() {
     })
     .catch(error => {
         // Captura e informa en pantalla cualquier error ocurrido durante la petición
-        if (mensaje) mensaje.innerText = 'Error al cargar las carreras: ' + error.message;
+        if (mensaje) mensaje.innerText = 'Error al cargar las carreras.';
+        console.error(error);
     });
 }
 
@@ -713,7 +739,7 @@ function guardarCarrera() {
     
     // Validar que el campo no esté vacío
     if (!nombre) {
-        alert('El nombre de la carrera no puede estar vacío.');
+        if (mensaje) mensaje.innerText = 'El nombre de la carrera no puede estar vacío.';
         return;
     }
 
@@ -760,7 +786,8 @@ function guardarCarrera() {
     })
     .catch(error => {
         // Alerta en pantalla en caso de que ocurra algún fallo durante la operación
-        alert(`Error al ${consulta === 'Create' ? 'agregar' : 'editar'} la carrera: ${error.message}`);
+        console.error(`Error al ${consulta === 'Create' ? 'agregar' : 'editar'} la carrera: ${error.message}`);
+        if (mensaje) mensaje.innerText = 'Error al actualizar o crear carrera.';
     });
 }
 
@@ -804,8 +831,9 @@ function eliminarCarrera(id) {
         // Muestra mensaje de error en rojo en caso de fallar el borrado
         if (mensaje) {
             mensaje.style.color = 'red';
-            mensaje.innerText = 'Error al eliminar la carrera: ' + error.message;
+            mensaje.innerText = 'Error al eliminar la carrera.';
         }
+        console.error(error);
     });
 }
 
@@ -849,7 +877,8 @@ function cargarMonto() {
         tbody.appendChild(fila);
    })
    .catch(error => {
-        if (mensaje) mensaje.innerText = 'Error al cargar el monto de la cooperadora: ' + error;
+        if (mensaje) mensaje.innerText = 'Error al cargar el monto de la cooperadora.';
+        console.error(error);
    });
 }
 
@@ -870,7 +899,7 @@ function editarMonto() {
     const tr = tbody.querySelector("tr"); // Obtenemos la fila de la tabla
     const btnEditar = document.getElementById("editar");
     const btnCancelar = document.getElementById("cancelar");
-    const mensaje = document.getElementById('mensajeDescargar');
+    const mensaje = document.getElementById('mensajeCooperadora');
 
     if (!tr) return; // Si no hay fila cargada, salimos de la función
 
@@ -929,7 +958,8 @@ function editarMonto() {
         .then(res => res.json())
         .then(res => {
             if (res.error) {
-                alert("Error al guardar: " + res.error);
+                if (mensaje) mensaje.innerText = "Error al guardar.";
+                console.error(res.error);
                 return;
             }
 
@@ -944,7 +974,8 @@ function editarMonto() {
             editandoMonto = false; // Desactivamos el modo edición
         })
         .catch(error => {
-            mensaje.innerHTML = 'Error al actualizar el monto de la cooperadora', error;
+            if (mensaje) mensaje.innerHTML = 'Error al actualizar el monto de la cooperadora';
+            console.error(error);
         });
     }
 }
@@ -1002,9 +1033,9 @@ function cargarPagos() {
     mostrarPagos(todosLosPagos); // llama a la funcion para crear la tabla
     })
     .catch(error => { // si la peticion falla, crea una fila para mostrar el error
-        console.error('Error al cargar pagos:', error);
         const tbody = document.getElementById('tablapagos');
         tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">Error al cargar los pagos.</td></tr>';
+        console.error(error);
     });
 }
 
@@ -1166,6 +1197,7 @@ function mostrarComprobante(srcFoto) { // crea dinamicamente un div simulando un
 }
 
 function cambiarEstadoPago(idPago, idEstado) { // cuando un usuario cambia el estado del pago
+    const mensaje = document.getElementById('mensajePagos');
     fetch('API.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1191,15 +1223,18 @@ function cambiarEstadoPago(idPago, idEstado) { // cuando un usuario cambia el es
         } else if (res.error) {
             if (mensaje) { //si no, muestra un mensaje de error
                 mensaje.style.color = 'red'; // Rojo para error
-                mensaje.textContent = "Error: " + res.error;
+                mensaje.textContent = "Error al actualizar estado del pago.";
+                console.error(res.error);
             } 
         }
     })
-    .catch(err => console.error("Error en la petición:", err));
+    .catch(err => {
+        mensaje.innerHTML = 'Error al actualizar estado del pago.';
+        console.error(err);
+    });
 }
 
 // Gráficos
-
 // Variables para conservar las instancias de los gráficos y destruirlas antes de redibujar
 let chartUsuarios = null;
 let chartCarreras = null;
@@ -1211,6 +1246,10 @@ if (typeof ChartDataLabels !== 'undefined') {
 }
 
 function cargarGraficos() {
+    const mensaje1 = document.getElementById('mensajeGrafico1');
+    const mensaje2 = document.getElementById('mensajeGrafico2');
+    const mensaje3 = document.getElementById('mensajeGrafico3');
+
     // Registros de pagos para procesar (Paga: id_estado === 1)
     fetch('API.php', {
         method: 'POST',
@@ -1230,7 +1269,12 @@ function cargarGraficos() {
         renderGraficoCarrerasPagan(pagosAprobados);
         renderGraficoVoluntariosPagan(pagosAprobados);
     })
-    .catch(error => console.error('Error al procesar datos para gráficos:', error));
+    .catch(error => {
+        if (mensaje1) mensaje1.innerText = 'Error al cargar datos.';
+        if (mensaje2) mensaje2.innerText = 'Error al cargar datos.';
+        if (mensaje3) mensaje3.innerText = 'Error al cargar datos.';
+        console.error(error);
+    });
 }
 
 // 1. Gráfico: Cantidad de usuarios registrados que pagan (Pagaron vs No Pagaron/Otros)
@@ -1258,6 +1302,11 @@ function renderGraficoUsuariosPagan(pagosAprobados) {
             [usuariosQuePagaron, usuariosNoPagan],
             ['#2563eb', '#f97316']
         );
+    })
+    .catch(error => {
+        const mensaje1 = document.getElementById('mensajeGrafico1');
+        if (mensaje1) mensaje1.innerText = 'Error al cargar datos.';
+        console.error(error);
     });
 }
 
@@ -1307,6 +1356,11 @@ function renderGraficoVoluntariosPagan(pagosAprobados) {
             [cantidadVoluntariosPagan, voluntariosSinPago],
             ['#2563eb', '#84cc16']
         );
+    })
+    .catch(error => {
+        const mensaje3 = document.getElementById('mensajeGrafico3');
+        if (mensaje3) mensaje3.innerText = 'Error al cargar datos.';
+        console.error(error);
     });
 }
 
@@ -1409,7 +1463,8 @@ function exportarExcelPagos() {
         XLSX.writeFile(libroTrabajo, `Reporte_Pagos_${fecha_inicio}_a_${fecha_final}.xlsx`);
     })
     .catch(error => {
-        if (mensaje) mensaje.innerText = "Error al exportar pagos: " + error;
+        if (mensaje) mensaje.innerText = "Error al exportar pagos.";
+        console.error(error);
     });
 }
 
@@ -1445,7 +1500,8 @@ function exportarExcelUsuarios() {
         XLSX.writeFile(libroTrabajo, `Reporte_Usuarios.xlsx`);
     })
     .catch(error => {
-        if (mensaje) mensaje.innerText = "Error al exportar usuarios: " + error;
+        if (mensaje) mensaje.innerText = "Error al exportar usuarios.";
+        console.error(error);
     });
 }
 

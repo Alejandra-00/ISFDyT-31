@@ -41,6 +41,7 @@
                             <div id="cantAlumnos" class="card-numero"></div>
                         </div>
                         Socio alumnos
+                        <p id="mensajeAlumnos" style="text-align:center; font-family:Tamrin; font-size:6px; color: red;"></p>
                     </div>
 
                     <div class="card-chica">
@@ -49,6 +50,7 @@
                             <div id="cantVoluntarios" class="card-numero"></div>
                         </div>
                         Socio voluntarios
+                        <p id="mensajeVoluntarios" style="text-align:center; font-family:Tamrin; font-size:6px; color: red;"></p>
                     </div>
 
                     <div class="card-chica">
@@ -57,6 +59,7 @@
                             <div id="cantCarreras" class="card-numero"></div>
                         </div>
                         Carreras
+                        <p id="mensajeCarrera" style="text-align:center; font-family:Tamrin; font-size:6px; color: red;"></p>
                     </div>
 
                     <div class="card-chica">
@@ -65,6 +68,7 @@
                             <div id="montoActual" class="card-numero"></div>
                         </div>
                         Cooperadora actual
+                        <p id="mensajeMonto" style="text-align:center; font-family:Tamrin; font-size:6px; color: red;"></p>
                     </div>
                 </div>
 
@@ -96,6 +100,7 @@
                     <div class="socios-header">
                         <h3>Socios alumnos</h3>
                     </div>
+                    <p id="mensajeSociosAlumnos" style="text-align:center; font-family:Tamrin; font-size:12px; color: red;"></p>
                     <table>
                         <thead>
                             <tr>
@@ -117,6 +122,7 @@
                     <div class="socios-header">
                         <h3>Socios voluntarios</h3>
                     </div>
+                    <p id="mensajeSociosVoluntarios" style="text-align:center; font-family:Tamrin; font-size:12px; color: red;"></p>
                     <table>
                         <thead>
                             <tr>
@@ -129,6 +135,7 @@
                     </table>
                 </div>
             </div>
+
             <div id="editarDni" class="formulario">
                 <h3>Editar DNI</h3>
                 <div class="editar-dni-form">
@@ -140,7 +147,7 @@
                 
             </div>
             
-            <!-- Sección Carreras -->
+            <!-- Carreras -->
             <div id="carreras" class="formulario">
 
                 <!-- Vista 1: Lista / Tabla de Carreras -->
@@ -198,9 +205,9 @@
                         </tr>
                     </thead>
                     <tbody id="tablaMonto">
-                        <p id="mensajeCooperadora" style="text-align:center; font-family:Tamrin; font-size:12px; color: red;"></p>
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                    <p id="mensajeCooperadora" style="text-align:center; font-family:Tamrin; font-size:12px; color: red;"></p>
 
                 <div class="cooperadora-acciones-bottom">
                     <button class="btn-cancelar" id="cancelar" onclick="cancelarEdicionMonto()" style="display: none;">Cancelar</button>
@@ -283,6 +290,7 @@
                         <h3>Usuarios Registrados que Pagan</h3>
                         <div class="canvas-box">
                             <canvas id="chartUsuariosPagan"></canvas>
+                            <p id="mensajeGrafico1" style="text-align:center; font-family:Tamrin; font-size:12px; color: red;"></p>
                         </div>
                     </div>
 
@@ -290,6 +298,7 @@
                         <h3>Usuarios por Carrera que Pagan</h3>
                         <div class="canvas-box">
                             <canvas id="chartCarrerasPagan"></canvas>
+                            <p id="mensajeGrafico2" style="text-align:center; font-family:Tamrin; font-size:12px; color: red;"></p>
                         </div>
                     </div>
 
@@ -297,6 +306,7 @@
                         <h3>Socios Voluntarios que Pagan</h3>
                         <div class="canvas-box">
                             <canvas id="chartVoluntariosPagan"></canvas>
+                            <p id="mensajeGrafico3" style="text-align:center; font-family:Tamrin; font-size:12px; color: red;"></p>
                         </div>
                     </div>
                 </div>
