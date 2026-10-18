@@ -16,74 +16,46 @@
 <!-- Abre el contenido visible de la pagina. -->
 <body>
     <!-- Abre el pie de pagina y aplica los estilos de la clase footer. -->
-    <footer class="footer">
-        <!-- Agrupa el contenido principal del pie de pagina. -->
-        <section class="section">
-            <!-- Abre el bloque superior que distribuye la identificacion y el contacto. -->
-            <div class="logo">
-                <!-- Agrupa el logo circular y los nombres del instituto/cooperadora. -->
-                <div class="logo-identificacion">
-                    <!-- Contiene la imagen circular del logo. -->
-                    <div class="ContenedorLogo">
-                        <!-- Muestra la imagen del logo y aplica la clase Logo. -->
-                        <img src="iconos/logo.jpg" alt="" class="Logo">
-                    <!-- Cierra el contenedor de la imagen. -->
-                    </div>
-                    <!-- Abre el bloque que contiene los textos identificativos. -->
-                    <div id="footer-text">
-                        <!-- Abre el bloque del nombre de la cooperadora. -->
-                        <div class="Cooperadora">
-                            <!-- Muestra el nombre principal de la cooperadora. -->
-                            <h1>ASOCIACIÓN COOPERADORA</h1>
-                        <!-- Cierra el bloque de la cooperadora. -->
-                        </div>
-                        <!-- Abre el bloque del nombre del instituto. -->
-                        <div class="Instituto">
-                            <!-- Muestra el nombre del instituto. -->
-                            <h2>Instituto Superior de Formación Docente y Técnica N°31</h2>
-                        <!-- Cierra el bloque del instituto. -->
-                        </div>
-                    <!-- Cierra el bloque de textos identificativos. -->
-                    </div>
-                <!-- Cierra el bloque de identificacion. -->
+   <footer class="footer">
+    <!-- Agrupa el contenido principal del pie de pagina. -->
+    <section class="section">
+        <!-- Abre el bloque que contiene el logo y el texto lado a lado -->
+        <div class="logo">
+            <!-- Contiene la imagen circular del logo. -->
+            <div class="ContenedorLogo">
+                <img src="iconos/logo.jpg" alt="" class="Logo">
+            </div>
+
+            <!-- Abre el bloque que contiene SOLO los textos identificativos. -->
+            <div class="logo-identificacion" id="footer-text">
+                <div class="Cooperadora">
+                    <h1>ASOCIACIÓN COOPERADORA</h1>
                 </div>
-            <!-- Cierra el bloque principal superior. -->
+                <div class="Instituto">
+                    <h2>Instituto Superior de Formación Docente y Técnica N°31</h2>
+                </div>
             </div>
+        </div>
 
-            <!-- Abre el bloque independiente con la informacion de contacto. -->
-            <div class="footer-content">
-                <!-- Muestra el titulo de la informacion de contacto. -->
-                <h3>Contactanos</h3>
-                <!-- Muestra la direccion, los horarios y el correo electronico. -->
-                <h4>Direccion: Avenida Jesuita Cardiel N°2130, Necochea. <br>
-                    <!-- Inserta un salto de linea entre la direccion y los horarios. -->
-                    Horarios: Lunes a viernes de 08.00 a 21:30. <br>
-                    <!-- Inserta un salto de linea antes del correo electronico. -->
-                    Email: cooperadoraisfd31@gmail.com <br>
-                <!-- Cierra el encabezado que contiene los datos de contacto. -->
-                </h4>
-            <!-- Cierra el bloque de contacto. -->
-            </div>
+        <!-- Abre el bloque independiente con la informacion de contacto. -->
+        <div class="footer-content">
+            <h3>Contactanos</h3>
+            <h4>Direccion: Avenida Jesuita Cardiel N°2130, Necochea. <br>
+                Horarios: Lunes a viernes de 08.00 a 21:30. <br>
+                Email: cooperadoraisfd31@gmail.com <br>
+            </h4>
+        </div>
+    </section>
 
-            <!-- Abre el contenedor de los iconos de redes sociales. -->
-            <div class="social-icons">
-                <!-- Abre el enlace hacia Facebook en una pestana nueva. -->
-                <a href="https://www.facebook.com/profile.php?id=100063628540272" target="_blank" class="social-icon" title="Facebook">
-                    <!-- Muestra el icono de Facebook mediante Font Awesome. -->
-                    <i class="fab fa-facebook-f"></i>
-                <!-- Cierra el enlace de Facebook. -->
-                </a>
-                <!-- Abre el enlace hacia Instagram en una pestana nueva. -->
-                <a href="https://www.instagram.com/instituto_31?utm_source=ig_web_button_share_sheet&srtk=ZDNlZDc0MzIxNw==" target="_blank" class="social-icon" title="Instagram">
-                    <!-- Muestra el icono de Instagram mediante Font Awesome. -->
-                    <i class="fab fa-instagram"></i>
-                <!-- Cierra el enlace de Instagram. -->
-                </a>
-            <!-- Cierra el contenedor de redes sociales. -->
-            </div>
-        <!-- Cierra la seccion del pie de pagina. -->
-        </section>
-    <!-- Cierra la etiqueta footer. -->
-    </footer>
+    <!-- Redes sociales AFUERA de section para que queden abajo de todo y centradas -->
+    <div class="social-icons">
+        <a href="https://www.facebook.com/profile.php?id=100063628540272" target="_blank" class="social-icon" title="Facebook">
+            <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="https://www.instagram.com/instituto_31?utm_source=ig_web_button_share_sheet&srtk=ZDNlZDc0MzIxNw==" target="_blank" class="social-icon" title="Instagram">
+            <i class="fab fa-instagram"></i>
+        </a>
+    </div>
+</footer>
 </body>
 </html>

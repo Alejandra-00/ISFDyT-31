@@ -196,88 +196,122 @@
         font-size: 28px;
     }
 }
-
 @media screen and (max-width: 767px) {
     .footer {
         background-image: url("fondo/footer - celular.png");
         background-repeat: no-repeat;
-        background-size: 100% auto;
-        background-position: bottom center;
-        min-height: 100vh;
+        background-size: 100% 100%;
+        background-position: center bottom;
+        width: 100%;
+        min-height: 190px;
+        height: auto;
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
+        align-items: center;
+        overflow: hidden;
+        padding: 0 0 10px 0;
+        margin-top: 50px;
     }
 
     .section {
         display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        align-items: flex-end;
         width: 100%;
-        padding: 0 4vw 3vw 4vw;
-        gap: 0;
+        max-width: 100%;
+        padding: 0 6px;
+        box-sizing: border-box;
+        gap: 4px;
+        margin-bottom: 6px;
     }
 
-    /* El logo flota arriba a la izquierda sobre la onda */
+    /* IZQUIERDA: Logo y textos acomodados */
     .logo {
         display: flex;
         flex-direction: row;
         align-items: center;
         justify-content: flex-start;
-        gap: 2.5vw;
-        width: 100%;
-        max-width: 100%;
-        margin-bottom: clamp(15px, 6.5vw, 40px); /* Ajuste dinámico de distancia */
+        width: 40%;
+        max-width: 40%;
+        gap: 4px;
+        margin: 0;
+        transform: translateY(-48px);
     }
 
     .logo-identificacion {
-        gap: 2.5vw;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 1px;
+        min-width: 0;
     }
 
     .ContenedorLogo {
-        height: clamp(30px, 8.5vw, 46px);
-        width: clamp(30px, 8.5vw, 46px);
+        height: 24px !important;
+        width: 24px !important;
         flex-shrink: 0;
     }
 
     .Cooperadora h1 {
-        font-size: clamp(8px, 2.5vw, 12px);
-        font-weight: bold;
-        line-height: 1.1;
+        font-size: 7.5px !important;
         white-space: nowrap;
+        line-height: 1.1;
         color: #000;
+        margin: 0;
     }
 
     .Instituto h2 {
-        font-size: clamp(5.5px, 1.7vw, 8.5px);
-        font-weight: normal;
-        line-height: 1.2;
+        font-size: 4.8px !important;
         white-space: nowrap;
+        line-height: 1.15;
         color: #000;
+        margin: 0;
     }
 
-    /* Contacto queda abajo a la derecha */
+    /* DERECHA: Contacto más ancho, estirado y proporcionado */
     .footer-content {
-        width: 100%;
-        max-width: 100%;
+        width: 58% !important;
+        max-width: 58% !important;
         text-align: right;
+        margin: 0;
+        min-width: 0;
     }
-
+    
     .footer-content h3 {
-        font-size: clamp(11px, 3.4vw, 16px);
+        font-size: 8.5px !important;
         font-weight: bold;
-        margin-bottom: 2px;
+        margin: 0 0 2px 0;
         color: #000;
     }
 
     .footer-content h4 {
-        font-size: clamp(6.5px, 2vw, 9.5px);
-        font-weight: bold;
+        font-size: 5.2px !important;
+        font-weight: normal;
         line-height: 1.25;
         color: #000;
+        margin: 0;
+        width: 100%;
     }
 
+    /* ABAJO: Redes centradas */
     .social-icons {
-        display: none;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        margin: 0 auto;
+        padding-bottom: 2px;
+    }
+
+    .social-icons .social-icon {
+        width: 16px;
+        height: 16px;
+        font-size: 7px;
     }
 }
