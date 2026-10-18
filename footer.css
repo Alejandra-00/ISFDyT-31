@@ -83,6 +83,7 @@
     font-size: clamp(9px, 1.1vw, 17px);
     line-height: 1.15;
     white-space: normal; /* Permite adaptarse en pantallas intermedias */
+    text-align: left;
 }
 
 .Instituto h2 {
@@ -98,6 +99,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: flex-start;
 }
 
 /* Información de contacto */
@@ -200,7 +202,7 @@
   .footer {
         background-image: url("fondo/footer - celular.png");
         background-repeat: no-repeat;
-        background-size: cover !important; /* Evita cortes extraños y cubre todo el ancho de forma fluida */
+        background-size: 100% auto !important; /* Evita cortes extraños y cubre todo el ancho de forma fluida */
         background-position: center bottom;
         width: 100%;
         min-height: 220px; /* Más altura para que las ondas respiren y se vean sueltas */
