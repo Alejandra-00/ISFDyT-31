@@ -197,23 +197,22 @@
     }
 }
 @media screen and (max-width: 767px) {
-    .footer {
+  .footer {
         background-image: url("fondo/footer - celular.png");
         background-repeat: no-repeat;
-        background-size: 100% 100%;
+        background-size: cover !important; /* Evita cortes extraños y cubre todo el ancho de forma fluida */
         background-position: center bottom;
         width: 100%;
-        min-height: 190px;
+        min-height: 220px; /* Más altura para que las ondas respiren y se vean sueltas */
         height: auto;
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
         align-items: center;
         overflow: hidden;
-        padding: 0 0 10px 0;
-        margin-top: 50px;
+        padding: 20px 0 15px 0; /* Espacio arriba y abajo para desahogar el contenido */
+        margin-top: 110px;
     }
-
     .section {
         display: flex;
         flex-direction: row;
@@ -238,7 +237,7 @@
         max-width: 40%;
         gap: 4px;
         margin: 0;
-        transform: translateY(-48px);
+        transform: translateY(-80px);
     }
 
     .logo-identificacion {
@@ -257,7 +256,7 @@
     }
 
     .Cooperadora h1 {
-        font-size: 7.5px !important;
+        font-size: 10.5px !important;
         white-space: nowrap;
         line-height: 1.1;
         color: #000;
@@ -282,14 +281,14 @@
     }
     
     .footer-content h3 {
-        font-size: 8.5px !important;
+        font-size: 10.5px !important;
         font-weight: bold;
         margin: 0 0 2px 0;
         color: #000;
     }
 
     .footer-content h4 {
-        font-size: 5.2px !important;
+        font-size: 7.2px !important;
         font-weight: normal;
         line-height: 1.25;
         color: #000;
