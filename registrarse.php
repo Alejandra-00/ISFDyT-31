@@ -2,9 +2,16 @@
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
+
     include("conexion.php");
 
-    $mensajeError = '';
+    $mensajeError = ""; 
+    $scriptConsola = "";
+
+    function consoleError($mensaje) {
+        $jsMensaje = json_encode("Error de la API: " . $mensaje);
+        return "<script>console.error($jsMensaje);</script>";
+    }
 
     if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // Validar y asignar valores por defecto en caso de venir vacíos
@@ -63,10 +70,16 @@
                 header("Location: inicio.php");
                 exit;
             } else {
-                $mensajeError = $respuesta['error'] ?? "Respuesta de la API: " . htmlspecialchars($resultado);
+                $mensajeError = $respuesta['error'];
+                
+                $errorDetalle = $respuesta['error'] ?? "Respuesta de la API: " . htmlspecialchars($resultado);
+                $scriptConsola = consoleError($errorDetalle);
             }
         } else {
             $mensajeError = "No se pudo realizar la llamada HTTP a la API.";
+
+            $errorDetalle = $errorDetalle = "Error de red o file_get_contents falló al conectar a: " . $urlApi;
+            $scriptConsola = consoleError($errorDetalle); 
         }
         
     }
@@ -171,7 +184,9 @@
             </form> 
         </div>
     </div> 
+
     <script src="registrarse.js"></script>
+    <?php echo $scriptConsola; ?>
 </body> 
 </html> 
 <?php
