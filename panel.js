@@ -50,13 +50,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Inicio del panel
 function cargarInicio() {
+    // para evitar que un fallo aislado rompa todo el panel se implementa Fallback por cada solicitud de fetch
     Promise.all([
         // obtener usuarios
         fetch('API.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json'},
             body: JSON.stringify({ recurso: 'usuarios', consulta: 'Read'})
-        }).then(response => response.json())
+        })
+        .then(response => {
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`); // si ocurre un error en una consulta
+            return response.json();  // el sistema lo atrapa de manera aislada, registra el error en la consola y muestra un mensaje
+        })
         
         .catch(error => {
             console.error(error);
@@ -64,6 +69,7 @@ function cargarInicio() {
             const mensajeVoluntarios = document.getElementById('mensajeVoluntarios');
             if (mensajeAlumnos) mensajeAlumnos.innerText = 'Error al cargar.';
             if (mensajeVoluntarios) mensajeVoluntarios.innerText = 'Error al cargar.';
+            return []; // devuelve un array vacio
         }),
 
         // obtener carreras
@@ -71,12 +77,17 @@ function cargarInicio() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json'},
             body: JSON.stringify({ recurso: 'carreras', consulta: 'Read'})
-        }).then(response => response.json())
+        })
+        .then(response => {
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            return response.json();
+        })
         
         .catch(error => {
             console.error(error);
             const mensajeCarreras = document.getElementById('mensajeCarrera');
-            if (mensajeCarreras) mensajeCarreras.innerText = 'Error al cargar.'; 
+            if (mensajeCarreras) mensajeCarreras.innerText = 'Error al cargar.';
+            return [];
         }),
 
         // obtener montos
@@ -84,15 +95,25 @@ function cargarInicio() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json'},
             body: JSON.stringify({ recurso: 'monto', consulta: 'Read'})
-        }).then(response => response.json()) ])
-        
+        })
+        .then(response => {
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            return response.json();
+        })
+
         .catch(error => {
             console.error(error);
             const mensajeMonto = document.getElementById('mensajeMonto');
-            if (mensajeMonto) mensajeMonto.innerText = 'Error al cargar.'; 
+            if (mensajeMonto) mensajeMonto.innerText = 'Error al cargar.';
+            return [];
         })
-        
+    ])
         .then(([usuarios, carreras, montos]) => {
+            // garantiza que trabaje con arreglos seguros aunque la API falle
+            usuarios = Array.isArray(usuarios) ? usuarios : [];
+            carreras = Array.isArray(carreras) ? carreras : [];
+            montos = Array.isArray(montos) ? montos : [];
+
             // cuenta los socios alumnos y voluntarios
             let alumnos = 0; 
             let voluntarios = 0;
@@ -166,6 +187,9 @@ function cargarInicio() {
                 });
             }
         }
+    })
+    .catch(error => {
+        console.error("Error general en cargarInicio:", error);
     });
 }
 

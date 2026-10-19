@@ -276,7 +276,7 @@
                         </thead>
                         <tbody id="tablapagos">
                             <tr>
-                                <td colspan="8" style="text-align: center;">Cargando pagos...</td>
+                                <td colspan="8" style="text-align: center;"></td>
                             </tr>
                         </tbody>
                     </table>
