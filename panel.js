@@ -1460,7 +1460,7 @@ function exportarExcelPagos() {
             return;
         }
 
-        // Formateamos los datos
+        // Formateamos los datos agregando únicamente la columna 'Mes que abono'
         const datosFormateados = datos.map(item => {
             let fechaObjeto = '';
             if (item.fecha && item.fecha.includes('-')) {
@@ -1475,12 +1475,24 @@ function exportarExcelPagos() {
                 "Nombre Completo": item.nombre_completo ?? '',
                 "Tipo de Socio": item.socio ?? '',
                 "Carrera": item.carrera ?? '',
+                "Mes que abono": item.mes ?? '',
                 "Monto ($)": parseFloat(item.monto) || 0,
                 "Fecha de Pago": fechaObjeto
             };
         });
 
         const hojaTrabajo = XLSX.utils.json_to_sheet(datosFormateados);
+
+        hojaTrabajo['!cols'] = [
+            { wch: 15 }, // DNI
+            { wch: 30 }, // Nombre Completo
+            { wch: 18 }, // Tipo de Socio
+            { wch: 25 }, // Carrera
+            { wch: 18 }, // Mes que abono
+            { wch: 15 }, // Monto ($)
+            { wch: 18 }  // Fecha de Pago (Ancho suficiente para que no aparezca ###)
+        ];
+
         const libroTrabajo = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(libroTrabajo, hojaTrabajo, "Pagos");
 
@@ -1518,6 +1530,14 @@ function exportarExcelUsuarios() {
         }));
 
         const hojaTrabajo = XLSX.utils.json_to_sheet(datosFormateados);
+
+        hojaTrabajo['!cols'] = [
+            { wch: 15 }, // DNI
+            { wch: 30 }, // Nombre Completo
+            { wch: 20 }, // Tipo de Socio
+            { wch: 30 }  // Carrera
+        ];
+        
         const libroTrabajo = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(libroTrabajo, hojaTrabajo, "Usuarios");
 

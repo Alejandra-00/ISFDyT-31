@@ -338,6 +338,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             usuarios.nombre_completo,
                             socio.nombre AS socio,
                             COALESCE(carrera.nombre, 'Sin carrera') AS carrera,
+                            meses.nombre AS mes,
                             monto.importe AS monto,
                             registropagos.fecha
                         FROM registropagos
@@ -345,6 +346,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         INNER JOIN monto ON registropagos.id_monto = monto.id
                         LEFT JOIN socio ON usuarios.id_socio = socio.id
                         LEFT JOIN carrera ON usuarios.id_carrera = carrera.id
+                        LEFT JOIN meses ON registropagos.id_mes = meses.id_mes
                         WHERE registropagos.fecha BETWEEN ? AND ?
                         AND registropagos.id_estado = 1";
 
@@ -364,7 +366,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             echo json_encode(["error" => "Error al exportar datos de pagos."]);
                         }
                     break;
-                        
+
                     default:
                         http_response_code(400);
                         echo json_encode(["error" => "Consulta no válida"]);
