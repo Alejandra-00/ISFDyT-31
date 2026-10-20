@@ -241,7 +241,7 @@ body {
 @media (max-width: 768px) {
     .top-bar, .header, nav.navbar {
         position: absolute; /* o fixed */
-        top: 10px;          /* Disminuye este valor para subirla (ej. 5px u 8px) */
+        top: 10px;          /* Disminuye este valor para subirla */
         left: 0;
         right: 0;
         padding-top: 5px;   /* Reduce el relleno superior si tiene */
@@ -252,7 +252,7 @@ body {
         z-index: 100;
     }
 
-    /* Opción B: Si la sección contenedora (.inicio / section.inicio) tiene mucho padding superior */
+    /* Si la sección contenedora tiene mucho padding superior */
     section.inicio {
         padding-top: 10px;  /* Ajusta el padding superior para pegar el menú arriba */
     }
