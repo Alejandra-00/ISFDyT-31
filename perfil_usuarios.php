@@ -86,7 +86,18 @@
         <div class="informacion">
             <h3>Carrera</h3>
             <p id="veridcarrera"><?= htmlspecialchars($usuario['nombre_carrera'] ?? 'Sin carrera') ?></p>
-            <select class="campo-edicion" id="editar_id_carrera" name="valor"></select>
+            
+            <!-- Desplegable Personalizado en sustitución del <select> -->
+            <div class="custom-dropdown campo-edicion" id="dropdown_carrera">
+                <div class="dropdown-trigger" id="dropdown_trigger_carrera">
+                    <span id="dropdown_selected_text">Seleccione una carrera</span>
+                    <span class="dropdown-arrow">▼</span>
+                </div>
+                <div class="dropdown-options" id="dropdown_options_carrera">
+                    <!-- Las opciones de la API se cargarán dinámicamente aquí -->
+                </div>
+            </div>
+            <input type="hidden" id="editar_id_carrera" name="valor" value="">
         </div>
         <input type="hidden" name="campo" value="id_carrera">
         <button type="button" class="editar-btn" onclick="editarCampo('id_carrera')">Editar</button>

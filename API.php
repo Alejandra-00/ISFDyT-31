@@ -517,24 +517,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     break;
 
                     case "Update":
-                        $id = $datos["id"];
+                        $id = (int)$datos["id"];
                         $DNI = $datos["dni"];
                         $nombre_completo = $datos["nombre_completo"];
                         $email = $datos["email"];
                         $telefono = $datos["telefono"];
-                        $contrasena = $datos["contrasena"];
-                        $id_socio = $datos["socio"];
+                        $contrasena = $datos["contrasena"] ?? '';
+                        
+                        // Asegurar que id_socio sea un número válido (mapeo rápido por seguridad)
+                        $socioInput = $datos["socio"] ?? 1;
+                        $id_socio = is_numeric($socioInput) ? (int)$socioInput : 1; 
+                        
                         $id_carrera = !empty($datos["carrera"]) ? (int)$datos["carrera"] : null;
-                        $contrasena = password_hash($contrasena, PASSWORD_BCRYPT); // Encriptación segura de contraseña 
-                        $sql = "UPDATE usuarios
-                                SET DNI = '$DNI',
-                                    nombre_completo = '$nombre_completo',
-                                    email = '$email',
-                                    telefono = '$telefono',
-                                    contrasena = '$contrasena',
-                                    id_socio = $id_socio,
-                                    id_carrera = $id_carrera
-                                WHERE id = $id";
+
+                        // Si la contraseña no está vacía, la hasheamos y la actualizamos. Si está vacía, no se toca.
+                        if (!empty($contrasena)) {
+                            $contrasenaHash = password_hash($contrasena, PASSWORD_BCRYPT);
+                            $sql = "UPDATE usuarios
+                                    SET DNI = '$DNI',
+                                        nombre_completo = '$nombre_completo',
+                                        email = '$email',
+                                        telefono = '$telefono',
+                                        contrasena = '$contrasenaHash',
+                                        id_socio = $id_socio,
+                                        id_carrera = $id_carrera
+                                    WHERE id = $id";
+                        } else {
+                            $sql = "UPDATE usuarios
+                                    SET DNI = '$DNI',
+                                        nombre_completo = '$nombre_completo',
+                                        email = '$email',
+                                        telefono = '$telefono',
+                                        id_socio = $id_socio,
+                                        id_carrera = $id_carrera
+                                    WHERE id = $id";
+                        }
+
                         $resultado = mysqli_query($conexion, $sql);
                         if ($resultado) {
                             echo json_encode([
