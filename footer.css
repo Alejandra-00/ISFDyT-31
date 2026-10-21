@@ -58,8 +58,10 @@
 
 .logo-identificacion {
     display: flex;
-    align-items: center;
-    gap: clamp(8px, 1.5vw, 25px);
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 2px;
 }
 
 /* Logo circular */
@@ -119,6 +121,16 @@
     font-weight: normal;
     margin: 0;
     line-height: 1.45;
+
+    /* Elimina subrayados y puntos por desbordamiento */
+    text-decoration: none !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+}
+
+.footer-content a {
+    text-decoration: none !important;
+    color: inherit; /* Mantiene el mismo color de texto */
 }
 
 /* Redes Sociales */
@@ -200,22 +212,33 @@
 }
 
 @media screen and (max-width: 768px) {
-  .footer {
+    .footer {
         background-image: url("fondo/footer - celular.png");
         background-repeat: no-repeat;
-        background-size: 100% auto !important; /* Evita cortes extraños y cubre todo el ancho de forma fluida */
+        background-size: 100% 100% !important;
         background-position: center bottom;
         width: 100%;
-        min-height: 220px; /* Más altura para que las ondas respiren y se vean sueltas */
+        
+        /* 
+           aspect-ratio: Mantiene la proporción entre el ancho y el alto del contenedor (ancho / alto).
+           Esto asegura que el elemento mantengaexactamente la misma forma geométrica en cualquier 
+           pantalla móvil (incluyendo iPhone), evitando que el fondo se vea más alto o deformado.
+        */
+        aspect-ratio: 20 / 9;
+        
+        /* Reemplazamos el min-height fijo para evitar distorsiones en Safari/iOS */
+        min-height: auto;
         height: auto;
+
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
         align-items: center;
         overflow: hidden;
-        padding: 20px 0 15px 0; /* Espacio arriba y abajo para desahogar el contenido */
+        padding: 20px 0 15px 0;
         margin-top: 110px;
     }
+
     .section {
         display: flex;
         flex-direction: row;
@@ -240,7 +263,7 @@
         max-width: 40%;
         gap: 4px;
         margin: 0;
-        transform: translateY(-70px);
+        transform: translateY(-65px);
     }
 
     .logo-identificacion {
@@ -281,6 +304,7 @@
         text-align: right;
         margin: 0;
         min-width: 0;
+        transform: translateY(10px);
     }
     
     .footer-content h3 {
@@ -309,6 +333,7 @@
         width: 100%;
         margin: 0 auto;
         padding-bottom: 2px;
+        transform: translateY(10px);
     }
 
     .social-icons .social-icon {
