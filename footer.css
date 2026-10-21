@@ -198,7 +198,8 @@
         font-size: 28px;
     }
 }
-@media screen and (max-width: 767px) {
+
+@media screen and (max-width: 768px) {
   .footer {
         background-image: url("fondo/footer - celular.png");
         background-repeat: no-repeat;
@@ -239,7 +240,7 @@
         max-width: 40%;
         gap: 4px;
         margin: 0;
-        transform: translateY(-60px);
+        transform: translateY(-70px);
     }
 
     .logo-identificacion {

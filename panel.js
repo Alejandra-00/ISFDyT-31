@@ -1,11 +1,11 @@
 function escapeHtml(str) {
     if (str === null || str === undefined) return '';
     return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 }
 
 function mostrar(id) {
@@ -50,7 +50,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Inicio del panel
 function cargarInicio() {
-    // para evitar que un fallo aislado rompa todo el panel se implementa Fallback por cada solicitud de fetch
     Promise.all([
         // obtener usuarios
         fetch('API.php', {
@@ -58,19 +57,8 @@ function cargarInicio() {
             headers: { 'Content-Type': 'application/json'},
             body: JSON.stringify({ recurso: 'usuarios', consulta: 'Read'})
         })
-        .then(response => {
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`); // si ocurre un error en una consulta
-            return response.json();  // el sistema lo atrapa de manera aislada, registra el error en la consola y muestra un mensaje
-        })
-        
-        .catch(error => {
-            console.error(error);
-            const mensajeAlumnos = document.getElementById('mensajeAlumnos');
-            const mensajeVoluntarios = document.getElementById('mensajeVoluntarios');
-            if (mensajeAlumnos) mensajeAlumnos.innerText = 'Error al cargar.';
-            if (mensajeVoluntarios) mensajeVoluntarios.innerText = 'Error al cargar.';
-            return []; // devuelve un array vacio
-        }),
+        .then(res => res.ok ? res.json() : [])
+        .catch(() => []),
 
         // obtener carreras
         fetch('API.php', {
@@ -78,15 +66,18 @@ function cargarInicio() {
             headers: { 'Content-Type': 'application/json'},
             body: JSON.stringify({ recurso: 'carreras', consulta: 'Read'})
         })
-        .then(response => {
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            return response.json();
+        .then(async response => {
+            const text = await response.text();
+            try {
+                const json = JSON.parse(text);
+                return Array.isArray(json) ? json : [];
+            } catch (e) {
+                console.error("Error al obtener carreras en inicio:", text);
+                return [];
+            }
         })
-        
         .catch(error => {
             console.error(error);
-            const mensajeCarreras = document.getElementById('mensajeCarrera');
-            if (mensajeCarreras) mensajeCarreras.innerText = 'Error al cargar.';
             return [];
         }),
 
@@ -96,60 +87,48 @@ function cargarInicio() {
             headers: { 'Content-Type': 'application/json'},
             body: JSON.stringify({ recurso: 'monto', consulta: 'Read'})
         })
-        .then(response => {
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            return response.json();
-        })
-
-        .catch(error => {
-            console.error(error);
-            const mensajeMonto = document.getElementById('mensajeMonto');
-            if (mensajeMonto) mensajeMonto.innerText = 'Error al cargar.';
-            return [];
-        })
+        .then(res => res.ok ? res.json() : [])
+        .catch(() => [])
     ])
-        .then(([usuarios, carreras, montos]) => {
-            // garantiza que trabaje con arreglos seguros aunque la API falle
-            usuarios = Array.isArray(usuarios) ? usuarios : [];
-            carreras = Array.isArray(carreras) ? carreras : [];
-            montos = Array.isArray(montos) ? montos : [];
+    .then(([usuarios, carreras, montos]) => {
+        usuarios = Array.isArray(usuarios) ? usuarios : [];
+        carreras = Array.isArray(carreras) ? carreras : [];
+        montos = Array.isArray(montos) ? montos : [];
 
-            // cuenta los socios alumnos y voluntarios
-            let alumnos = 0; 
-            let voluntarios = 0;
+        let alumnos = 0; 
+        let voluntarios = 0;
 
-            const listaAlumnos = [];
-            const listaVoluntarios = [];
+        const listaAlumnos = [];
+        const listaVoluntarios = [];
 
-            usuarios.forEach(usuario => {
-                if (usuario.nombre_socio === 'Alumno') { 
-                    alumnos++; 
-                    listaAlumnos.push(usuario);
-                }
-                if (usuario.nombre_socio === 'Voluntario') { 
-                    voluntarios++; 
-                    listaVoluntarios.push(usuario);
-                }
+        usuarios.forEach(usuario => {
+            if (usuario.nombre_socio === 'Alumno') { 
+                alumnos++; 
+                listaAlumnos.push(usuario);
+            }
+            if (usuario.nombre_socio === 'Voluntario') { 
+                voluntarios++; 
+                listaVoluntarios.push(usuario);
+            }
         });
-        document.getElementById('cantAlumnos').textContent = alumnos;
-        document.getElementById('cantVoluntarios').textContent = voluntarios;
-        document.getElementById('cantCarreras').textContent = carreras.length;
 
-        if (montos.length > 0) { // devuelve cuantos elementos hay
-            const ultimoMonto = montos[montos.length - 1]; //obtiene el ultimo monto
-            document.getElementById('montoActual').textContent = '$' + ultimoMonto.importe;
+        const elAlumnos = document.getElementById('cantAlumnos');
+        const elVoluntarios = document.getElementById('cantVoluntarios');
+        const elCarreras = document.getElementById('cantCarreras');
+        const elMonto = document.getElementById('montoActual');
+
+        if (elAlumnos) elAlumnos.textContent = alumnos;
+        if (elVoluntarios) elVoluntarios.textContent = voluntarios;
+        if (elCarreras) elCarreras.textContent = carreras.length;
+
+        if (montos.length > 0 && elMonto) {
+            const ultimoMonto = montos[montos.length - 1];
+            elMonto.textContent = '$' + ultimoMonto.importe;
         }
 
-        //obtiene los ultimos 5 alumnos y volunatarios registrados
-        const ultimosAlumnos = listaAlumnos
-            .sort((a, b) => b.id - a.id)
-            .slice(0, 5);
-
-        const ultimosVoluntarios = listaVoluntarios
-            .sort((a, b) => b.id - a.id)
-            .slice(0, 5);
+        const ultimosAlumnos = listaAlumnos.sort((a, b) => b.id - a.id).slice(0, 5);
+        const ultimosVoluntarios = listaVoluntarios.sort((a, b) => b.id - a.id).slice(0, 5);
             
-        // Renderizar en HTML
         const contAlumnos = document.getElementById('socAlumno');
         if (contAlumnos) {
             contAlumnos.innerHTML = '';
@@ -159,10 +138,9 @@ function cargarInicio() {
                 ultimosAlumnos.forEach(alumno => {
                     const item = document.createElement('div');
                     item.className = 'listado-item';
-                    const dni = alumno.DNI ?? '';
                     item.innerHTML = `
                         <strong>${escapeHtml(alumno.nombre_completo)}</strong>
-                        <span class="item-dato">DNI: ${escapeHtml(dni)}</span>
+                        <span class="item-dato">DNI: ${escapeHtml(alumno.DNI ?? '')}</span>
                     `;
                     contAlumnos.appendChild(item);
                 });
@@ -178,10 +156,9 @@ function cargarInicio() {
                 ultimosVoluntarios.forEach(voluntario => {
                     const item = document.createElement('div');
                     item.className = 'listado-item';
-                    const dni = voluntario.DNI ?? '';
                     item.innerHTML = `
                         <strong>${escapeHtml(voluntario.nombre_completo)}</strong>
-                        <span class="item-dato">DNI: ${escapeHtml(dni)}</span>
+                        <span class="item-dato">DNI: ${escapeHtml(voluntario.DNI ?? '')}</span>
                     `;
                     contVoluntarios.appendChild(item);
                 });
@@ -636,75 +613,76 @@ let carreraEnEdicionId = null;
  * Obtiene el listado de carreras desde el servidor y las dibuja en la tabla HTML.
  */
 function cargarCarreras() {
-    // Referencias a los elementos del DOM (mensaje informativo y cuerpo de la tabla)
-    const mensaje = document.getElementById('mensajeCarreras');
+    const mensaje = document.getElementById('mensajeCarrera2') || document.getElementById('mensajeCarreras');
     const tbody = document.getElementById('tablaCarreras');
-    if (!tbody) return; // Si la tabla no existe en el DOM, interrumpe la ejecución
+    if (!tbody) return;
 
-    // Petición HTTP POST al servidor enviando JSON
     fetch('API.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
             recurso: 'carreras',
-            consulta: 'Read' // Solicita la lectura/obtención de datos
+            consulta: 'Read'
         })
     })
-    .then(response => {
-        // Verifica si la respuesta HTTP fue exitosa (código status 200-299)
-        if (!response.ok) throw new Error(`Error HTTP ${response.status}`);
-        return response.json(); // Parsea la respuesta como objeto JavaScript/JSON
+    .then(async response => {
+        const text = await response.text();
+        if (!text || !text.trim()) {
+            throw new Error("El servidor no devolvió respuesta.");
+        }
+        try {
+            return JSON.parse(text);
+        } catch (e) {
+            console.error("Respuesta HTML recibida del backend:", text);
+            throw new Error("Error en el servidor MySQL / PHP.");
+        }
     })
     .then(data => {
-        tbody.innerHTML = ''; // Limpia el contenido previo de la tabla
+        tbody.innerHTML = '';
 
-        // Valida que los datos recibidos sean un arreglo y contengan información
+        if (data.error) {
+            if (mensaje) mensaje.innerText = data.error;
+            return;
+        }
+
         if (!Array.isArray(data) || data.length === 0) {
             if (mensaje) mensaje.innerText = 'No se encontraron carreras.';
             return;
         }
 
-        if (mensaje) mensaje.innerText = ''; // Limpia mensajes de error o estados anteriores
+        if (mensaje) mensaje.innerText = '';
 
-        // Recorre cada carrera recibida para construir su fila en la tabla
         data.forEach(carrera => {
-            const fila = document.createElement('tr'); // Crea la fila de la tabla
+            const fila = document.createElement('tr');
             
-            // --- Columna 1: Nombre de la Carrera ---
             const celdaNombre = document.createElement('td');
-            celdaNombre.textContent = carrera.nombre ?? ''; // Muestra el nombre o un texto vacío
+            celdaNombre.textContent = carrera.nombre ?? '';
             fila.appendChild(celdaNombre);
 
-            // --- Columna 2: Botón Editar ---
             const celdaEditar = document.createElement('td');
             const btnEditar = document.createElement('button');
             btnEditar.type = 'button';
             btnEditar.className = 'btn-editar-dni';
             btnEditar.title = 'Editar carrera';
             btnEditar.innerHTML = '<img src="iconos/dni.png" alt="Editar">';
-            // Al hacer clic, invoca la función para preparar la edición de esta carrera
             btnEditar.onclick = () => editarCarrera(carrera);
             celdaEditar.appendChild(btnEditar);
             fila.appendChild(celdaEditar);
 
-            // --- Columna 3: Botón Eliminar ---
             const celdaEliminar = document.createElement('td');
             const btnEliminar = document.createElement('button');
             btnEliminar.type = 'button';
             btnEliminar.className = 'btn-cancelar';
             btnEliminar.textContent = 'Eliminar';
-            // Al hacer clic, invoca la función de eliminación pasando el ID correspondiente
             btnEliminar.onclick = () => eliminarCarrera(carrera.id);
             celdaEliminar.appendChild(btnEliminar);
             fila.appendChild(celdaEliminar);
 
-            // Añade la fila completa al cuerpo de la tabla
             tbody.appendChild(fila);
         });
     })
     .catch(error => {
-        // Captura e informa en pantalla cualquier error ocurrido durante la petición
-        if (mensaje) mensaje.innerText = 'Error al cargar las carreras.';
+        if (mensaje) mensaje.innerText = error.message || 'Error al cargar las carreras.';
         console.error(error);
     });
 }
@@ -757,61 +735,50 @@ function cancelarFormularioCarrera() {
  * Guarda los datos del formulario (Creación o Edición) en la base de datos.
  */
 function guardarCarrera() {
-    // Obtiene el nombre ingresado quitándole los espacios al inicio y final
     const nombre = document.getElementById('nombreCarrera').value.trim();
-    const mensaje = document.getElementById('mensajeCarreras');
+    const mensaje = document.getElementById('mensajeCarrera2');
     
-    // Validar que el campo no esté vacío
     if (!nombre) {
         if (mensaje) mensaje.innerText = 'El nombre de la carrera no puede estar vacío.';
         return;
     }
 
-    // Si 'carreraEnEdicionId' es null ejecutamos 'Create', de lo contrario 'Update'
     const consulta = carreraEnEdicionId === null ? 'Create' : 'Update';
     
-    // Construye el objeto de datos que enviará al servidor
     const payload = {
         recurso: 'carreras',
         consulta: consulta,
         nombre: nombre
     };
     
-    // Si estamos editando, agregamos el ID al payload
     if (carreraEnEdicionId !== null) {
         payload.id = carreraEnEdicionId;
     }
 
-    // Petición al backend
     fetch('API.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
     })
-    .then(response => {
-        if (!response.ok) throw new Error(`Error HTTP ${response.status}`);
-        return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
-        if (data.error) throw new Error(data.error); // Lanza un error si la API retorna fallo
+        if (data.error) throw new Error(data.error);
         
-        // Cierra el formulario y regresa visualmente a la tabla
         cancelarFormularioCarrera();
         
-        // Muestra un mensaje de éxito en verde
         if (mensaje) {
             mensaje.style.color = '#a9cd46';
-            mensaje.innerText = data.mensaje ||
-                (consulta === 'Create' ? 'Carrera agregada correctamente.' : 'Carrera actualizada correctamente.');
+            mensaje.innerText = data.mensaje || 'Operación realizada correctamente.';
         }
         
-        // Recarga la lista de carreras para refrescar los datos en pantalla
         cargarCarreras();
     })
     .catch(error => {
-        // Alerta en pantalla en caso de que ocurra algún fallo durante la operación
-        console.error(`Error al ${consulta === 'Create' ? 'agregar' : 'editar'} la carrera: ${error.message}`);
-        if (mensaje) mensaje.innerText = 'Error al actualizar o crear carrera.';
+        console.error(`Error al guardar carrera:`, error);
+        if (mensaje) {
+            mensaje.style.color = 'red';
+            mensaje.innerText = error.message || 'Error al actualizar o crear carrera.';
+        }
     });
 }
 
