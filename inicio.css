@@ -57,6 +57,7 @@ body {
     display: flex;
     flex-direction: column;
     padding-top: 100px;
+    padding-bottom: 14vw;
 }
 
 .preguntas_contenido {
@@ -132,10 +133,6 @@ body {
     background-color: #ffff;
     color: #46a0cd;
     transform: rotateY(180deg);
-}
-
-.footer_separacion {
-    margin-top: -220px;
 }
 
 /* RESPONSIVE PARA TABLETS Y DISPOSITIVOS MÓVILES (< 768px) */

@@ -68,10 +68,10 @@
                 </div>
             </div>
         </div>
-        <div class="footer_separacion">
-            <?php include 'footer.php'; ?>
-        </div>
     </section>
+
+    <?php include 'footer.php'; ?>
+    
     <script src="inicio.js"></script>
 </body>
 </html>

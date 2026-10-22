@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             break;
                         }
 
-                        // Insertar exactamente 9 cuotas (meses 3 al 11) solo para los usuarios que no las tengan
+                        // Insertar exactamente 9 cuotas (meses 1 al 9)
                         $sql = "
                             INSERT INTO registropagos (id_usuarios, id_monto, id_estado, id_mes)
                             SELECT 
@@ -41,9 +41,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 m.id_mes
                             FROM usuarios u
                             CROSS JOIN (
-                                SELECT 3 AS id_mes UNION SELECT 4 UNION SELECT 5 
-                                UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 
-                                UNION SELECT 9 UNION SELECT 10 UNION SELECT 11
+                                SELECT 1 AS id_mes UNION SELECT 2 UNION SELECT 3 
+                                UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 
+                                UNION SELECT 7 UNION SELECT 8 UNION SELECT 9
                             ) m
                             WHERE u.activo = 1 AND u.admin = 0
                             AND NOT EXISTS (
@@ -77,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             break;
                         }
 
-                        // 1. VERIFICAR SI EL USUARIO ES ADMIN
+                        // VERIFICAR SI EL USUARIO ES ADMIN
                         $stmtCheckAdmin = $conexion->prepare("SELECT admin FROM usuarios WHERE id = ?");
                         if ($stmtCheckAdmin) {
                             $stmtCheckAdmin->bind_param("i", $id_usuarios);
@@ -86,55 +86,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $usrData = $resAdmin->fetch_assoc();
                             $stmtCheckAdmin->close();
 
-                            // Si es administrador, devolvemos un array vacío o un mensaje aclaratorio sin generar registros
                             if ($usrData && (int)$usrData['admin'] === 1) {
                                 echo json_encode([]);
                                 break;
                             }
                         }
 
-                        // 2. OBTENER ID DEL ÚLTIMO MONTO Y ESTADO INICIAL
+                        // OBTENER ID DEL ÚLTIMO MONTO Y ESTADO INICIAL
                         $resMonto = mysqli_query($conexion, "SELECT id FROM monto ORDER BY id DESC LIMIT 1");
                         $filaMonto = mysqli_fetch_assoc($resMonto);
                         $idMontoActual = (int)($filaMonto['id'] ?? 1);
 
-                        $resEstado = mysqli_query($conexion, "SELECT id FROM estadopago WHERE nombre LIKE '%IMPAG%' LIMIT 1");
+                        $resEstado = mysqli_query($conexion, "SELECT id FROM estadopago WHERE nombre LIKE '%IMPAG%' OR nombre LIKE '%PENDIENTE%' LIMIT 1");
                         $filaEstado = mysqli_fetch_assoc($resEstado);
                         $idEstadoInicial = (int)($filaEstado['id'] ?? 2);
 
-                        // 3. INSERT IGNORE (Solo corre para usuarios no-administradores)
+                        // AUTO-GENERAR SÓLO LAS CUOTAS DE Marzo A Noviembre QUE FALTEN
                         $sqlAutoGenerar = "
-                            INSERT IGNORE INTO registropagos (id_usuarios, id_monto, id_estado, id_mes)
-                            VALUES 
-                                (?, ?, ?, 1),
-                                (?, ?, ?, 2),
-                                (?, ?, ?, 3),
-                                (?, ?, ?, 4),
-                                (?, ?, ?, 5),
-                                (?, ?, ?, 6),
-                                (?, ?, ?, 7),
-                                (?, ?, ?, 8),
-                                (?, ?, ?, 9)
+                            INSERT INTO registropagos (id_usuarios, id_monto, id_estado, id_mes)
+                            SELECT ?, ?, ?, m.id_mes
+                            FROM (
+                                SELECT 1 AS id_mes UNION SELECT 2 UNION SELECT 3 
+                                UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 
+                                UNION SELECT 7 UNION SELECT 8 UNION SELECT 9
+                            ) m
+                            WHERE NOT EXISTS (
+                                SELECT 1 FROM registropagos rp 
+                                WHERE rp.id_usuarios = ? AND rp.id_mes = m.id_mes
+                            )
                         ";
-                        
+
                         $stmtGen = mysqli_prepare($conexion, $sqlAutoGenerar);
                         if ($stmtGen) {
-                            mysqli_stmt_bind_param($stmtGen, "iiiiiiiiiiiiiiiiiiiiiiiiiii", 
-                                $id_usuarios, $idMontoActual, $idEstadoInicial,
-                                $id_usuarios, $idMontoActual, $idEstadoInicial,
-                                $id_usuarios, $idMontoActual, $idEstadoInicial,
-                                $id_usuarios, $idMontoActual, $idEstadoInicial,
-                                $id_usuarios, $idMontoActual, $idEstadoInicial,
-                                $id_usuarios, $idMontoActual, $idEstadoInicial,
-                                $id_usuarios, $idMontoActual, $idEstadoInicial,
-                                $id_usuarios, $idMontoActual, $idEstadoInicial,
-                                $id_usuarios, $idMontoActual, $idEstadoInicial
-                            );
+                            mysqli_stmt_bind_param($stmtGen, "iiii", $id_usuarios, $idMontoActual, $idEstadoInicial, $id_usuarios);
                             mysqli_stmt_execute($stmtGen);
                             mysqli_stmt_close($stmtGen);
                         }
 
-                        // 4. CONSULTA DE LECTURA
+                        // CONSULTA DE LECTURA (Obtiene exactamente de Marzo a Noviembre: id_mes del 1 al 9)
                         $sql = "SELECT 
                             registropagos.id, 
                             registropagos.fecha, 
@@ -145,7 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             LEFT JOIN monto ON registropagos.id_monto = monto.id
                             LEFT JOIN estadopago ON registropagos.id_estado = estadopago.id
                             LEFT JOIN meses ON registropagos.id_mes = meses.id_mes
-                            WHERE registropagos.id_usuarios = ?
+                            WHERE registropagos.id_usuarios = ? AND registropagos.id_mes BETWEEN 1 AND 9
                             ORDER BY registropagos.id_mes ASC
                         ";
 
