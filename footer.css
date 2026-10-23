@@ -23,11 +23,6 @@
     min-height: auto; 
     height: auto; 
     
-    /* CAMBIO 2: Solapa el footer sobre la sección de preguntas para hacer visibles las curvas */
-    margin-top: -8vw; 
-    padding-top: 10vw; /* Espacio interno para que el texto no pise la cresta de las olas */
-    padding-bottom: 2vw;
-    
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -204,9 +199,6 @@
     flex-wrap: nowrap;
 }
 
-/* ===================================================
-   MEDIA QUERY PARA MÓVILES (<= 768px)
-   =================================================== */
 @media screen and (max-width: 768px) {
     .footer {
         background-image: url(fondo/footerCelular.png);

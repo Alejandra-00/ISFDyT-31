@@ -92,6 +92,9 @@
             <p id="mensajeComprobante" style="display:none; text-align:center; font-family:Tamrin; font-size:12px; color: yellow; margin-top: 10px"></p>
         </div>
     </div>
+    
+    <?php include 'footer.php'; ?>
+
     <script src="pagarCooperadora.js"></script>
 </body>
 </html>

@@ -30,6 +30,9 @@ if (!isset($_SESSION['usuario'])) {
                 </table>
         </form>
     </div>
+
+    <?php include 'footer.php'; ?>
+    
     <script src="registropagos.js"></script>
 </body>
 </html>

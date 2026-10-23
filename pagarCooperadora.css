@@ -23,9 +23,10 @@ body {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    align-items: flex-start;
+    align-items: stretch;
     gap: 30px; /* Separación entre contenedores */
     width: 100%;
+    flex: 1; /* Permite que ocupe todo el espacio vertical disponible */
 }
 
 .contenedor {
@@ -38,7 +39,7 @@ body {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
     display: flex;
     flex-direction: column;
-    margin-top: 5%;
+    margin: 115px 0;
     align-self: center;
     display: none;
 }

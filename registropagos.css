@@ -6,6 +6,9 @@ body {
     background-attachment: fixed;
     margin: 0;
     font-family: Arial, sans-serif;
+    min-height: 100vh;        /* Obliga a la página a medir mínimo el 100% de la pantalla */
+    display: flex;             /* Organiza los elementos verticales (Nav, Contenedor, Footer) */
+    flex-direction: column;
 }
 
 /* Contenedor principal semi-transparente con tamaño fijo */
@@ -22,6 +25,7 @@ body {
     align-items: center;
     backdrop-filter: blur(4px); 
     box-sizing: border-box;  /* Asegura que el padding no afecte al ancho total */
+    flex: 1 0 auto;            /* Crece para ocupar todo el espacio libre entre la nav y el footer */
 }
 
 /* Formulario */
