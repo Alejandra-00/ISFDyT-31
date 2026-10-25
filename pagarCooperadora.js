@@ -3,11 +3,47 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function copiarElemento(idElemento) {
-   const texto = document.getElementById(idElemento).innerText;
+   const elemento = document.getElementById(idElemento);
+   const mensajeEstado = document.getElementById('mensajeEstado'); // Elemento para la UI
+
+   if (!elemento) {
+      console.error(`Error al copiar: No se encontró el elemento con ID '${idElemento}' en el DOM.`);
+      if (mensajeEstado) {
+         mensajeEstado.innerText = "No se pudo copiar el texto seleccionado.";
+         mensajeEstado.style.display = "block";
+      }
+      return;
+   }
+
+   const texto = elemento.innerText;
+
+   //navigator.clipboard: Es una API moderna del navegador que da acceso de lectura y escritura al portapapeles del dispositivo
    navigator.clipboard.writeText(texto)
-      .then(() => alert("Elemento copiado al portapapeles!"))
-      .catch(err => console.error("Error: ", err));
-} 
+      .then(() => {
+         // Mensaje amigable para el usuario en la interfaz
+         if (mensajeEstado) {
+            mensajeEstado.innerText = "¡Copiado al portapapeles!";
+            mensajeEstado.style.color = "#00ff88"; // Opcional: verde éxito
+            mensajeEstado.style.display = "block";
+
+            // Ocultar el mensaje automáticamente después de 3 segundos
+            setTimeout(() => {
+               mensajeEstado.style.display = "none";
+            }, 3000);
+         }
+      })
+      .catch(err => {
+         // Detalle técnico para el desarrollador
+         console.error("Detalle técnico del error al intentar copiar:", err);
+         
+         // Mensaje amigable para la interfaz
+         if (mensajeEstado) {
+            mensajeEstado.innerText = "No se pudo copiar el texto. Inténtalo manualmente.";
+            mensajeEstado.style.color = "yellow";
+            mensajeEstado.style.display = "block";
+         }
+      });
+}
 
 // Muestra únicamente los IDs que se pasen por parámetro
 function mostrar(...ids) { 
@@ -39,10 +75,13 @@ function comprobanteSeleccionado() {
 
 function aceptarComprobante() {
    const input = document.getElementById('subir');
+   const mensajeComprobante = document.getElementById('mensajeComprobante');
+   
    if (!input.files || input.files.length === 0) {
-      const mensajeComprobante = document.getElementById('mensajeComprobante');
-      mensajeComprobante.innerText = "Debes adjuntar una foto del comprobante.";
-      mensajeComprobante.style.display = "block";
+      if (mensajeComprobante) {
+         mensajeComprobante.innerText = "Debes seleccionar una foto del comprobante antes de continuar.";
+         mensajeComprobante.style.display = "block";
+      }
       return;
    }
    // Al pulsar Aceptar, oculta 'enviarComprobante' y vuelve a 'pasarela'
@@ -50,7 +89,8 @@ function aceptarComprobante() {
 }
 
 function obtenerDatosPagos() {
-   const idPago = document.getElementById('idPagoActual').value;
+   const idPagoInput = document.getElementById('idPagoActual');
+   const idPago = idPagoInput ? idPagoInput.value : 0;
    const mensaje = document.getElementById('mensaje');
 
    fetch('API.php', { 
@@ -58,7 +98,10 @@ function obtenerDatosPagos() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ recurso: 'registroPagos', consulta: 'Readpagos', id_pago: idPago })
    })
-   .then(respuesta => respuesta.json())
+   .then(respuesta => {
+      if (!respuesta.ok) throw new Error(`HTTP error! Estado: ${respuesta.status}`);
+      return respuesta.json();
+   })
    .then(datos => {
       if (datos && !datos.error) {
          document.getElementById("verMes").textContent = datos.meses ?? '';
@@ -70,27 +113,30 @@ function obtenerDatosPagos() {
          const elementosEstado = document.querySelectorAll('#verEstado, #verEstadoPendiente');
          elementosEstado.forEach(el => el.textContent = textoEstado);
 
-         // Evaluar vistas Y actualizar estado disabled de botones
+         // Evaluar vistas y actualizar estado disabled de botones
          evaluarVistasSegunEstado(textoEstado);
+      } else {
+         console.error("Error devuelto por la API al leer el pago:", datos.error);
+         if (mensaje) {
+            mensaje.innerText = "No se pudo cargar la información de tu pago. Por favor, intenta de nuevo.";
+            mensaje.style.display = "block";
+         }
       }
    })
    .catch(error => {
-      console.error(error);
-      if (mensaje) mensaje.innerText = 'Error al obtener los datos del pago.';
+      console.error("Detalle del error en obtenerDatosPagos:", error);
+      if (mensaje) {
+         mensaje.innerText = "Hubo un problema al conectar con el servidor.";
+         mensaje.style.display = "block";
+      }
    });
 }
 
 function evaluarVistasSegunEstado(estado) {
-   if (estado === 'Pendiente') {
-      // Si está pendiente, se muestra PASARELA
+   if (estado === 'Pendiente' || estado === 'Pago') {
       mostrar('pasarela');
-      desactivarBotones('Pendiente');
-   } else if (estado === 'Pago') {
-      // Si el admin ya validó el pago, se muestra PASARELA
-      mostrar('pasarela');
-      desactivarBotones('Pago');
+      desactivarBotones(estado);
    } else {
-      // Si es Impago
       mostrar('pasarela');
       desactivarBotones('Impago');
    }
@@ -128,8 +174,9 @@ function enviarPagoAPI() {
    if (mensajeComprobante) mensajeComprobante.style.display = "none";
 
    if (!idPago || idPago === "0") {
+      console.error("Error de validación local: No se encontró el ID del pago en el DOM.");
       if (mensajeEnvio) {
-         mensajeEnvio.innerText = "No se encontró el ID del pago.";
+         mensajeEnvio.innerText = "No se pudo identificar el pago a actualizar.";
          mensajeEnvio.style.display = "block";
       }
       return;
@@ -137,7 +184,7 @@ function enviarPagoAPI() {
 
    if (!fileInput.files || fileInput.files.length === 0) {
       if (mensajeComprobante) {
-         mensajeComprobante.innerText = "Por favor, selecciona una foto del comprobante primero.";
+         mensajeComprobante.innerText = "Por favor, adjunta la imagen del comprobante antes de realizar el envío.";
          mensajeComprobante.style.display = "block";
       }
       return;
@@ -186,17 +233,14 @@ function enviarPagoAPI() {
             try {
                return JSON.parse(texto);
             } catch (err) {
-               if (mensajeEnvio) {
-                  mensajeEnvio.innerText = "Respuesta del servidor no es JSON: " + texto;
-                  mensajeEnvio.style.display = "block";
-               }
-               throw new Error("Respuesta no válida del servidor.");
+               console.error("Error al parsear JSON desde API.php. Respuesta recibida:", texto);
+               throw new Error("Respuesta inválida del servidor.");
             }
          })
          .then(datos => {
             if (datos.mensaje) {
                if (mensajeEnvio) {
-                  mensajeEnvio.innerText = "¡Pago enviado con éxito!";
+                  mensajeEnvio.innerText = "¡Tu comprobante ha sido enviado con éxito! Queda pendiente de validación.";
                   mensajeEnvio.style.display = "block";
                }
                if (typeof mostrar === "function") mostrar('pasarela');
@@ -204,29 +248,44 @@ function enviarPagoAPI() {
                const elementosEstado = document.querySelectorAll('#verEstado, #verEstadoPendiente');
                elementosEstado.forEach(el => el.textContent = 'Pendiente');
 
-               // Deshabilitar/habilitar botones según el nuevo estado "Pendiente"
                desactivarBotones('Pendiente');
             } else {
+               console.error("Error retornado por la API al actualizar pago:", datos.error);
                if (mensajeEnvio) {
-                  mensajeEnvio.innerText = "Error: " + (datos.error || "No se pudo actualizar el pago.");
+                  mensajeEnvio.innerText = "No se pudo registrar el pago. Por favor, asegúrate de enviar un archivo de imagen válido.";
                   mensajeEnvio.style.display = "block";
                }
             }
          })
          .catch(error => {
-            console.error("Detalle del error:", error);
+            console.error("Error técnico durante la petición de envío del pago:", error);
             if (mensajeEnvio) {
-               mensajeEnvio.innerText = "Ocurrió un error al enviar el pago.";
+               mensajeEnvio.innerText = "Ocurrió un inconveniente al conectar con el servidor. Intenta de nuevo más tarde.";
                mensajeEnvio.style.display = "block";
             }
          });
       };
+
+      img.onerror = function(err) {
+         console.error("Error al cargar la imagen seleccionada en el Canvas:", err);
+         if (mensajeComprobante) {
+            mensajeComprobante.innerText = "El archivo seleccionado no se pudo procesar como imagen.";
+            mensajeComprobante.style.display = "block";
+         }
+      };
+   };
+
+   reader.onerror = function(err) {
+      console.error("Error al leer el archivo con FileReader:", err);
    };
 }
 
 function descargarFactura() {
-   const idPago = document.getElementById('idPagoActual').value;
+   const idPagoInput = document.getElementById('idPagoActual');
+   const idPago = idPagoInput ? idPagoInput.value : 0;
    const mensajeFactura = document.getElementById('mensajeFactura');
+
+   if (mensajeFactura) mensajeFactura.style.display = "none";
 
    // 1. Obtener datos desde la API
    fetch('API.php', {
@@ -239,13 +298,16 @@ function descargarFactura() {
       })
    })
    .then(respuesta => {
-      if (!respuesta.ok) throw new Error("Error en la llamada a API.php");
+      if (!respuesta.ok) throw new Error(`HTTP error! Estado: ${respuesta.status}`);
       return respuesta.json();
    })
    .then(datosAPI => {
       if (!datosAPI || datosAPI.error) {
-         mensajeFactura.innerText = "Error al obtener los datos del pago: " + (datosAPI.error || "Sin respuesta.");
-         mensajeFactura.style.display = "block";
+         console.error("Error obtenido desde Readpagos para la factura:", datosAPI.error);
+         if (mensajeFactura) {
+            mensajeFactura.innerText = "No fue posible obtener los datos de tu comprobante.";
+            mensajeFactura.style.display = "block";
+         }
          return;
       }
 
@@ -257,17 +319,21 @@ function descargarFactura() {
       });
    })
    .then(res => {
+      if (!res) return; // Se cortó en el paso anterior por error de datos
       if (!res.ok) {
-         // Si factura.php da un error (ej. 500), leemos el texto para saber la causa exacta
          return res.text().then(textoError => {
-            console.error = textoError;
-            mensajeFactura.style.display = "block";
-            throw new Error("Error en el servidor al generar la factura.");
+            console.error("Error retornado por factura.php:", textoError);
+            if (mensajeFactura) {
+               mensajeFactura.innerText = "Ocurrió un problema al generar la factura en PDF.";
+               mensajeFactura.style.display = "block";
+            }
+            throw new Error("Error en servidor generando factura.");
          });
       }
       return res.blob();
    })
    .then(blob => {
+      if (!blob) return;
       // 3. Generar la descarga
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -279,8 +345,10 @@ function descargarFactura() {
       window.URL.revokeObjectURL(url);
    })
    .catch(error => {
-      mensajeFactura.innerText = "Ocurrió un error al intentar descargar la factura. Revisa la consola para más detalles.";
-      mensajeFactura.style.display = "block";
-      console.error(error);
+      console.error("Detalle del error en descargarFactura:", error);
+      if (mensajeFactura && mensajeFactura.style.display !== "block") {
+         mensajeFactura.innerText = "No se pudo procesar la descarga de la factura.";
+         mensajeFactura.style.display = "block";
+      }
    });
 }

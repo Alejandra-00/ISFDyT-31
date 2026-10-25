@@ -12,9 +12,6 @@
     $id_usuario = $_SESSION['id'];
 
     $idPago = $_POST['id_pago'];
-
-    $mensajeExito = '';
-    $errorAPI = '';
 ?>
 <!DOCTYPE html>
 <html lang="en">

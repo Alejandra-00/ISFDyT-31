@@ -233,9 +233,7 @@ button:disabled img {
     transform: scale(0.97);
 }
 
-/* ===================================================
-   MEDIA QUERY PARA PANTALLAS 4K / ULTRA-HD (>= 2560px)
-   =================================================== */
+/* Responsive */
 @media screen and (min-width: 2560px) {
     .seccionPagos {
         gap: 60px;
@@ -339,9 +337,6 @@ button:disabled img {
     }
 }
 
-/* ===================================================
-   MEDIA QUERY PARA MOVIL (< 768px)
-   =================================================== */
 @media screen and (max-width: 768px) {
     .seccionPagos {
         width: 100%;
