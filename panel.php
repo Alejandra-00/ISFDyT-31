@@ -115,6 +115,7 @@
                                 <th>DNI</th>
                                 <th>Nombre</th>
                                 <th>Marcar como inactivo</th>
+                                <th>Socio</th>
                             </tr>
                         </thead>
                         <tbody id="tablasocios-Alumno"></tbody>
@@ -137,6 +138,7 @@
                                 <th>DNI</th>
                                 <th>Nombre</th>
                                 <th>Marcar como inactivo</th>
+                                <th>Socio</th>
                             </tr>
                         </thead>
                         <tbody id="tablasocios-Voluntario"></tbody>

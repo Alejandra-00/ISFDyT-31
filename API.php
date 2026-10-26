@@ -434,6 +434,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                echo json_encode(["error" => "Error de lectura."]);
                            }
                     break;
+
+                   case 'UpdateTipoSocio':
+                        $id = (int)($datos["id"] ?? 0);
+                        $idSocio = (int)($datos["id_socio"] ?? 0);
+
+                        if ($id <= 0 || !in_array($idSocio, [1, 2])) {
+                            http_response_code(400);
+                            echo json_encode(["error" => "Datos inválidos."]);
+                            break;
+                        }
+
+                        $stmt = $conexion->prepare("UPDATE usuarios SET id_socio = ? WHERE id = ?");
+                        $stmt->bind_param("ii", $idSocio, $id);
+                        $stmt->execute();
+                        if ($stmt->affected_rows >= 0) {
+                            echo json_encode(["mensaje" => "Tipo de socio actualizado correctamente."]);
+                        } else {
+                            http_response_code(500);
+                            echo json_encode(["error" => "Error al actualizar el tipo de socio."]);
+                        }
+                        $stmt->close();
+                    break;
                     
                     case "Read":
                         $sql = "SELECT usuarios.id, usuarios.nombre_completo, usuarios.email, usuarios.telefono, usuarios.DNI, usuarios.activo, socio.nombre AS nombre_socio, COALESCE(carrera.nombre, 'Sin carrera') AS nombre_carrera

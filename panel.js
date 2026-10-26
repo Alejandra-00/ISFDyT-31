@@ -231,13 +231,23 @@ function cargarAlumnos() {
             fila.appendChild(tdNombre);
             fila.appendChild(tdBoton);
             tbody.appendChild(fila);
-        });
-    })
-    .catch(error => {
-        console.error(error);
-        const tbody = document.getElementById('tablasocios-Alumno');
-        tbody.innerHTML = '<tr><td colspan="3">Error al cargar los socios.</td></tr>';
-    });
+       
+
+            const tdTipo = document.createElement('td');
+            const btnTipo = document.createElement('button');
+            btnTipo.className = 'btn-editar';
+            btnTipo.textContent = '→ Voluntario';
+            btnTipo.onclick = () => cambiarTipoSocio(usuarios.id, 2);
+            tdTipo.appendChild(btnTipo);
+            fila.appendChild(tdTipo);
+            })
+     })
+            .catch(error => {
+                console.error(error);
+                const tbody = document.getElementById('tablasocios-Alumno');
+                tbody.innerHTML = '<tr><td colspan="3">Error al cargar los socios.</td></tr>';
+            }); 
+   
 }
 
 // socio voluntarios
@@ -302,6 +312,14 @@ function cargarVoluntarios() {
             fila.appendChild(tdNombre);
             fila.appendChild(tdBoton);
             tbody.appendChild(fila);
+
+            const tdTipo = document.createElement('td');
+            const btnTipo = document.createElement('button');
+            btnTipo.className = 'btn-editar';
+            btnTipo.textContent = '→ Alumno';
+            btnTipo.onclick = () => cambiarTipoSocio(usuarios.id, 1);
+            tdTipo.appendChild(btnTipo);
+            fila.appendChild(tdTipo);
         });
     })
     .catch(error => {
@@ -513,6 +531,14 @@ async function buscarUsuariosAlumnos() {
                 fila.appendChild(tdNombre);
                 fila.appendChild(tdBoton);
                 tbody.appendChild(fila);
+
+                const tdTipo = document.createElement('td');
+                const btnTipo = document.createElement('button');
+                btnTipo.className = 'btn-editar';
+                btnTipo.textContent = '→ Alumno';
+                btnTipo.onclick = () => cambiarTipoSocio(usuarios.id, 1);
+                tdTipo.appendChild(btnTipo);
+                fila.appendChild(tdTipo);
             });
         } else {
             tbody.innerHTML = '<tr><td colspan="3">No se encontraron usuarios.</td></tr>';
@@ -592,6 +618,14 @@ async function buscarUsuariosVoluntarios() {
                 fila.appendChild(tdNombre);
                 fila.appendChild(tdBoton);
                 tbody.appendChild(fila);
+
+                const tdTipo = document.createElement('td');
+                const btnTipo = document.createElement('button');
+                btnTipo.className = 'btn-editar';
+                btnTipo.textContent = '→ Alumno';
+                btnTipo.onclick = () => cambiarTipoSocio(usuarios.id, 1);
+                tdTipo.appendChild(btnTipo);
+                fila.appendChild(tdTipo);
             });
         } else {
             tbody.innerHTML = '<tr><td colspan="3">No se encontraron usuarios.</td></tr>';
@@ -602,6 +636,27 @@ async function buscarUsuariosVoluntarios() {
             '<tr><td colspan="3">Error al buscar.</td></tr>';
     }
 }
+
+function cambiarTipoSocio(id, idSocio) {
+    fetch('API.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            recurso: 'usuarios',
+            consulta: 'UpdateTipoSocio',
+            id: id,
+            id_socio: idSocio
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.error) throw new Error(data.error);
+        cargarAlumnos();
+        cargarVoluntarios();
+    })
+    .catch(err => console.error(err));
+}
+
 
 // carreras
 
