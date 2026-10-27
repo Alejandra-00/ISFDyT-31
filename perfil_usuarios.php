@@ -133,6 +133,8 @@
 
 </div>
 
+<?php include 'footer.php'; ?>
+
 <script src="perfil_usuario.js"></script>
 </body>
 </html>

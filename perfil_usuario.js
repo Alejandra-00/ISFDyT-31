@@ -130,6 +130,7 @@ function cancelarEdicion(campo) {
     }
 
     texto.style.display = 'block';
+    input.style.display = 'none';
     form.classList.remove('edicion');
     form.querySelector('.editar-btn').style.display = 'inline-block';
     form.querySelector('.acciones-edicion').style.display = 'none';
@@ -236,6 +237,7 @@ function guardarCampo(campo) {
                 const dropdown = document.getElementById('dropdown_carrera');
                 if (dropdown) dropdown.style.display = 'none';
             } 
+
             // 2. Manejo para Contraseña: Mover a asteriscos
             else if (campo === 'contrasena') {
                 textoElem.textContent = '********';

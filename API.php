@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             break;
                         }
 
-                        // Insertar exactamente 9 cuotas (meses 3 al 11) solo para los usuarios que no las tengan
+                        // Insertar exactamente 9 cuotas (meses 1 al 9)
                         $sql = "
                             INSERT INTO registropagos (id_usuarios, id_monto, id_estado, id_mes)
                             SELECT 
@@ -41,9 +41,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 m.id_mes
                             FROM usuarios u
                             CROSS JOIN (
-                                SELECT 3 AS id_mes UNION SELECT 4 UNION SELECT 5 
-                                UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 
-                                UNION SELECT 9 UNION SELECT 10 UNION SELECT 11
+                                SELECT 1 AS id_mes UNION SELECT 2 UNION SELECT 3 
+                                UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 
+                                UNION SELECT 7 UNION SELECT 8 UNION SELECT 9
                             ) m
                             WHERE u.activo = 1 AND u.admin = 0
                             AND NOT EXISTS (
@@ -77,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             break;
                         }
 
-                        // 1. VERIFICAR SI EL USUARIO ES ADMIN
+                        // VERIFICAR SI EL USUARIO ES ADMIN
                         $stmtCheckAdmin = $conexion->prepare("SELECT admin FROM usuarios WHERE id = ?");
                         if ($stmtCheckAdmin) {
                             $stmtCheckAdmin->bind_param("i", $id_usuarios);
@@ -86,55 +86,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $usrData = $resAdmin->fetch_assoc();
                             $stmtCheckAdmin->close();
 
-                            // Si es administrador, devolvemos un array vacío o un mensaje aclaratorio sin generar registros
                             if ($usrData && (int)$usrData['admin'] === 1) {
                                 echo json_encode([]);
                                 break;
                             }
                         }
 
-                        // 2. OBTENER ID DEL ÚLTIMO MONTO Y ESTADO INICIAL
+                        // OBTENER ID DEL ÚLTIMO MONTO Y ESTADO INICIAL
                         $resMonto = mysqli_query($conexion, "SELECT id FROM monto ORDER BY id DESC LIMIT 1");
                         $filaMonto = mysqli_fetch_assoc($resMonto);
                         $idMontoActual = (int)($filaMonto['id'] ?? 1);
 
-                        $resEstado = mysqli_query($conexion, "SELECT id FROM estadopago WHERE nombre LIKE '%IMPAG%' LIMIT 1");
+                        $resEstado = mysqli_query($conexion, "SELECT id FROM estadopago WHERE nombre LIKE '%IMPAG%' OR nombre LIKE '%PENDIENTE%' LIMIT 1");
                         $filaEstado = mysqli_fetch_assoc($resEstado);
                         $idEstadoInicial = (int)($filaEstado['id'] ?? 2);
 
-                        // 3. INSERT IGNORE (Solo corre para usuarios no-administradores)
+                        // AUTO-GENERAR SÓLO LAS CUOTAS DE Marzo A Noviembre QUE FALTEN
                         $sqlAutoGenerar = "
-                            INSERT IGNORE INTO registropagos (id_usuarios, id_monto, id_estado, id_mes)
-                            VALUES 
-                                (?, ?, ?, 1),
-                                (?, ?, ?, 2),
-                                (?, ?, ?, 3),
-                                (?, ?, ?, 4),
-                                (?, ?, ?, 5),
-                                (?, ?, ?, 6),
-                                (?, ?, ?, 7),
-                                (?, ?, ?, 8),
-                                (?, ?, ?, 9)
+                            INSERT INTO registropagos (id_usuarios, id_monto, id_estado, id_mes)
+                            SELECT ?, ?, ?, m.id_mes
+                            FROM (
+                                SELECT 1 AS id_mes UNION SELECT 2 UNION SELECT 3 
+                                UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 
+                                UNION SELECT 7 UNION SELECT 8 UNION SELECT 9
+                            ) m
+                            WHERE NOT EXISTS (
+                                SELECT 1 FROM registropagos rp 
+                                WHERE rp.id_usuarios = ? AND rp.id_mes = m.id_mes
+                            )
                         ";
-                        
+
                         $stmtGen = mysqli_prepare($conexion, $sqlAutoGenerar);
                         if ($stmtGen) {
-                            mysqli_stmt_bind_param($stmtGen, "iiiiiiiiiiiiiiiiiiiiiiiiiii", 
-                                $id_usuarios, $idMontoActual, $idEstadoInicial,
-                                $id_usuarios, $idMontoActual, $idEstadoInicial,
-                                $id_usuarios, $idMontoActual, $idEstadoInicial,
-                                $id_usuarios, $idMontoActual, $idEstadoInicial,
-                                $id_usuarios, $idMontoActual, $idEstadoInicial,
-                                $id_usuarios, $idMontoActual, $idEstadoInicial,
-                                $id_usuarios, $idMontoActual, $idEstadoInicial,
-                                $id_usuarios, $idMontoActual, $idEstadoInicial,
-                                $id_usuarios, $idMontoActual, $idEstadoInicial
-                            );
+                            mysqli_stmt_bind_param($stmtGen, "iiii", $id_usuarios, $idMontoActual, $idEstadoInicial, $id_usuarios);
                             mysqli_stmt_execute($stmtGen);
                             mysqli_stmt_close($stmtGen);
                         }
 
-                        // 4. CONSULTA DE LECTURA
+                        // CONSULTA DE LECTURA (Obtiene exactamente de Marzo a Noviembre: id_mes del 1 al 9)
                         $sql = "SELECT 
                             registropagos.id, 
                             registropagos.fecha, 
@@ -145,7 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             LEFT JOIN monto ON registropagos.id_monto = monto.id
                             LEFT JOIN estadopago ON registropagos.id_estado = estadopago.id
                             LEFT JOIN meses ON registropagos.id_mes = meses.id_mes
-                            WHERE registropagos.id_usuarios = ?
+                            WHERE registropagos.id_usuarios = ? AND registropagos.id_mes BETWEEN 1 AND 9
                             ORDER BY registropagos.id_mes ASC
                         ";
 
@@ -338,6 +327,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             usuarios.nombre_completo,
                             socio.nombre AS socio,
                             COALESCE(carrera.nombre, 'Sin carrera') AS carrera,
+                            meses.nombre AS mes,
                             monto.importe AS monto,
                             registropagos.fecha
                         FROM registropagos
@@ -345,6 +335,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         INNER JOIN monto ON registropagos.id_monto = monto.id
                         LEFT JOIN socio ON usuarios.id_socio = socio.id
                         LEFT JOIN carrera ON usuarios.id_carrera = carrera.id
+                        LEFT JOIN meses ON registropagos.id_mes = meses.id_mes
                         WHERE registropagos.fecha BETWEEN ? AND ?
                         AND registropagos.id_estado = 1";
 
@@ -364,7 +355,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             echo json_encode(["error" => "Error al exportar datos de pagos."]);
                         }
                     break;
-                        
+
                     default:
                         http_response_code(400);
                         echo json_encode(["error" => "Consulta no válida"]);
@@ -378,8 +369,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         if (session_status() === PHP_SESSION_NONE) {
                             session_start();
                         }
+
                         // Obtener ID desde el JSON o desde la sesión PHP como fallback
                         $id_usuario = (int)($datos['id_usuario'] ?? $_SESSION['id'] ?? 0);
+                        
                         if ($id_usuario === 0) {
                             http_response_code(400);
                             echo json_encode(["error" => "ID de usuario no proporcionado o sesión inválida."]);
@@ -398,26 +391,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 FROM usuarios u
                                 LEFT JOIN socio s ON u.id_socio = s.id
                                 LEFT JOIN carrera c ON u.id_carrera = c.id
-                                WHERE u.id = ?";
+                                WHERE u.id = ?
+                        ";
 
-                            $stmt = $conexion->prepare($sql);
-                            if ($stmt) {
-                                $stmt->bind_param("i", $id_usuario);
-                                $stmt->execute();
-                                $resultado = $stmt->get_result();
-                                $usuario = $resultado->fetch_assoc();
+                        $stmt = $conexion->prepare($sql);
+                        if ($stmt) {
+                            $stmt->bind_param("i", $id_usuario);
+                            $stmt->execute();
+                            $resultado = $stmt->get_result();
+                            $usuario = $resultado->fetch_assoc();
 
-                                if ($usuario) {
-                                    echo json_encode($usuario);
-                                } else {
-                                    http_response_code(404);
-                                    echo json_encode(["error" => "Usuario no encontrado."]);
-                                }
-                                $stmt->close();
-                            } else {    
-                                http_response_code(500);
-                                echo json_encode(["error" => "Error en la consulta."]);
+                            if ($usuario) {
+                                echo json_encode($usuario);
+                            } else {
+                                http_response_code(404);
+                                echo json_encode(["error" => "Usuario no encontrado."]);
                             }
+                            $stmt->close();
+                        } else {    
+                            http_response_code(500);
+                            echo json_encode(["error" => "Error en la consulta."]);
+                        }
                     break;
 
                     case "socios":
@@ -439,6 +433,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                http_response_code(502);
                                echo json_encode(["error" => "Error de lectura."]);
                            }
+                    break;
+
+                   case 'UpdateTipoSocio':
+                        $id = (int)($datos["id"] ?? 0);
+                        $idSocio = (int)($datos["id_socio"] ?? 0);
+
+                        if ($id <= 0 || !in_array($idSocio, [1, 2])) {
+                            http_response_code(400);
+                            echo json_encode(["error" => "Datos inválidos."]);
+                            break;
+                        }
+
+                        $stmt = $conexion->prepare("UPDATE usuarios SET id_socio = ? WHERE id = ?");
+                        $stmt->bind_param("ii", $idSocio, $id);
+                        $stmt->execute();
+                        if ($stmt->affected_rows >= 0) {
+                            echo json_encode(["mensaje" => "Tipo de socio actualizado correctamente."]);
+                        } else {
+                            http_response_code(500);
+                            echo json_encode(["error" => "Error al actualizar el tipo de socio."]);
+                        }
+                        $stmt->close();
                     break;
                     
                     case "Read":
@@ -761,51 +777,84 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             case 'carreras':
                 switch ($consulta) {
                     case 'Create':
-                        $nombre = $datos["nombre"];
-                        $sql = "INSERT INTO carrera (nombre) VALUES ('$nombre')";
-                        $resultado = mysqli_query($conexion, $sql);
-                        if ($resultado) {
-                            echo json_encode([ "mensaje" => "Carrera creada correctamente."
-                        ]);
+                        $nombre = trim($datos["nombre"] ?? '');
+                        if (empty($nombre)) {
+                            http_response_code(400);
+                            echo json_encode(["error" => "El nombre de la carrera no puede estar vacío."]);
+                            break;
+                        }
+                        $stmt = $conexion->prepare("INSERT INTO carrera (nombre) VALUES (?)");
+                        if ($stmt) {
+                            $stmt->bind_param("s", $nombre);
+                            if ($stmt->execute()) {
+                                echo json_encode(["mensaje" => "Carrera creada correctamente."]);
+                            } else {
+                                http_response_code(500);
+                                echo json_encode(["error" => "No se pudo crear la carrera en la base de datos."]);
+                            }
+                            $stmt->close();
                         } else {
                             http_response_code(500);
-                            echo json_encode(["error" => "No se pudo crear la carrera."]);
+                            echo json_encode(["error" => "Error al preparar la consulta de inserción: " . $conexion->error]);
                         }
                     break;
 
                     case 'Read':
                         $sql = "SELECT * FROM carrera";
-                        $resultado = mysqli_query($conexion, $sql);
+                        $resultado = @mysqli_query($conexion, $sql);
                         if ($resultado) {
-                            echo json_encode(mysqli_fetch_all($resultado, MYSQLI_ASSOC));
+                            $carreras = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
+                            echo json_encode($carreras ?: []);
                         } else {
-                            http_response_code(502);
-                            echo json_encode(["error" => "Error de lectura."]);
+                            http_response_code(500);
+                            echo json_encode(["error" => "Error MySQL al leer carreras: " . mysqli_error($conexion)]);
                         }
                     break;  
 
                     case 'Delete':
-                        $id = $datos["id"] ;
-                        $sql = "DELETE FROM carrera WHERE id = $id";
-                        $resultado = mysqli_query($conexion, $sql);
-                        if ($resultado) {
-                            echo json_encode(["mensaje" => "Carrera eliminada con éxito."]);
+                        $id = (int)($datos["id"] ?? 0);
+                        if ($id === 0) {
+                            http_response_code(400);
+                            echo json_encode(["error" => "ID de carrera no válido."]);
+                            break;
+                        }
+                        $stmt = $conexion->prepare("DELETE FROM carrera WHERE id = ?");
+                        if ($stmt) {
+                            $stmt->bind_param("i", $id);
+                            if ($stmt->execute()) {
+                                echo json_encode(["mensaje" => "Carrera eliminada con éxito."]);
+                            } else {
+                                http_response_code(500);
+                                echo json_encode(["error" => "Error: Carrera no eliminada."]);
+                            }
+                            $stmt->close();
                         } else {
-                            http_response_code(502);
-                            echo json_encode(["error" => "Error: Carrera no eliminada."]);
+                            http_response_code(500);
+                            echo json_encode(["error" => "Error SQL al eliminar: " . $conexion->error]);
                         }
                     break;
 
                     case 'Update':
-                        $id = $datos["id"];
-                        $nombre = $datos["nombre"];
-                        $sql = "UPDATE carrera SET nombre = '$nombre' WHERE id = $id";
-                        $resultado = mysqli_query($conexion, $sql);
-                        if ($resultado) {
-                            echo json_encode(["mensaje" => "Actualizado correctamente."]);
+                        $id = (int)($datos["id"] ?? 0);
+                        $nombre = trim($datos["nombre"] ?? '');
+                        if ($id === 0 || empty($nombre)) {
+                            http_response_code(400);
+                            echo json_encode(["error" => "Datos de actualización vacíos o inválidos."]);
+                            break;
+                        }
+                        $stmt = $conexion->prepare("UPDATE carrera SET nombre = ? WHERE id = ?");
+                        if ($stmt) {
+                            $stmt->bind_param("si", $nombre, $id);
+                            if ($stmt->execute()) {
+                                echo json_encode(["mensaje" => "Actualizado correctamente."]);
+                            } else {
+                                http_response_code(500);
+                                echo json_encode(["error" => "Error: Carrera no actualizada."]);
+                            }
+                            $stmt->close();
                         } else {
                             http_response_code(500);
-                            echo json_encode(["error" => "Error: Carrera no actualizada."]);
+                            echo json_encode(["error" => "Error SQL al actualizar: " . $conexion->error]);
                         }
                     break;
                     

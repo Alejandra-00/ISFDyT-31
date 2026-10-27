@@ -1,11 +1,11 @@
 function escapeHtml(str) {
     if (str === null || str === undefined) return '';
     return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 }
 
 function mostrar(id) {
@@ -50,7 +50,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Inicio del panel
 function cargarInicio() {
-    // para evitar que un fallo aislado rompa todo el panel se implementa Fallback por cada solicitud de fetch
     Promise.all([
         // obtener usuarios
         fetch('API.php', {
@@ -58,19 +57,8 @@ function cargarInicio() {
             headers: { 'Content-Type': 'application/json'},
             body: JSON.stringify({ recurso: 'usuarios', consulta: 'Read'})
         })
-        .then(response => {
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`); // si ocurre un error en una consulta
-            return response.json();  // el sistema lo atrapa de manera aislada, registra el error en la consola y muestra un mensaje
-        })
-        
-        .catch(error => {
-            console.error(error);
-            const mensajeAlumnos = document.getElementById('mensajeAlumnos');
-            const mensajeVoluntarios = document.getElementById('mensajeVoluntarios');
-            if (mensajeAlumnos) mensajeAlumnos.innerText = 'Error al cargar.';
-            if (mensajeVoluntarios) mensajeVoluntarios.innerText = 'Error al cargar.';
-            return []; // devuelve un array vacio
-        }),
+        .then(res => res.ok ? res.json() : [])
+        .catch(() => []),
 
         // obtener carreras
         fetch('API.php', {
@@ -78,15 +66,18 @@ function cargarInicio() {
             headers: { 'Content-Type': 'application/json'},
             body: JSON.stringify({ recurso: 'carreras', consulta: 'Read'})
         })
-        .then(response => {
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            return response.json();
+        .then(async response => {
+            const text = await response.text();
+            try {
+                const json = JSON.parse(text);
+                return Array.isArray(json) ? json : [];
+            } catch (e) {
+                console.error("Error al obtener carreras en inicio:", text);
+                return [];
+            }
         })
-        
         .catch(error => {
             console.error(error);
-            const mensajeCarreras = document.getElementById('mensajeCarrera');
-            if (mensajeCarreras) mensajeCarreras.innerText = 'Error al cargar.';
             return [];
         }),
 
@@ -96,60 +87,48 @@ function cargarInicio() {
             headers: { 'Content-Type': 'application/json'},
             body: JSON.stringify({ recurso: 'monto', consulta: 'Read'})
         })
-        .then(response => {
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            return response.json();
-        })
-
-        .catch(error => {
-            console.error(error);
-            const mensajeMonto = document.getElementById('mensajeMonto');
-            if (mensajeMonto) mensajeMonto.innerText = 'Error al cargar.';
-            return [];
-        })
+        .then(res => res.ok ? res.json() : [])
+        .catch(() => [])
     ])
-        .then(([usuarios, carreras, montos]) => {
-            // garantiza que trabaje con arreglos seguros aunque la API falle
-            usuarios = Array.isArray(usuarios) ? usuarios : [];
-            carreras = Array.isArray(carreras) ? carreras : [];
-            montos = Array.isArray(montos) ? montos : [];
+    .then(([usuarios, carreras, montos]) => {
+        usuarios = Array.isArray(usuarios) ? usuarios : [];
+        carreras = Array.isArray(carreras) ? carreras : [];
+        montos = Array.isArray(montos) ? montos : [];
 
-            // cuenta los socios alumnos y voluntarios
-            let alumnos = 0; 
-            let voluntarios = 0;
+        let alumnos = 0; 
+        let voluntarios = 0;
 
-            const listaAlumnos = [];
-            const listaVoluntarios = [];
+        const listaAlumnos = [];
+        const listaVoluntarios = [];
 
-            usuarios.forEach(usuario => {
-                if (usuario.nombre_socio === 'Alumno') { 
-                    alumnos++; 
-                    listaAlumnos.push(usuario);
-                }
-                if (usuario.nombre_socio === 'Voluntario') { 
-                    voluntarios++; 
-                    listaVoluntarios.push(usuario);
-                }
+        usuarios.forEach(usuario => {
+            if (usuario.nombre_socio === 'Alumno') { 
+                alumnos++; 
+                listaAlumnos.push(usuario);
+            }
+            if (usuario.nombre_socio === 'Voluntario') { 
+                voluntarios++; 
+                listaVoluntarios.push(usuario);
+            }
         });
-        document.getElementById('cantAlumnos').textContent = alumnos;
-        document.getElementById('cantVoluntarios').textContent = voluntarios;
-        document.getElementById('cantCarreras').textContent = carreras.length;
 
-        if (montos.length > 0) { // devuelve cuantos elementos hay
-            const ultimoMonto = montos[montos.length - 1]; //obtiene el ultimo monto
-            document.getElementById('montoActual').textContent = '$' + ultimoMonto.importe;
+        const elAlumnos = document.getElementById('cantAlumnos');
+        const elVoluntarios = document.getElementById('cantVoluntarios');
+        const elCarreras = document.getElementById('cantCarreras');
+        const elMonto = document.getElementById('montoActual');
+
+        if (elAlumnos) elAlumnos.textContent = alumnos;
+        if (elVoluntarios) elVoluntarios.textContent = voluntarios;
+        if (elCarreras) elCarreras.textContent = carreras.length;
+
+        if (montos.length > 0 && elMonto) {
+            const ultimoMonto = montos[montos.length - 1];
+            elMonto.textContent = '$' + ultimoMonto.importe;
         }
 
-        //obtiene los ultimos 5 alumnos y volunatarios registrados
-        const ultimosAlumnos = listaAlumnos
-            .sort((a, b) => b.id - a.id)
-            .slice(0, 5);
-
-        const ultimosVoluntarios = listaVoluntarios
-            .sort((a, b) => b.id - a.id)
-            .slice(0, 5);
+        const ultimosAlumnos = listaAlumnos.sort((a, b) => b.id - a.id).slice(0, 5);
+        const ultimosVoluntarios = listaVoluntarios.sort((a, b) => b.id - a.id).slice(0, 5);
             
-        // Renderizar en HTML
         const contAlumnos = document.getElementById('socAlumno');
         if (contAlumnos) {
             contAlumnos.innerHTML = '';
@@ -159,10 +138,9 @@ function cargarInicio() {
                 ultimosAlumnos.forEach(alumno => {
                     const item = document.createElement('div');
                     item.className = 'listado-item';
-                    const dni = alumno.DNI ?? '';
                     item.innerHTML = `
                         <strong>${escapeHtml(alumno.nombre_completo)}</strong>
-                        <span class="item-dato">DNI: ${escapeHtml(dni)}</span>
+                        <span class="item-dato">DNI: ${escapeHtml(alumno.DNI ?? '')}</span>
                     `;
                     contAlumnos.appendChild(item);
                 });
@@ -178,10 +156,9 @@ function cargarInicio() {
                 ultimosVoluntarios.forEach(voluntario => {
                     const item = document.createElement('div');
                     item.className = 'listado-item';
-                    const dni = voluntario.DNI ?? '';
                     item.innerHTML = `
                         <strong>${escapeHtml(voluntario.nombre_completo)}</strong>
-                        <span class="item-dato">DNI: ${escapeHtml(dni)}</span>
+                        <span class="item-dato">DNI: ${escapeHtml(voluntario.DNI ?? '')}</span>
                     `;
                     contVoluntarios.appendChild(item);
                 });
@@ -254,13 +231,23 @@ function cargarAlumnos() {
             fila.appendChild(tdNombre);
             fila.appendChild(tdBoton);
             tbody.appendChild(fila);
-        });
-    })
-    .catch(error => {
-        console.error(error);
-        const tbody = document.getElementById('tablasocios-Alumno');
-        tbody.innerHTML = '<tr><td colspan="3">Error al cargar los socios.</td></tr>';
-    });
+       
+
+            const tdTipo = document.createElement('td');
+            const btnTipo = document.createElement('button');
+            btnTipo.className = 'btn-editar';
+            btnTipo.textContent = '→ Voluntario';
+            btnTipo.onclick = () => cambiarTipoSocio(usuarios.id, 2);
+            tdTipo.appendChild(btnTipo);
+            fila.appendChild(tdTipo);
+            })
+     })
+            .catch(error => {
+                console.error(error);
+                const tbody = document.getElementById('tablasocios-Alumno');
+                tbody.innerHTML = '<tr><td colspan="3">Error al cargar los socios.</td></tr>';
+            }); 
+   
 }
 
 // socio voluntarios
@@ -325,6 +312,14 @@ function cargarVoluntarios() {
             fila.appendChild(tdNombre);
             fila.appendChild(tdBoton);
             tbody.appendChild(fila);
+
+            const tdTipo = document.createElement('td');
+            const btnTipo = document.createElement('button');
+            btnTipo.className = 'btn-editar';
+            btnTipo.textContent = '→ Alumno';
+            btnTipo.onclick = () => cambiarTipoSocio(usuarios.id, 1);
+            tdTipo.appendChild(btnTipo);
+            fila.appendChild(tdTipo);
         });
     })
     .catch(error => {
@@ -536,6 +531,14 @@ async function buscarUsuariosAlumnos() {
                 fila.appendChild(tdNombre);
                 fila.appendChild(tdBoton);
                 tbody.appendChild(fila);
+
+                const tdTipo = document.createElement('td');
+                const btnTipo = document.createElement('button');
+                btnTipo.className = 'btn-editar';
+                btnTipo.textContent = '→ Alumno';
+                btnTipo.onclick = () => cambiarTipoSocio(usuarios.id, 1);
+                tdTipo.appendChild(btnTipo);
+                fila.appendChild(tdTipo);
             });
         } else {
             tbody.innerHTML = '<tr><td colspan="3">No se encontraron usuarios.</td></tr>';
@@ -615,6 +618,14 @@ async function buscarUsuariosVoluntarios() {
                 fila.appendChild(tdNombre);
                 fila.appendChild(tdBoton);
                 tbody.appendChild(fila);
+
+                const tdTipo = document.createElement('td');
+                const btnTipo = document.createElement('button');
+                btnTipo.className = 'btn-editar';
+                btnTipo.textContent = '→ Alumno';
+                btnTipo.onclick = () => cambiarTipoSocio(usuarios.id, 1);
+                tdTipo.appendChild(btnTipo);
+                fila.appendChild(tdTipo);
             });
         } else {
             tbody.innerHTML = '<tr><td colspan="3">No se encontraron usuarios.</td></tr>';
@@ -626,6 +637,29 @@ async function buscarUsuariosVoluntarios() {
     }
 }
 
+function cambiarTipoSocio(id, idSocio) {
+    fetch('API.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            recurso: 'usuarios',
+            consulta: 'UpdateTipoSocio',
+            id: id,
+            id_socio: idSocio
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.error) throw new Error(data.error);
+        cargarAlumnos();
+        cargarVoluntarios();
+    })
+    .catch(err => console.error(err));
+}
+
+
+// carreras
+
 // Variable global para almacenar el ID de la carrera que se está editando.
 let carreraEnEdicionId = null;
 
@@ -633,7 +667,7 @@ let carreraEnEdicionId = null;
  * Obtiene el listado de carreras desde el servidor y las dibuja en la tabla HTML.
  */
 function cargarCarreras() {
-    const mensaje = document.getElementById('mensajeCarreras');
+    const mensaje = document.getElementById('mensajeCarrera2') || document.getElementById('mensajeCarreras');
     const tbody = document.getElementById('tablaCarreras');
     if (!tbody) return;
 
@@ -645,12 +679,25 @@ function cargarCarreras() {
             consulta: 'Read'
         })
     })
-    .then(response => {
-        if (!response.ok) throw new Error(`Error HTTP ${response.status}`);
-        return response.json();
+    .then(async response => {
+        const text = await response.text();
+        if (!text || !text.trim()) {
+            throw new Error("El servidor no devolvió respuesta.");
+        }
+        try {
+            return JSON.parse(text);
+        } catch (e) {
+            console.error("Respuesta HTML recibida del backend:", text);
+            throw new Error("Error en el servidor MySQL / PHP.");
+        }
     })
     .then(data => {
         tbody.innerHTML = '';
+
+        if (data.error) {
+            if (mensaje) mensaje.innerText = data.error;
+            return;
+        }
 
         if (!Array.isArray(data) || data.length === 0) {
             if (mensaje) mensaje.innerText = 'No se encontraron carreras.';
@@ -662,12 +709,10 @@ function cargarCarreras() {
         data.forEach(carrera => {
             const fila = document.createElement('tr');
             
-            // --- Columna 1: Nombre de la Carrera ---
             const celdaNombre = document.createElement('td');
             celdaNombre.textContent = carrera.nombre ?? '';
             fila.appendChild(celdaNombre);
 
-            // --- Columna 2: Botón Editar ---
             const celdaEditar = document.createElement('td');
             const btnEditar = document.createElement('button');
             btnEditar.type = 'button';
@@ -684,7 +729,7 @@ function cargarCarreras() {
         });
     })
     .catch(error => {
-        if (mensaje) mensaje.innerText = 'Error al cargar las carreras.';
+        if (mensaje) mensaje.innerText = error.message || 'Error al cargar las carreras.';
         console.error(error);
     });
 }
@@ -718,7 +763,7 @@ function cancelarFormularioCarrera() {
 
 function guardarCarrera() {
     const nombre = document.getElementById('nombreCarrera').value.trim();
-    const mensaje = document.getElementById('mensajeCarreras');
+    const mensaje = document.getElementById('mensajeCarrera2');
     
     if (!nombre) {
         if (mensaje) mensaje.innerText = 'El nombre de la carrera no puede estar vacío.';
@@ -742,10 +787,7 @@ function guardarCarrera() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
     })
-    .then(response => {
-        if (!response.ok) throw new Error(`Error HTTP ${response.status}`);
-        return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
         if (data.error) throw new Error(data.error);
         
@@ -753,15 +795,17 @@ function guardarCarrera() {
         
         if (mensaje) {
             mensaje.style.color = '#a9cd46';
-            mensaje.innerText = data.mensaje ||
-                (consulta === 'Create' ? 'Carrera agregada correctamente.' : 'Carrera actualizada correctamente.');
+            mensaje.innerText = data.mensaje || 'Operación realizada correctamente.';
         }
         
         cargarCarreras();
     })
     .catch(error => {
-        console.error(`Error al ${consulta === 'Create' ? 'agregar' : 'editar'} la carrera: ${error.message}`);
-        if (mensaje) mensaje.innerText = 'Error al actualizar o crear carrera.';
+        console.error(`Error al guardar carrera:`, error);
+        if (mensaje) {
+            mensaje.style.color = 'red';
+            mensaje.innerText = error.message || 'Error al actualizar o crear carrera.';
+        }
     });
 }
 /**
@@ -1369,7 +1413,7 @@ function exportarExcelPagos() {
             return;
         }
 
-        // Formateamos los datos
+        // Formateamos los datos agregando únicamente la columna 'Mes que abono'
         const datosFormateados = datos.map(item => {
             let fechaObjeto = '';
             if (item.fecha && item.fecha.includes('-')) {
@@ -1384,12 +1428,24 @@ function exportarExcelPagos() {
                 "Nombre Completo": item.nombre_completo ?? '',
                 "Tipo de Socio": item.socio ?? '',
                 "Carrera": item.carrera ?? '',
+                "Mes que abono": item.mes ?? '',
                 "Monto ($)": parseFloat(item.monto) || 0,
                 "Fecha de Pago": fechaObjeto
             };
         });
 
         const hojaTrabajo = XLSX.utils.json_to_sheet(datosFormateados);
+
+        hojaTrabajo['!cols'] = [
+            { wch: 15 }, // DNI
+            { wch: 30 }, // Nombre Completo
+            { wch: 18 }, // Tipo de Socio
+            { wch: 25 }, // Carrera
+            { wch: 18 }, // Mes que abono
+            { wch: 15 }, // Monto ($)
+            { wch: 18 }  // Fecha de Pago (Ancho suficiente para que no aparezca ###)
+        ];
+
         const libroTrabajo = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(libroTrabajo, hojaTrabajo, "Pagos");
 
@@ -1427,6 +1483,14 @@ function exportarExcelUsuarios() {
         }));
 
         const hojaTrabajo = XLSX.utils.json_to_sheet(datosFormateados);
+
+        hojaTrabajo['!cols'] = [
+            { wch: 15 }, // DNI
+            { wch: 30 }, // Nombre Completo
+            { wch: 20 }, // Tipo de Socio
+            { wch: 30 }  // Carrera
+        ];
+        
         const libroTrabajo = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(libroTrabajo, hojaTrabajo, "Usuarios");
 

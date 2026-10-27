@@ -136,6 +136,7 @@ body {
 
 .campo-edicion {
     margin-top: 8px;
+<<<<<<< Updated upstream
     width: 100%;
     min-height: 44px;
     padding: 10px 14px;
@@ -150,6 +151,9 @@ body {
     outline: none;
     border-color: #365f2d;
     box-shadow: 0 0 0 4px rgba(54, 95, 45, 0.18);
+=======
+    
+>>>>>>> Stashed changes
 }
 
 .editar-btn {

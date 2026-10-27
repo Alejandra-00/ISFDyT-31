@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <!-- Define la codificacion de caracteres UTF-8. -->
     <meta charset="UTF-8">
@@ -19,43 +19,59 @@
    <footer class="footer">
     <!-- Agrupa el contenido principal del pie de pagina. -->
     <section class="section">
-        <!-- Abre el bloque que contiene el logo y el texto lado a lado -->
-        <div class="logo">
-            <!-- Contiene la imagen circular del logo. -->
-            <div class="ContenedorLogo">
-                <img src="iconos/logo.jpg" alt="" class="Logo">
+
+        <!-- BLOQUE SUPERIOR: Contactanos y Redes Sociales -->
+        <div class="bloque-superior">
+            <!-- Abre el bloque independiente con la informacion de contacto. -->
+            <div class="footer-content">
+                <h3>Contactanos</h3>
+                <h4>Direccion: Avenida Jesuita Cardiel N°2130, Necochea. <br>
+                    Horarios: Lunes a viernes de 08.00 a 21:30. <br>
+                    Email: cooperadoraisfd31@gmail.com <br>
+                </h4>
             </div>
 
-            <!-- Abre el bloque que contiene SOLO los textos identificativos. -->
-            <div class="logo-identificacion" id="footer-text">
-                <div class="Cooperadora">
-                    <h1>ASOCIACIÓN COOPERADORA</h1>
-                </div>
-                <div class="Instituto">
-                    <h2>Instituto Superior de Formación Docente y Técnica N°31</h2>
-                </div>
+            <!-- Bloque de Redes Sociales -->
+            <div class="social-icons">
+                <a href="https://www.facebook.com/profile.php?id=100063628540272" target="_blank" class="social-icon" title="Facebook">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="https://www.instagram.com/instituto_31?utm_source=ig_web_button_share_sheet&srtk=ZDNlZDc0MzIxNw==" target="_blank" class="social-icon" title="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
             </div>
         </div>
 
-        <!-- Abre el bloque independiente con la informacion de contacto. -->
-        <div class="footer-content">
-            <h3>Contactanos</h3>
-            <h4>Direccion: Avenida Jesuita Cardiel N°2130, Necochea. <br>
-                Horarios: Lunes a viernes de 08.00 a 21:30. <br>
-                Email: cooperadoraisfd31@gmail.com <br>
-            </h4>
+        <!-- Linea divisoria horizontal -->
+        <hr class="linea-divisoria">
+
+        <!-- BLOQUE INFERIOR: Logo Cooperadora y Nosotros -->
+        <div class="bloque-inferior">
+            <!-- Abre el bloque que contiene el logo y el texto -->
+            <div class="logo">
+                <!-- Contiene la imagen circular del logo. -->
+                <div class="ContenedorLogo">
+                    <img src="iconos/logo.jpg" alt="" class="Logo">
+                </div>
+
+                <!-- Abre el bloque que contiene SOLO los textos identificativos. -->
+                <div class="logo-identificacion" id="footer-text">
+                    <div class="Cooperadora">
+                        <h1>ASOCIACIÓN COOPERADORA</h1>
+                    </div>
+                    <div class="Instituto">
+                        <h2>Instituto Superior de Formación Docente y Técnica N°31</h2>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seccion de reconocimiento / Nosotros -->
+            <div class="nosotros">
+                <div class="reconocimiento">Este sitio fue desarrollado por estudiantes de 7° año de la Técnica N°3 de la tecnicatura en programación: 
+                Alejandra Gomez, Pilar Laborde, Daira Obando, Agnetha Rodriguez.</div>
+            </div>
         </div>
     </section>
-
-    <!-- Redes sociales AFUERA de section para que queden abajo de todo y centradas -->
-    <div class="social-icons">
-        <a href="https://www.facebook.com/profile.php?id=100063628540272" target="_blank" class="social-icon" title="Facebook">
-            <i class="fab fa-facebook-f"></i>
-        </a>
-        <a href="https://www.instagram.com/instituto_31?utm_source=ig_web_button_share_sheet&srtk=ZDNlZDc0MzIxNw==" target="_blank" class="social-icon" title="Instagram">
-            <i class="fab fa-instagram"></i>
-        </a>
-    </div>
 </footer>
 </body>
 </html>

@@ -10,6 +10,14 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 </head>
 <body>
+
+    <div class="NOCELULAR">
+        <div class="aviso">
+            <p>Este apartado no esta disponible en este dispositivo</p>
+            <button class="VolverInicio">Volver a inicio</button>
+        </div>
+    </div>
+
     <div class="contenedor">
         <!-- Sidebar -->
         <aside class="sideBar">
@@ -59,7 +67,7 @@
                             <div id="cantCarreras" class="card-numero"></div>
                         </div>
                         Carreras
-                        <p id="mensajeCarrera" style="text-align:center; font-family:Tamrin; font-size:6px; color: red;"></p>
+                        <p id="mensajeCarrera1" style="text-align:center; font-family:Tamrin; font-size:6px; color: red;"></p>
                     </div>
 
                     <div class="card-chica">
@@ -107,6 +115,7 @@
                                 <th>DNI</th>
                                 <th>Nombre</th>
                                 <th>Marcar como inactivo</th>
+                                <th>Socio</th>
                             </tr>
                         </thead>
                         <tbody id="tablasocios-Alumno"></tbody>
@@ -129,6 +138,7 @@
                                 <th>DNI</th>
                                 <th>Nombre</th>
                                 <th>Marcar como inactivo</th>
+                                <th>Socio</th>
                             </tr>
                         </thead>
                         <tbody id="tablasocios-Voluntario"></tbody>
@@ -167,7 +177,7 @@
                         </thead>
                         <tbody id="tablaCarreras"></tbody>
                     </table>
-                    <p id="mensajeCarreras" style="text-align:center; font-family:Tamrin; font-size:12px; color: red; margin-top: 10px;"></p>
+                    <p id="mensajeCarrera2" style="text-align:center; font-family:Tamrin; font-size:12px; color: red; margin-top: 10px;"></p>
                 </div>
 
                 <!-- Vista 2: Formulario de Agregar / Editar (Oculto por defecto) -->

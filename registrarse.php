@@ -81,7 +81,12 @@
             $errorDetalle = $errorDetalle = "Error de red o file_get_contents falló al conectar a: " . $urlApi;
             $scriptConsola = consoleError($errorDetalle); 
         }
+<<<<<<< Updated upstream
         
+=======
+        //echo $payload;
+        var_dump($opciones);
+>>>>>>> Stashed changes
     }
 ?>
 <!DOCTYPE html> 
