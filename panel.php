@@ -162,7 +162,7 @@
                             <tr>
                                 <th>Carreras</th>
                                 <th>Editar</th>
-                                <th>Eliminar</th>
+                                <!-- ❌ Eliminado el <th> que correspondía a Eliminar -->
                             </tr>
                         </thead>
                         <tbody id="tablaCarreras"></tbody>
@@ -174,12 +174,10 @@
                 <div id="formularioCarrera" style="display: none; flex-direction: column; gap: 15px; width: 100%;">
                     <h2 id="tituloFormularioCarrera" class="titulo-cooperadora" style="text-align: center;">Editar carrera</h2>
                     
-                    <!-- Contenedor del campo de texto a ancho completo -->
                     <div style="width: 100%;">
                         <input type="text" id="nombreCarrera" placeholder="Nombre de la carrera" aria-label="Nombre de la carrera" style="width: 100%; box-sizing: border-box; padding: 10px; font-size: 16px;">
                     </div>
 
-                    <!-- Botones de Acción -->
                     <div style="display: flex; gap: 10px; justify-content: center; margin-top: 10px;">
                         <button type="button" class="btn-editar" onclick="guardarCarrera()">Guardar cambios</button>
                         <button type="button" class="btn-cancelar" onclick="cancelarFormularioCarrera()" style="background: #e74c3c; color: white;">Cancelar</button>
