@@ -291,35 +291,47 @@
                 </div>
             </div>
 
-            <!-- Gráficos -->
+           <!-- Gráficos -->
             <div id="graficos" class="formulario">
                 <div class="contenedor-graficos">
+                    <!-- Tarjeta 1 -->
                     <div class="card-grafico">
                         <h3>Usuarios Registrados que Pagan</h3>
-                        <div class="canvas-box">
-                            <canvas id="chartUsuariosPagan"></canvas>
-                            <p id="mensajeGrafico1" style="text-align:center; font-family:Tamrin; font-size:12px; color: red;"></p>
+                        <div class="grafico-contenido-flex">
+                            <div class="canvas-box">
+                                <canvas id="chartUsuariosPagan"></canvas>
+                            </div>
+                            <div id="referenciasUsuarios" class="referencias-lista"></div>
                         </div>
+                        <p id="mensajeGrafico1" style="color: red; font-size: 12px; margin-top: 5px;"></p>
                     </div>
 
+                    <!-- Tarjeta 2 -->
                     <div class="card-grafico">
                         <h3>Usuarios por Carrera que Pagan</h3>
-                        <div class="canvas-box">
-                            <canvas id="chartCarrerasPagan"></canvas>
-                            <p id="mensajeGrafico2" style="text-align:center; font-family:Tamrin; font-size:12px; color: red;"></p>
+                        <div class="grafico-contenido-flex">
+                            <div class="canvas-box">
+                                <canvas id="chartCarrerasPagan"></canvas>
+                            </div>
+                            <div id="referenciasCarreras" class="referencias-lista"></div>
                         </div>
+                        <p id="mensajeGrafico2" style="color: red; font-size: 12px; margin-top: 5px;"></p>
                     </div>
 
+                    <!-- Tarjeta 3 -->
                     <div class="card-grafico card-grafico-centrado">
                         <h3>Socios Voluntarios que Pagan</h3>
-                        <div class="canvas-box">
-                            <canvas id="chartVoluntariosPagan"></canvas>
-                            <p id="mensajeGrafico3" style="text-align:center; font-family:Tamrin; font-size:12px; color: red;"></p>
+                        <div class="grafico-contenido-flex">
+                            <div class="canvas-box">
+                                <canvas id="chartVoluntariosPagan"></canvas>
+                            </div>
+                            <div id="referenciasVoluntarios" class="referencias-lista"></div>
                         </div>
+                        <p id="mensajeGrafico3" style="color: red; font-size: 12px; margin-top: 5px;"></p>
                     </div>
                 </div>
             </div>
-
+            
             <!-- Descargar datos -->
             <div id="descargarDatos" class="formulario tarjeta descargar-card">
                 <div class="descargar-header">

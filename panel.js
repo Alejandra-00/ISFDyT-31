@@ -1274,11 +1274,12 @@ function renderGraficoUsuariosPagan(pagosAprobados) {
         const ctx = document.getElementById('chartUsuariosPagan').getContext('2d');
         if (chartUsuarios) chartUsuarios.destroy();
 
-        chartUsuarios = crearGraficoTorta(ctx, 
-            ['Usuarios que Pagan', 'Usuarios Sin Pago'], 
-            [usuariosQuePagaron, usuariosNoPagan],
-            ['#2563eb', '#f97316']
-        );
+          chartUsuarios = crearGraficoTorta(ctx, 
+                ['Usuarios que Pagan', 'Usuarios Sin Pago'], 
+                [usuariosQuePagaron, usuariosNoPagan],
+                ['#2563eb', '#f97316'],
+                'referenciasUsuarios'
+            );
     })
     .catch(error => {
         const mensaje1 = document.getElementById('mensajeGrafico1');
@@ -1304,10 +1305,10 @@ function renderGraficoCarrerasPagan(pagosAprobados) {
     const ctx = document.getElementById('chartCarrerasPagan').getContext('2d');
     if (chartCarreras) chartCarreras.destroy();
 
-    chartCarreras = crearGraficoTorta(ctx, etiquetas, valores, colores);
+    chartCarreras = crearGraficoTorta(ctx, etiquetas, valores, colores, 'referenciasCarreras');
 }
 
-// 3. Gráfico: Cantidad de socios voluntarios que pagan (Voluntarios que pagan vs resto)
+// 3. Gráfico: Cantidad de socios voluntarios que pagar (Voluntarios que pagan vs resto)
 function renderGraficoVoluntariosPagan(pagosAprobados) {
     // Filtrar pagos realizados por usuarios de tipo "Voluntario"
     const voluntariosPagan = pagosAprobados.filter(p => p.tipo_socio === 'Voluntario');
@@ -1331,7 +1332,8 @@ function renderGraficoVoluntariosPagan(pagosAprobados) {
         chartVoluntarios = crearGraficoTorta(ctx,
             ['Voluntarios que Pagan', 'Voluntarios Sin Pago'],
             [cantidadVoluntariosPagan, voluntariosSinPago],
-            ['#2563eb', '#84cc16']
+            ['#2563eb', '#84cc16'],
+            'referenciasVoluntarios'
         );
     })
     .catch(error => {
@@ -1341,8 +1343,29 @@ function renderGraficoVoluntariosPagan(pagosAprobados) {
     });
 }
 
-// Función auxiliar constructora de los gráficos Chart.js
-function crearGraficoTorta(ctx, labels, data, colors) {
+// Función auxiliar constructora de los gráficos Chart.js y su lista lateral de referencias
+function crearGraficoTorta(ctx, labels, data, colors, contenedorReferenciasId) {
+    // Generar la lista lateral en HTML
+    const contenedorRef = document.getElementById(contenedorReferenciasId);
+    if (contenedorRef) {
+        contenedorRef.innerHTML = '';
+        let sumaTotal = data.reduce((a, b) => a + b, 0);
+
+        labels.forEach((label, index) => {
+            let valor = data[index] || 0;
+            let porcentaje = sumaTotal === 0 ? '0%' : ((valor * 100) / sumaTotal).toFixed(0) + '%';
+            let colorHex = colors[index % colors.length];
+
+            const item = document.createElement('div');
+            item.className = 'referencia-item';
+            item.innerHTML = `
+                <div class="referencia-color" style="background-color: ${colorHex};"></div>
+                <div class="referencia-texto"><strong>${label}:</strong> ${valor} (${porcentaje})</div>
+            `;
+            contenedorRef.appendChild(item);
+        });
+    }
+
     return new Chart(ctx, {
         type: 'pie',
         data: {
@@ -1358,23 +1381,10 @@ function crearGraficoTorta(ctx, labels, data, colors) {
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    position: 'top',
-                    labels: {
-                        color: '#000',
-                        font: { family: 'Tamrin', size: 12 }
-                    }
+                    display: false // Ocultamos la leyenda superior para que no estorbe
                 },
                 datalabels: {
-                    color: '#000',
-                    font: { weight: 'bold', family: 'Tamrin', size: 13 },
-                    formatter: (value, ctx) => {
-                        let sum = 0;
-                        let dataArr = ctx.chart.data.datasets[0].data;
-                        dataArr.map(data => { sum += data; });
-                        if (sum === 0) return '0%';
-                        let percentage = (value * 100 / sum).toFixed(0) + '%';
-                        return ctx.chart.data.labels[ctx.dataIndex] + '\n' + percentage;
-                    }
+                    display: false // Desactivamos los textos flotantes dentro del gráfico para que quede limpio
                 }
             }
         }
