@@ -1,44 +1,36 @@
-/* Registra la fuente personalizada Tamrin. */
 @font-face {
     font-family: 'Tamrin';
     src: url('fuentes/tamrin.ttf') format('truetype');
     font-weight: normal;
 }
 
-/* Reset básico. */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Configuración del contenedor principal */
 .footer {
     background-image: url("fondo/fondot.png");
     background-repeat: no-repeat;
     background-size: 100% auto; 
-    background-position: top center; /* CAMBIO 1: Alinea la imagen arriba para mostrar primero las curvas */
+    background-position: top center;
     width: 100%;
-    
     min-height: auto; 
     height: auto; 
-    
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     align-items: center;
     overflow-x: hidden;
     position: relative;
-    z-index: 10; /* Asegura que el footer se dibuje por encima del fondo azul de preguntas */
 }
 
-/* Tipografía global */
 .footer,
 .footer * {
     font-family: 'Tamrin', sans-serif;
 }
 
-/* Distribución principal en ESCRITORIO */
 .section {
     display: flex;
     flex-direction: column;
@@ -52,16 +44,15 @@
 .bloque-superior {
     display: flex;
     flex-direction: row;
-    align-items: center;       /* Centra verticalmente Contactanos y las Redes */
-    justify-content: center;   /* Centra horizontalmente el Bloque 1 */
+    align-items: center;       
+    justify-content: center;   
     width: 100%;
-    gap: 4vw;                  /* Separación entre información de contacto y redes */
+    gap: 4vw;                  
     margin-bottom: 0.5vw;
 }
 
-/* Información de contacto */
 .footer-content {
-    text-align: left; /* Alineado a la izquierda */
+    text-align: left; 
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -69,7 +60,7 @@
 
 .footer-content h3 {
     margin: 0 0 0.8vw 0;
-    font-size: clamp(16px, 1.4vw, 26px); /* Antes: clamp(14px, 1.4vw, 22px) */
+    font-size: clamp(16px, 1.4vw, 26px); 
     line-height: 1.2;
     color: black;
     display: inline-block;
@@ -79,7 +70,7 @@
 }
 
 .footer-content h4 {
-    font-size: clamp(10.5px, 1.10vw, 16px); /* Antes: clamp(8.5px, 0.9vw, 13.5px) */
+    font-size: clamp(10.5px, 1.10vw, 16px); 
     font-weight: normal;
     margin: 0;
     line-height: 1.85;
@@ -93,17 +84,16 @@
     color: inherit;
 }
 
-/* Redes Sociales al lado de Contactanos */
 .social-icons {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 16px; /* Separación entre los íconos */
+    gap: 16px; 
 }
 
 .social-icons .social-icon {
-    width: clamp(32px, 2.8vw, 44px);   /* Antes: clamp(28px, 2.4vw, 40px) */
+    width: clamp(32px, 2.8vw, 44px);   
     height: clamp(32px, 2.8vw, 44px);
     font-size: clamp(14px, 1.3vw, 20px);
     border-radius: 50%;
@@ -124,7 +114,7 @@
 .linea-divisoria {
     width: 100%;
     border: none;
-    border-top: 1.5px solid rgba(0, 0, 0, 0.25); /* Línea horizontal divisoria */
+    border-top: 1.5px solid rgba(0, 0, 0, 0.25); 
     margin: 1.5vw 0;
 }
 
@@ -168,7 +158,6 @@
     object-fit: cover;
 }
 
-/* Títulos del Logo */
 .Cooperadora h1 {
     margin: 0;
     padding: 0;
@@ -186,7 +175,6 @@
     white-space: normal;
 }
 
-/* Sección "Nosotros" a la derecha del Logo */
 .nosotros {
     width: 50%;
     text-align: right;
@@ -213,10 +201,10 @@
         justify-content: flex-end;
         align-items: flex-start;
         overflow: hidden;
-        margin-top: -40px; /* Sube el footer para montar las curvas sobre el azul de preguntas */
-        padding: 50px 24px 24px 24px; /* Aumenta el padding superior para compensar el solapamiento */
+        margin-top: -40px; 
+        padding: 50px 24px 24px 24px; 
         position: relative;
-        z-index: 10; /* Se asegura de dibujarse sobre la sección anterior */
+        z-index: 10; 
     }
 
     .section {
@@ -226,10 +214,10 @@
         justify-content: flex-start;
         width: 100%;
         padding: 0;
-        gap: 16px; /* Espacio vertical entre ambos bloques */
+        gap: 16px; 
     }
 
-    /* Oculta la línea divisoria horizontal en móviles */
+    
     .linea-divisoria {
         display: none !important;
     }
@@ -316,7 +304,7 @@
         font-size: 16px !important;
         font-weight: bold;
         margin-bottom: 8px;
-        border-bottom: 2.5px solid #4d70bc; /* Mantiene la línea azul abajo de Contactanos */
+        border-bottom: 2.5px solid #4d70bc; 
         display: inline-block;
     }
 
@@ -330,7 +318,7 @@
     .social-icons {
         display: flex;
         flex-direction: row;
-        justify-content: flex-start; /* Alinea los íconos a la izquierda */
+        justify-content: flex-start; 
         align-items: center;
         gap: 12px;
         width: 100%;
