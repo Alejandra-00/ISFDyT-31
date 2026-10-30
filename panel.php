@@ -224,6 +224,20 @@
 
             <!-- Ver pagos -->
             <div id="verPagos" class="formulario tarjeta pagos-card">
+                <div id="modalConfirmarDepuracion" style="display: none; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 8px; margin: 15px 0; border: 1px solid #a9cd46; text-align: center;">
+                    <p style="color: #ffffff; margin-bottom: 10px; font-weight: bold;">
+                        ¿Estás seguro de que deseas eliminar permanentemente todos los registros de más de 2 años?
+                    </p>
+                    <div style="display: flex; gap: 10px; justify-content: center;">
+                        <button type="button" class="filtrar" onclick="ejecutarDepuracionPagos()" style="background-color: #d9534f; color: white;">
+                            Sí, eliminar
+                        </button>
+                        <button type="button" class="limpiar-filtros" onclick="ocultarModalDepuracion()">
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+                
                 <div class="pagos-header">
                     <h2 class="titulo-pagos">Pagos registrados</h2>
                 </div>
@@ -243,6 +257,7 @@
                             <option value="Septiembre">Septiembre</option>
                             <option value="Octubre">Octubre</option>
                             <option value="Noviembre">Noviembre</option>
+                            <option value="Diciembre">Diciembre</option>
                         </select>
                     </div>
 
@@ -264,6 +279,12 @@
                     <button type="button" class="limpiar-filtros" onclick="limpiarFiltrosPagos()"><br>
                         Limpiar <br>
                         filtros 
+                    </button>
+
+                    <button type="button" class="limpiar-filtros" onclick="mostrarModalDepuracion()" style="background-color: #d9534f; color: white;">
+                        <br>
+                        Depurar <br>
+                        +2 Años
                     </button>
                 </div>
                 <p id="mensajeFiltrosPagos"></p>

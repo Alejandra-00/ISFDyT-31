@@ -50,7 +50,7 @@
                 <button type="button" id="BtnDescargarFactura" onclick="descargarFactura()">
                     <span class="fuente" style="display: flex; align-items: center;">
                         <img src="iconos/descargar.png" alt="Descarga">
-                        Descargar factura
+                        Descargar cupón de pago
                     </span>
                 </button>
                 

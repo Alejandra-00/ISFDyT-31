@@ -657,9 +657,7 @@ function cambiarTipoSocio(id, idSocio) {
     .catch(err => console.error(err));
 }
 
-
 // carreras
-
 // Variable global para almacenar el ID de la carrera que se está editando.
 let carreraEnEdicionId = null;
 
@@ -812,7 +810,6 @@ function guardarCarrera() {
  * Elimina una carrera según su ID previa confirmación del usuario.
  * @param {number|string} id - El identificador único de la carrera a borrar.
  */
-
 
 // monto actual
 let editandoMonto = false; 
@@ -1208,6 +1205,61 @@ function cambiarEstadoPago(idPago, idEstado) { // cuando un usuario cambia el es
     .catch(err => {
         mensaje.innerHTML = 'Error al actualizar estado del pago.';
         console.error(err);
+    });
+}
+
+// Muestra la tarjeta de confirmación en la pantalla
+function mostrarModalDepuracion() {
+    const modal = document.getElementById('modalConfirmarDepuracion');
+    if (modal) modal.style.display = 'block';
+}
+
+// Oculta la tarjeta de confirmación
+function ocultarModalDepuracion() {
+    const modal = document.getElementById('modalConfirmarDepuracion');
+    if (modal) modal.style.display = 'none';
+}
+
+// Ejecuta el borrado en el backend tras la confirmación del usuario
+function ejecutarDepuracionPagos() {
+    ocultarModalDepuracion();
+    
+    const mensaje = document.getElementById('mensajePagos');
+    if (mensaje) {
+        mensaje.style.color = '#a9cd46';
+        mensaje.textContent = 'Procesando depuración...';
+    }
+
+    fetch('API.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            recurso: 'registroPagos',
+            consulta: 'LimpiarAntiguos'
+        })
+    })
+    .then(response => response.json())
+    .then(res => {
+        if (res.mensaje) {
+            if (mensaje) {
+                mensaje.style.color = '#a9cd46';
+                mensaje.textContent = `${res.mensaje} (${res.registros_eliminados} registros eliminados).`;
+            }
+            // Refresca la tabla automáticamente
+            cargarPagos();
+        } else if (res.error) {
+            if (mensaje) {
+                mensaje.style.color = 'red';
+                mensaje.textContent = res.error;
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error al depurar pagos:', error);
+        if (mensaje) {
+            mensaje.style.color = 'red';
+            mensaje.textContent = 'Error de conexión al depurar registros.';
+        }
     });
 }
 

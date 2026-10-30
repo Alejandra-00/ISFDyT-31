@@ -25,39 +25,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     case 'GenerarCuotasAnuales':
                         $id_monto_inicial = (int)($datos['id_monto'] ?? 0);
 
-                        if ($id_monto_inicial === 0) {
-                            http_response_code(400);
-                            echo json_encode(["error" => "Debe indicar el id_monto inicial."]);
-                            break;
-                        }
+                            if ($id_monto_inicial === 0) {
+                                http_response_code(400);
+                                echo json_encode(["error" => "Debe indicar el id_monto inicial."]);
+                                break;
+                            }
 
-                        // Insertar exactamente 9 cuotas (meses 1 al 9)
-                        $sql = "
-                            INSERT INTO registropagos (id_usuarios, id_monto, id_estado, id_mes)
-                            SELECT 
-                                u.id,
-                                ? AS id_monto,
-                                COALESCE((SELECT id FROM estadopago WHERE nombre LIKE '%PENDIENTE%' OR nombre LIKE '%IMPAG%' LIMIT 1), 1) AS id_estado,
-                                m.id_mes
-                            FROM usuarios u
-                            CROSS JOIN (
-                                SELECT 1 AS id_mes UNION SELECT 2 UNION SELECT 3 
-                                UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 
-                                UNION SELECT 7 UNION SELECT 8 UNION SELECT 9
-                            ) m
-                            WHERE u.activo = 1 AND u.admin = 0
-                            AND NOT EXISTS (
-                                SELECT 1 FROM registropagos rp 
-                                WHERE rp.id_usuarios = u.id AND rp.id_mes = m.id_mes
-                            )
-                        ";
+                            // Insertar exactamente 10 cuotas (meses 1 al 10)
+                            $sql = "
+                                INSERT INTO registropagos (id_usuarios, id_monto, id_estado, id_mes)
+                                SELECT 
+                                    u.id,
+                                    ? AS id_monto,
+                                    COALESCE((SELECT id FROM estadopago WHERE nombre LIKE '%PENDIENTE%' OR nombre LIKE '%IMPAG%' LIMIT 1), 1) AS id_estado,
+                                    m.id_mes
+                                FROM usuarios u
+                                CROSS JOIN (
+                                    SELECT 1 AS id_mes UNION SELECT 2 
+                                    UNION SELECT 3 UNION SELECT 4 
+                                    UNION SELECT 5 UNION SELECT 6 
+                                    UNION SELECT 7 UNION SELECT 8 
+                                    UNION SELECT 9 UNION SELECT 10
+                                ) m
+                                WHERE u.activo = 1 AND u.admin = 0
+                                AND NOT EXISTS (
+                                    SELECT 1 FROM registropagos rp 
+                                    WHERE rp.id_usuarios = u.id AND rp.id_mes = m.id_mes
+                                )
+                            ";
 
                         $stmt = $conexion->prepare($sql);
                         if ($stmt) {
                             $stmt->bind_param("i", $id_monto_inicial);
                             if ($stmt->execute()) {
                                 echo json_encode([
-                                    "mensaje" => "Se generaron las 9 cuotas (Marzo a Noviembre) para los usuarios.",
+                                    "mensaje" => "Se generaron las 10 cuotas (Marzo a Diciembre) para los usuarios.",
                                     "registros_creados" => $stmt->affected_rows
                                 ]);
                             } else {
@@ -106,9 +108,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             INSERT INTO registropagos (id_usuarios, id_monto, id_estado, id_mes)
                             SELECT ?, ?, ?, m.id_mes
                             FROM (
-                                SELECT 1 AS id_mes UNION SELECT 2 UNION SELECT 3 
-                                UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 
-                                UNION SELECT 7 UNION SELECT 8 UNION SELECT 9
+                                SELECT 1 AS id_mes UNION SELECT 2 
+                                UNION SELECT 3 UNION SELECT 4 
+                                UNION SELECT 5 UNION SELECT 6 
+                                UNION SELECT 7 UNION SELECT 8 
+                                UNION SELECT 9 UNION SELECT 10
                             ) m
                             WHERE NOT EXISTS (
                                 SELECT 1 FROM registropagos rp 
@@ -123,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             mysqli_stmt_close($stmtGen);
                         }
 
-                        // CONSULTA DE LECTURA (Obtiene exactamente de Marzo a Noviembre: id_mes del 1 al 9)
+                        // CONSULTA DE LECTURA (Obtiene exactamente de Marzo a Diciembre: id_mes del 1 al 10)
                         $sql = "SELECT 
                             registropagos.id, 
                             registropagos.fecha, 
@@ -134,7 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             LEFT JOIN monto ON registropagos.id_monto = monto.id
                             LEFT JOIN estadopago ON registropagos.id_estado = estadopago.id
                             LEFT JOIN meses ON registropagos.id_mes = meses.id_mes
-                            WHERE registropagos.id_usuarios = ? AND registropagos.id_mes BETWEEN 1 AND 9
+                            WHERE registropagos.id_usuarios = ? AND registropagos.id_mes BETWEEN 1 AND 10
                             ORDER BY registropagos.id_mes ASC
                         ";
 
@@ -356,6 +360,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                     break;
 
+                    case 'LimpiarAntiguos':
+                        // Borra los registros de pagos cuya fecha sea anterior a 2 años exactos desde la fecha/hora actual
+                        $sql = "DELETE FROM registropagos WHERE fecha < NOW() - INTERVAL 2 YEAR";
+                        
+                        $stmt = mysqli_prepare($conexion, $sql);
+                        if ($stmt) {
+                            if (mysqli_stmt_execute($stmt)) {
+                                $filasEliminadas = mysqli_stmt_affected_rows($stmt);
+                                echo json_encode([
+                                    "mensaje" => "Se depuraron los registros antiguos correctamente.",
+                                    "registros_eliminados" => $filasEliminadas
+                                ]);
+                            } else {
+                                http_response_code(500);
+                                echo json_encode(["error" => "Error al ejecutar la depuración de pagos."]);
+                            }
+                            mysqli_stmt_close($stmt);
+                        } else {
+                            http_response_code(500);
+                            echo json_encode(["error" => "Error al preparar la consulta SQL."]);
+                        }
+                    break;
+                    
                     default:
                         http_response_code(400);
                         echo json_encode(["error" => "Consulta no válida"]);
