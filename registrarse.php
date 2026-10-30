@@ -81,12 +81,6 @@
             $errorDetalle = $errorDetalle = "Error de red o file_get_contents falló al conectar a: " . $urlApi;
             $scriptConsola = consoleError($errorDetalle); 
         }
-<<<<<<< Updated upstream
-        
-=======
-        //echo $payload;
-        var_dump($opciones);
->>>>>>> Stashed changes
     }
 ?>
 <!DOCTYPE html> 
@@ -117,7 +111,7 @@
         <div class="ContenedorLogoNegro">
             <img src="iconos/logoNegro.png" alt="" class="LogoNegro">
 
-            <div class="ISFDYT"><span class="Verde">ISFDYT N°31</span></div>
+            <div class="ISFDYT"><span class="Verde">ISFDyT N°31</span></div>
             <div class="Necochea">Necochea</div>
         </div>
 

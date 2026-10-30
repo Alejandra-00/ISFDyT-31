@@ -101,7 +101,7 @@
         <div class="ContenedorLogoNegro">
             <img src="iconos/logoNegro.png" alt="" class="LogoNegro">
 
-            <div class="ISFDYT"><span class="Verde">ISFDYT N°31</span></div>
+            <div class="ISFDYT"><span class="Verde">ISFDyT N°31</span></div>
             <div class="Necochea">Necochea</div>
         </div>
 
