@@ -41,7 +41,7 @@ function cargarPagos() {
             <td>${pago.estadopago ?? ''}</td>
          `;
 
-         // Al hacer clic en la fila, envía el ID a la pasarela de pago
+         
          fila.addEventListener('click', () => {
             const inputIdPago = document.getElementById('id_pago');
             if (inputIdPago) {
