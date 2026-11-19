@@ -4,7 +4,7 @@
     }
 
     if (empty($_SESSION['admin'])) {
-        header("Location: login.php");
+        header("Location: inicio.php");
         exit();
     }
 ?>
