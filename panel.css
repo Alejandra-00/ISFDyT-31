@@ -1150,7 +1150,7 @@ html, body {
     }
 }
 
-/* 2. Laptops estándar y monitores de escritorio medios (1281px a 1600px) */
+/* Laptops estándar y monitores de escritorio medios (1281px a 1600px) */
 @media screen and (min-width: 1281px) and (max-width: 1600px) {
     .sideBar {
         width: 290px;
@@ -1201,7 +1201,7 @@ html, body {
     }
 }
 
-/* 3. Monitores Full HD y Quad HD / 2K (1601px a 2560px) */
+/* Monitores Full HD y Quad HD / 2K (1601px a 2560px) */
 @media screen and (min-width: 1601px) and (max-width: 2560px) {
     .sideBar {
         width: 340px;
@@ -1263,7 +1263,7 @@ html, body {
     }
 }
 
-/* 4. Monitores Ultra-HD y 4K (A partir de 2561px) */
+/* Monitores Ultra-HD y 4K (A partir de 2561px) */
 @media screen and (min-width: 2561px) {
     html {
         font-size: 18px;

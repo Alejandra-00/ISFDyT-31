@@ -14,7 +14,7 @@
     <div class="NOCELULAR">
         <div class="aviso">
             <p>Este apartado no esta disponible en este dispositivo</p>
-            <button class="VolverInicio">Volver a inicio</button>
+            <button class="VolverInicio"><a href="inicio.php">Volver a inicio</a></button>
         </div>
     </div>
 
