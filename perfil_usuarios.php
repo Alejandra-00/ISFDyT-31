@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -27,10 +26,8 @@
     <form method="POST" class="fila">
         <div class="informacion">
             <h3>Nombre completo</h3>
-            <p id="vernombrecompleto">
-                <?= htmlspecialchars($usuario['nombre_completo'] ?? '') ?>
-            </p>
-            <input class="campo-edicion" id="editar_nombre_completo" type="text" name="valor" value="<?= htmlspecialchars($usuario['nombre_completo'] ?? '') ?>">
+            <p id="vernombrecompleto"></p>
+            <input class="campo-edicion" id="editar_nombre_completo" type="text" name="valor" value="">
         </div>
         <input type="hidden" name="campo" value="nombre_completo">
         <button type="button" class="editar-btn" onclick="editarCampo('nombre_completo')">Editar</button>
@@ -40,14 +37,12 @@
         </div>
     </form>
 
-    
-
-    <!-- Número de documento (Cambios de $usuario['numero_documento'] a $usuario['DNI']) -->
+    <!-- Número de documento -->
     <form method="POST" class="fila">
         <div class="informacion">
             <h3>Número de documento</h3>
-            <p id="ver_numerodocumento"><?= htmlspecialchars($usuario['DNI'] ?? '') ?></p>
-            <input class="campo-edicion" id="editar_numerodocumento" type="text" name="valor" value="<?= htmlspecialchars($usuario['DNI'] ?? '') ?>">
+            <p id="ver_numerodocumento"></p>
+            <input class="campo-edicion" id="editar_numerodocumento" type="text" name="valor" value="">
         </div>
     </form>
 
@@ -55,8 +50,8 @@
     <form method="POST" class="fila">
         <div class="informacion">
             <h3>E-mail</h3>
-            <p id="veremail"><?= htmlspecialchars($usuario['email'] ?? '') ?></p>
-            <input class="campo-edicion" id="editar_email" type="email" name="valor" value="<?= htmlspecialchars($usuario['email'] ?? '') ?>">
+            <p id="veremail"></p>
+            <input class="campo-edicion" id="editar_email" type="email" name="valor" value="">
         </div>
         <input type="hidden" name="campo" value="email">
         <button type="button" class="editar-btn" onclick="editarCampo('email')">Editar</button>
@@ -71,7 +66,7 @@
         <div class="informacion">
             <h3>Contraseña</h3>
             <p id="vercontrasena">********</p>
-            <input class="campo-edicion" id="editar_contrasena" type="password" name="valor" placeholder="Nueva contraseña">
+            <input class="campo-edicion" id="editar_contrasena" type="password" minlength="6" maxlength="8" name="valor" placeholder="Nueva contraseña (6 a 8 caracteres)">
         </div>
         <input type="hidden" name="campo" value="contrasena">
         <button type="button" class="editar-btn" onclick="editarCampo('contrasena')">Editar</button>
@@ -85,7 +80,7 @@
     <form method="POST" class="fila">
         <div class="informacion">
             <h3>Carrera</h3>
-            <p id="veridcarrera"><?= htmlspecialchars($usuario['nombre_carrera'] ?? 'Sin carrera') ?></p>
+            <p id="veridcarrera">Sin carrera</p>
             
             <!-- Desplegable Personalizado en sustitución del <select> -->
             <div class="custom-dropdown campo-edicion" id="dropdown_carrera">
@@ -111,8 +106,8 @@
     <form method="POST" class="fila">
         <div class="informacion">
             <h3>Teléfono</h3>
-            <p id="vertelefono"><?= htmlspecialchars($usuario['telefono'] ?? '') ?></p>
-            <input class="campo-edicion" id="editar_telefono" type="text" name="valor" value="<?= htmlspecialchars($usuario['telefono'] ?? '') ?>">
+            <p id="vertelefono"></p>
+            <input class="campo-edicion" id="editar_telefono" type="tel" minlength="6" maxlength="20" oninput="this.value = this.value.replace(/[^0-9+\-\s()]/g, '')" name="valor" value="">
         </div>
         <input type="hidden" name="campo" value="telefono">
         <button type="button" class="editar-btn" onclick="editarCampo('telefono')">Editar</button>
@@ -126,8 +121,8 @@
     <form method="POST" class="fila">
         <div class="informacion">
             <h3>Tipo de Socio</h3>
-            <p id="vertiposocio"><?= htmlspecialchars($usuario['nombre_socio'] ?? '') ?></p>
-            <input class="campo-edicion" id="editar_tiposocio" type="text" name="valor" value="<?= htmlspecialchars($usuario['nombre_socio'] ?? '') ?>">
+            <p id="vertiposocio"></p>
+            <input class="campo-edicion" id="editar_tiposocio" type="text" name="valor" value="">
         </div>
     </form>
 

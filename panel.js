@@ -28,7 +28,7 @@ function mostrar(id) {
         .forEach(f => f.classList.remove('activo'));
     formulario.classList.add('activo');
 
-    //Garantiza que al entrar a la sección de "Gráficos" o "Ver Pagos", 
+    // Garantiza que al entrar a la sección de "Gráficos" o "Ver Pagos", 
     // se vuelva a consultar a la API.php y se rendericen los datos más recientes para los graficos.
     if (id === 'verPagos') {
         cargarPagos();
@@ -231,7 +231,6 @@ function cargarAlumnos() {
             fila.appendChild(tdNombre);
             fila.appendChild(tdBoton);
             tbody.appendChild(fila);
-       
 
             const tdTipo = document.createElement('td');
             const btnTipo = document.createElement('button');
@@ -240,19 +239,18 @@ function cargarAlumnos() {
             btnTipo.onclick = () => cambiarTipoSocio(usuarios.id, 2);
             tdTipo.appendChild(btnTipo);
             fila.appendChild(tdTipo);
-            })
-     })
-            .catch(error => {
-                console.error(error);
-                const tbody = document.getElementById('tablasocios-Alumno');
-                tbody.innerHTML = '<tr><td colspan="3">Error al cargar los socios.</td></tr>';
-            }); 
-   
+        });
+    })
+    .catch(error => {
+        console.error(error);
+        const tbody = document.getElementById('tablasocios-Alumno');
+        tbody.innerHTML = '<tr><td colspan="4">Error al cargar los socios.</td></tr>';
+    }); 
 }
 
 // socio voluntarios
 function cargarVoluntarios() {
-   fetch('API.php', {
+    fetch('API.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -266,7 +264,7 @@ function cargarVoluntarios() {
         const tbody = document.getElementById('tablasocios-Voluntario');
         tbody.innerHTML = '';
         data.forEach(usuarios => {
-            const dni = usuarios.DNI ?? ''; //llama el dni, si no tiene mostramos vacío
+            const dni = usuarios.DNI ?? ''; // llama el dni, si no tiene mostramos vacío
             const nombre = usuarios.nombre_completo ?? ''; // llama el nombre, si no tiene nombre, mostramos vacío
 
             const fila = document.createElement('tr');
@@ -299,7 +297,7 @@ function cargarVoluntarios() {
 
             // Según el estado, mostramos una imagen u otra
             const activo = usuarios.activo == 1;  
-            btnInactivo.className =  'btn-inactivo'; 
+            btnInactivo.className = 'btn-inactivo'; 
             btnInactivo.innerHTML = activo
                 ? '<img src="iconos/inactivo.png" alt="Inactivar">' 
                 : '<img src="iconos/activo.png" alt="Activar">';
@@ -325,7 +323,7 @@ function cargarVoluntarios() {
     .catch(error => {
         console.error(error);
         const tbody = document.getElementById('tablasocios-Voluntario');
-        tbody.innerHTML = '<tr><td colspan="3">Error al cargar los socios.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="4">Error al cargar los socios.</td></tr>';
     });
 }
 
@@ -380,8 +378,8 @@ function refrescarVoluntarios() {
     }
 }
 
-let usuarioEditando = null;   //declaramos la variable global para almacenar el id del usuario que se está editando
-let seccionAnterior = null;   //declaramos la variable global para almacenar la sección anterior antes de editar el DNI
+let usuarioEditando = null; // declaramos la variable global para almacenar el id del usuario que se está editando
+let seccionAnterior = null; // declaramos la variable global para almacenar la sección anterior antes de editar el DNI
 
 function editarDNI(dni) {
     // Limpiar mensaje anterior
@@ -403,7 +401,7 @@ function editarDNI(dni) {
     .then(data => {
         if (data.error) {
             console.error(data.error);
-            document.getElementById('mensajeEditarDni').textContent = 'Usuario no encontrado.'
+            document.getElementById('mensajeEditarDni').textContent = 'Usuario no encontrado.';
             return;
         }
         // Guardamos el id del usuario que vamos a editar
@@ -423,13 +421,18 @@ function editarDNI(dni) {
 
 function guardarDni() {
     const nuevoDni = document.getElementById('nuevoDni').value.trim();
+    const mensaje = document.getElementById('mensajeEditarDni');
 
     if (!usuarioEditando) {
-        document.getElementById('mensajeEditarDni').textContent = 'No hay ningún usuario seleccionado para editar.';
+        mensaje.textContent = 'No hay ningún usuario seleccionado para editar.';
         return;
     }
     if (!nuevoDni) { 
-        document.getElementById('mensajeEditarDni').textContent = 'Ingresá un DNI.';
+        mensaje.textContent = 'Ingresá un DNI.';
+        return;
+    }
+    if (!/^\d{7,8}$/.test(nuevoDni)) {
+        mensaje.textContent = 'El DNI debe contener entre 7 y 8 dígitos numéricos.';
         return;
     }
 
@@ -446,21 +449,25 @@ function guardarDni() {
     .then(response => response.json())
     .then(data => {
         if (data.error) {
-            document.getElementById('mensajeEditarDni').textContent = 'Error al actualizar usuario.';
+            mensaje.textContent = data.error || 'Error al actualizar usuario.';
             console.error(data.error);
             return;
         }
-        document.getElementById('mensajeEditarDni').textContent = 'DNI actualizado correctamente.';
+        mensaje.textContent = 'DNI actualizado correctamente.';
         // Recargamos las tablas
         cargarAlumnos();
         cargarVoluntarios();
         // Volver a donde estábamos
         setTimeout(() => {
             mostrar(seccionAnterior || 'inicio');
-            document.getElementById('mensajeEditarDni').textContent = ''; 
+            mensaje.textContent = ''; 
         }, 1500);
         usuarioEditando = null;
     })
+    .catch(error => {
+        console.error(error);
+        mensaje.textContent = 'Error al conectar con el servidor.';
+    });
 }
 
 async function buscarUsuariosAlumnos() { 
@@ -535,18 +542,18 @@ async function buscarUsuariosAlumnos() {
                 const tdTipo = document.createElement('td');
                 const btnTipo = document.createElement('button');
                 btnTipo.className = 'btn-editar';
-                btnTipo.textContent = '→ Alumno';
-                btnTipo.onclick = () => cambiarTipoSocio(usuarios.id, 1);
+                btnTipo.textContent = '→ Voluntario';
+                btnTipo.onclick = () => cambiarTipoSocio(usuarios.id, 2);
                 tdTipo.appendChild(btnTipo);
                 fila.appendChild(tdTipo);
             });
         } else {
-            tbody.innerHTML = '<tr><td colspan="3">No se encontraron usuarios.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4">No se encontraron usuarios.</td></tr>';
         }
     } catch (error) {
         console.error(error);
         document.getElementById('tablasocios-Alumno').innerHTML = 
-            '<tr><td colspan="3">Error al buscar.</td></tr>';
+            '<tr><td colspan="4">Error al buscar.</td></tr>';
     }
 }
 
@@ -628,12 +635,12 @@ async function buscarUsuariosVoluntarios() {
                 fila.appendChild(tdTipo);
             });
         } else {
-            tbody.innerHTML = '<tr><td colspan="3">No se encontraron usuarios.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4">No se encontraron usuarios.</td></tr>';
         }
     } catch (error) {
         console.error(error);
         document.getElementById('tablasocios-Voluntario').innerHTML = 
-            '<tr><td colspan="3">Error al buscar.</td></tr>';
+            '<tr><td colspan="4">Error al buscar.</td></tr>';
     }
 }
 
@@ -721,8 +728,6 @@ function cargarCarreras() {
             celdaEditar.appendChild(btnEditar);
             fila.appendChild(celdaEditar);
 
-            // ❌ AQUÍ SE ELIMINÓ TODO EL BLOQUE DE LA COLUMNA Y EL BOTÓN ELIMINAR
-
             tbody.appendChild(fila);
         });
     })
@@ -806,10 +811,6 @@ function guardarCarrera() {
         }
     });
 }
-/**
- * Elimina una carrera según su ID previa confirmación del usuario.
- * @param {number|string} id - El identificador único de la carrera a borrar.
- */
 
 // monto actual
 let editandoMonto = false; 
@@ -906,9 +907,23 @@ function editarMonto() {
 
     } else {
         // Capturamos los nuevos valores ingresados en los inputs
-        const nuevoImporte = document.getElementById("inputImporte").value;
-        const nuevoImporteAnt = document.getElementById("inputImporteAnt").value;
+        const nuevoImporte = parseFloat(document.getElementById("inputImporte").value);
+        const nuevoImporteAnt = parseFloat(document.getElementById("inputImporteAnt").value) || 0;
         const nuevaFechaEfecto = document.getElementById("inputFechaEfecto").value;
+
+        if (isNaN(nuevoImporte) || nuevoImporte <= 0) {
+            if (mensaje) mensaje.innerText = "El importe debe ser un número mayor a 0.";
+            return;
+        }
+        if (nuevoImporteAnt < 0) {
+            if (mensaje) mensaje.innerText = "El importe anterior no puede ser negativo.";
+            return;
+        }
+        if (!nuevaFechaEfecto) {
+            if (mensaje) mensaje.innerText = "Debe ingresar una fecha de efecto.";
+            return;
+        }
+        if (mensaje) mensaje.innerText = "";
         
         // Obtenemos el ID de la fila desde el atributo data-id (o usa 1 por defecto)
         const idMonto = tr.dataset.id || 1;
@@ -932,7 +947,7 @@ function editarMonto() {
         .then(res => res.json())
         .then(res => {
             if (res.error) {
-                if (mensaje) mensaje.innerText = "Error al guardar.";
+                if (mensaje) mensaje.innerText = res.error || "Error al guardar.";
                 console.error(res.error);
                 return;
             }
@@ -946,6 +961,7 @@ function editarMonto() {
             // Restablecemos los botones al estado inicial
             restaurarBotones();
             editandoMonto = false; // Desactivamos el modo edición
+            cargarMonto();
         })
         .catch(error => {
             if (mensaje) mensaje.innerHTML = 'Error al actualizar el monto de la cooperadora';
@@ -988,8 +1004,8 @@ function restaurarBotones() {
     }
 }
 
-//Ver pagos
-let todosLosPagos= []; // variable global que almacena todos los registros de pagos
+// Ver pagos
+let todosLosPagos = []; // variable global que almacena todos los registros de pagos
 
 // esta funcion busca los datos al servidor
 function cargarPagos() {
@@ -1000,11 +1016,11 @@ function cargarPagos() {
     })
     .then(response => response.json()) // toma la respuesta y la transforma a json
     .then(data => {
-    if (!Array.isArray(data)) { // verifica lo que devuelve la api sea un arreglo
-        throw new Error('La API no devolvió una lista de pagos válida.');
-    }
-    todosLosPagos = data; // guarda los datos recibidos en la variable global
-    mostrarPagos(todosLosPagos); // llama a la funcion para crear la tabla
+        if (!Array.isArray(data)) { // verifica lo que devuelve la api sea un arreglo
+            throw new Error('La API no devolvió una lista de pagos válida.');
+        }
+        todosLosPagos = data; // guarda los datos recibidos en la variable global
+        mostrarPagos(todosLosPagos); // llama a la funcion para crear la tabla
     })
     .catch(error => { // si la peticion falla, crea una fila para mostrar el error
         const tbody = document.getElementById('tablapagos');
@@ -1035,8 +1051,8 @@ function mostrarPagos(pagos) {
         mensaje.textContent = `Se encontraron ${pagos.length} pago(s).`;
     }
 
-    pagos.forEach(pago => { //recorre pagos
-        const fila = document.createElement('tr'); //crea una nueva fila por cada elemento
+    pagos.forEach(pago => { // recorre pagos
+        const fila = document.createElement('tr'); // crea una nueva fila por cada elemento
         // La API devuelve el contenido del BLOB en Base64 como pago.foto
         // Si no hay imagen asociada, la celda queda vacia
         let comprobanteHTML = '';
@@ -1078,7 +1094,7 @@ function mostrarPagos(pagos) {
                 <option value="3" ${idEstadoActual === 3 ? 'selected' : ''}>Pendiente</option>
             </select>
         `; // onchange llama a la funcion y le pasa el id del pago y la opcion seleccionada
-            // le agregar la propiedad selected al option que coincia con el id del estado en la bd
+           // le agregar la propiedad selected al option que coincia con el id del estado en la bd
 
         fila.innerHTML = `
             <td>${escapeHtml(pago.mes || '-')}</td>
@@ -1090,7 +1106,7 @@ function mostrarPagos(pagos) {
             <td>${escapeHtml(pago.tipo_socio || '-')}</td>
             <td>${escapeHtml(pago.carrera || '-')}</td>
         `;
-        tbody.appendChild(fila); //agrega la fila al tbody y termina el foreach
+        tbody.appendChild(fila); // agrega la fila al tbody y termina el foreach
     });
 }
 
@@ -1175,27 +1191,25 @@ function cambiarEstadoPago(idPago, idEstado) { // cuando un usuario cambia el es
     fetch('API.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ recurso: 'registroPagos', consulta: 'Update',
-            id_pago: parseInt(idPago), id_estado: parseInt(idEstado) //convierte los valores a enteros
+        body: JSON.stringify({
+            recurso: 'registroPagos',
+            consulta: 'Update',
+            id_pago: parseInt(idPago),
+            id_estado: parseInt(idEstado) // convierte los valores a enteros
         })
     })
     .then(res => res.json()) // convierte la respuesta
     .then(res => {
         if (res.mensaje) { // si la respuesta tiene la propiedad mensaje (api) imprime en la consola
-            // Actualiza el estado en el arreglo global
-            const pagoEncontrado = todosLosPagos.find(p => p.id == idPago);
-            if (pagoEncontrado) {
-                pagoEncontrado.id_estado = parseInt(idEstado);
-            }
-            // Re-ejecuta el filtro para actualizar la tabla al instante sin perder los filtros activos
-            filtrarPagos();   
+            // Recargar pagos desde el servidor para reflejar cambios de monto o fecha si pasó a Impago
+            cargarPagos();
             
             if (mensaje) {
                 mensaje.style.color = '#a9cd46'; // Verde para éxito
                 mensaje.textContent = res.mensaje;
             }
         } else if (res.error) {
-            if (mensaje) { //si no, muestra un mensaje de error
+            if (mensaje) { // si no, muestra un mensaje de error
                 mensaje.style.color = 'red'; // Rojo para error
                 mensaje.textContent = "Error al actualizar estado del pago.";
                 console.error(res.error);
@@ -1203,7 +1217,7 @@ function cambiarEstadoPago(idPago, idEstado) { // cuando un usuario cambia el es
         }
     })
     .catch(err => {
-        mensaje.innerHTML = 'Error al actualizar estado del pago.';
+        if (mensaje) mensaje.innerHTML = 'Error al actualizar estado del pago.';
         console.error(err);
     });
 }
@@ -1285,7 +1299,8 @@ function cargarGraficos() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
             recurso: 'registroPagos', 
-            consulta: 'Read' })
+            consulta: 'Read'
+        })
     })
     .then(response => response.json())
     .then(pagos => {
@@ -1326,12 +1341,13 @@ function renderGraficoUsuariosPagan(pagosAprobados) {
         const ctx = document.getElementById('chartUsuariosPagan').getContext('2d');
         if (chartUsuarios) chartUsuarios.destroy();
 
-          chartUsuarios = crearGraficoTorta(ctx, 
-                ['Usuarios que Pagan', 'Usuarios Sin Pago'], 
-                [usuariosQuePagaron, usuariosNoPagan],
-                ['#2563eb', '#f97316'],
-                'referenciasUsuarios'
-            );
+        chartUsuarios = crearGraficoTorta(
+            ctx, 
+            ['Usuarios que Pagan', 'Usuarios Sin Pago'], 
+            [usuariosQuePagaron, usuariosNoPagan],
+            ['#2563eb', '#f97316'],
+            'referenciasUsuarios'
+        );
     })
     .catch(error => {
         const mensaje1 = document.getElementById('mensajeGrafico1');
@@ -1381,7 +1397,8 @@ function renderGraficoVoluntariosPagan(pagosAprobados) {
         const ctx = document.getElementById('chartVoluntariosPagan').getContext('2d');
         if (chartVoluntarios) chartVoluntarios.destroy();
 
-        chartVoluntarios = crearGraficoTorta(ctx,
+        chartVoluntarios = crearGraficoTorta(
+            ctx,
             ['Voluntarios que Pagan', 'Voluntarios Sin Pago'],
             [cantidadVoluntariosPagan, voluntariosSinPago],
             ['#2563eb', '#84cc16'],
@@ -1412,7 +1429,7 @@ function crearGraficoTorta(ctx, labels, data, colors, contenedorReferenciasId) {
             item.className = 'referencia-item';
             item.innerHTML = `
                 <div class="referencia-color" style="background-color: ${colorHex};"></div>
-                <div class="referencia-texto"><strong>${label}:</strong> ${valor} (${porcentaje})</div>
+                <div class="referencia-texto"><strong>${escapeHtml(label)}:</strong> ${valor} (${porcentaje})</div>
             `;
             contenedorRef.appendChild(item);
         });
@@ -1451,6 +1468,11 @@ function exportarExcelPagos() {
 
     if (!fecha_inicio || !fecha_final) {
         if (mensaje) mensaje.innerText = 'Por favor selecciona ambas fechas para definir el período.';
+        return;
+    }
+
+    if (fecha_inicio > fecha_final) {
+        if (mensaje) mensaje.innerText = 'La fecha "Desde" no puede ser mayor a la fecha "Hasta".';
         return;
     }
 
@@ -1563,4 +1585,3 @@ function exportarExcelUsuarios() {
         console.error(error);
     });
 }
-

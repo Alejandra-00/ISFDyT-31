@@ -11,7 +11,10 @@ fetch("API.php", {
 })
 
 // hace el json y actualiza los montos visibles
-.then(respuesta => respuesta.json())
+.then(respuesta => {
+    if (!respuesta.ok) throw new Error("Error HTTP: " + respuesta.status);
+    return respuesta.json();
+})
 .then(datos => {
     if (datos.importe !== undefined) {
         document.getElementById("montoActual").textContent = "$" + datos.importe;
@@ -27,9 +30,12 @@ fetch("API.php", {
     const mensaje1 = document.getElementById('mensajeMonto1');
     const mensaje2 = document.getElementById('mensajeMonto2');
     
-    if (mensaje1) mensaje1.innerText = 'Error al cargar el monto.';
-    if (mensaje2) mensaje2.innerText = 'Error al cargar el monto.';
-    
-    mensaje1.style.display = "block";
-    mensaje2.style.display = "block";
+    if (mensaje1) {
+        mensaje1.innerText = 'Error al cargar el monto.';
+        mensaje1.style.display = "block";
+    }
+    if (mensaje2) {
+        mensaje2.innerText = 'Error al cargar el monto.';
+        mensaje2.style.display = "block";
+    }
 });

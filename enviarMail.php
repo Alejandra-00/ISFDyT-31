@@ -7,7 +7,7 @@ $url_login = 'https://coopeinstituto31.ifree.page/iniciarSesion.php';
 // Incluir conexion a bbdd (conexion.php)
 require 'conexion.php';
 
-//Asegurar que la base de datos devuelva caracteres en UTF-8
+// Asegurar que la base de datos devuelva caracteres en UTF-8
 mysqli_set_charset($conexion, "utf8mb4");
 
 // Incluir manualmente los archivos necesarios según la estructura de tu carpeta
@@ -23,26 +23,39 @@ use PHPMailer\PHPMailer\SMTP;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $dniForm = trim($_POST['dni'] ?? '');
 
-    if (empty($dniForm)) {
+    if (empty($dniForm) || !preg_match('/^\d{7,8}$/', $dniForm)) {
         http_response_code(400);
-        echo "Debe ingresar un DNI válido.";
+        echo "Debe ingresar un DNI válido (7 u 8 dígitos numéricos).";
         exit;
     }
 
-    //TRAER DATOS DE BBDD
-    $sql = "SELECT nombre_completo, DNI, email FROM usuarios WHERE DNI = '".$dniForm."'";
-    $resultado = mysqli_query($conexion, $sql);
+    // TRAER DATOS DE BBDD con Prepared Statement
+    $stmt = $conexion->prepare("SELECT id, nombre_completo, DNI, email FROM usuarios WHERE DNI = ? AND activo = 1");
+    $stmt->bind_param("s", $dniForm);
+    $stmt->execute();
+    $resultado = $stmt->get_result();
 
-    if ($resultado && mysqli_num_rows($resultado) > 0) {
-        $datos = mysqli_fetch_assoc($resultado);
+    if ($resultado && $resultado->num_rows > 0) {
+        $datos = $resultado->fetch_assoc();
+        $stmt->close();
+
+        $idUsuario = $datos['id'];
         $emailUsuario = $datos['email'];
         $nombre = $datos['nombre_completo'];
         $dni = $datos['DNI'];
 
-        // Encriptar DNI como clave provisional
+        // Restablecer la contraseña usando el DNI del usuario
         $contraEncriptada = password_hash($dni, PASSWORD_BCRYPT);
-        $sqlResetContrasenia = "UPDATE usuarios SET contrasena = '".$contraEncriptada."' WHERE DNI = '".$dni."'";
-        $resultadoReset = mysqli_query($conexion, $sqlResetContrasenia);
+
+        $stmtReset = $conexion->prepare("UPDATE usuarios SET contrasena = ? WHERE id = ?");
+        $stmtReset->bind_param("si", $contraEncriptada, $idUsuario);
+        if (!$stmtReset->execute()) {
+            http_response_code(500);
+            echo "Error interno al restablecer la contraseña.";
+            $stmtReset->close();
+            exit;
+        }
+        $stmtReset->close();
 
         $mail = new PHPMailer(true);
 
@@ -52,20 +65,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mail->Encoding = 'base64';
 
             // Configuración del Servidor SMTP
-            $mail->isSMTP();                                            // Usar SMTP
-            $mail->Host       = 'smtp.gmail.com';                     // Servidor SMTP
-            $mail->SMTPAuth   = true;                                 // Habilitar autenticación SMTP
-            $mail->Username   = 'cooperadoraisfd31@gmail.com';                // Tu correo de Gmail
-            $mail->Password   = 'oytq mfud xkjc ebdl';       // Tu contraseña de aplicación (16 caracteres)
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         // Cifrado TLS
-            $mail->Port       = 587;                                  // Puerto TCP
+            $mail->isSMTP(); // Usar SMTP
+            $mail->Host = 'smtp.gmail.com'; // Servidor SMTP
+            $mail->SMTPAuth = true; // Habilitar autenticación SMTP
+            $mail->Username = 'cooperadoraisfd31@gmail.com'; // Tu correo de Gmail
+            $mail->Password = 'oytq mfud xkjc ebdl'; // Tu contraseña de aplicación (16 caracteres)
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Cifrado TLS
+            $mail->Port = 587; // Puerto TCP
 
             // Remitente y Destinatario 
-            $mail->setFrom('cooperadoraisfd31@gmail.com', 'Instituto N°31'); //NOMBRE DEL INSTITUTO
-            $mail->addAddress($emailUsuario, $nombre); //correo del usuario, nombre del usuario
+            $mail->setFrom('cooperadoraisfd31@gmail.com', 'Instituto N°31'); // NOMBRE DEL INSTITUTO
+            $mail->addAddress($emailUsuario, $nombre); // correo del usuario, nombre del usuario
 
             // Contenido del Correo 
-            $mail->isHTML(true);                                  // Formato HTML
+            $mail->isHTML(true); // Formato HTML
             $mail->Subject = 'Reestablecer Contraseña - Instituto 31';
             $mail->Body = '
             <!DOCTYPE html>
@@ -105,13 +118,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                           <!-- Caja destacada con la clave provisional -->
                           <div style="background-color: #f0fdf4; border-left: 4px solid #0d8a42; padding: 15px; border-radius: 4px; margin-bottom: 25px;">
                             <p style="margin: 0; font-size: 13px; color: #166534;">
-                              <b>Tu nueva clave de acceso provisional es:</b>
+                              <b>Tu nueva clave de acceso provisional es tu DNI:</b>
                             </p>
                             <p style="margin: 8px 0 0 0; font-size: 18px; font-weight: bold; color: #0d8a42; letter-spacing: 1px;">
                               ' . htmlspecialchars($dni) . '
-                            </p>
-                            <p style="margin: 5px 0 0 0; font-size: 11px; color: #15803d;">
-                              (Tu número de DNI sin puntos ni espacios)
                             </p>
                           </div>
 
@@ -123,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                           </div>
 
                           <p style="font-size: 12px; line-height: 1.5; color: #777777; margin-bottom: 0;">
-                            <b>Recomendación de seguridad:</b> Te sugerimos cambiar esta contraseña provisional una vez ingreses a la plataforma desde tu perfil.
+                            <b>Recomendación de seguridad:</b> Te sugerimos cambiar esta contraseña una vez ingreses a la plataforma desde tu perfil.
                           </p>
                         </td>
                       </tr>
@@ -153,8 +163,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo "Error al enviar el correo. Intente más tarde. {$mail->ErrorInfo}";
         }
     } else {
+        if ($stmt) $stmt->close();
         http_response_code(404);
-        echo "No existe un usuario registrado con el DNI ingresado.";
+        echo "No existe un usuario activo registrado con el DNI ingresado.";
     }
 } else {
     http_response_code(405);

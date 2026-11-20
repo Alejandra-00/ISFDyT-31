@@ -1,5 +1,6 @@
 // Variable global para almacenar las carreras obtenidas de la API
 let carrerasCache = [];
+let datosUsuarioCache = null;
 
 document.addEventListener('DOMContentLoaded', () => {
     const idusuario = document.getElementById('usuario')?.value;
@@ -19,7 +20,9 @@ function obtenerDatosUsuario(idusuario) {
         const datos = Array.isArray(respuestaApi) ? respuestaApi[0] : respuestaApi;
 
         if (datos && !datos.error) {
-            const esVoluntario = (datos.nombre_carrera === 'Sin carrera' || datos.tipo_usuario === 'voluntario');
+            datosUsuarioCache = datos;
+
+            const esVoluntario = (parseInt(datos.id_socio) === 2 || datos.nombre_carrera === 'Sin carrera' || datos.tipo_usuario === 'voluntario');
             const btnEditarCarrera = document.querySelector('form input[value="id_carrera"]')?.closest('form')?.querySelector('.editar-btn');
 
             if (btnEditarCarrera) {
@@ -35,11 +38,25 @@ function obtenerDatosUsuario(idusuario) {
                 }
             }
 
+            // Bloquear botones de edición de DNI y Tipo de socio si existen en el HTML
+            ['dni', 'numero_documento', 'tipo_socio', 'socio', 'id_socio'].forEach(campoBloqueado => {
+                const btnBloqueado = document.querySelector(`form input[value="${campoBloqueado}"]`)?.closest('form')?.querySelector('.editar-btn');
+                if (btnBloqueado) {
+                    btnBloqueado.disabled = true;
+                    btnBloqueado.style.display = 'none';
+                }
+            });
+
             asignarValor('vernombrecompleto', 'editar_nombre_completo', datos.nombre_completo);
             asignarValor('ver_numerodocumento', 'editar_numero_documento', datos.DNI);
             asignarValor('veremail', 'editar_email', datos.email);
             asignarValor('vertelefono', 'editar_telefono', datos.telefono);
             asignarValor('vertiposocio', 'editar_tiposocio', datos.nombre_socio);
+
+            const elEditarSocio = document.getElementById('editar_tiposocio');
+            if (elEditarSocio && datos.id_socio) {
+                elEditarSocio.value = datos.id_socio;
+            }
 
             const elTextoCarrera = document.getElementById('veridcarrera');
             if (elTextoCarrera) elTextoCarrera.textContent = datos.nombre_carrera ?? datos.id_carrera ?? '-';
@@ -47,6 +64,9 @@ function obtenerDatosUsuario(idusuario) {
             if (datos.id_carrera) {
                 const nombreCarrera = datos.nombre_carrera ?? 'Seleccione una carrera';
                 seleccionarCarrera(datos.id_carrera, nombreCarrera);
+            } else {
+                const hiddenCarrera = document.getElementById('editar_id_carrera');
+                if (hiddenCarrera) hiddenCarrera.value = '';
             }
         } else {
             if (mensaje) mensaje.innerText = "No se encontraron datos de usuario en la respuesta.";
@@ -73,6 +93,11 @@ function asignarValor(idVer, idEditar, valor) {
 function editarCampo(campo) {
     if (campo === 'dni' || campo === 'numero_documento') {
         alert('El DNI no se puede modificar.');
+        return;
+    }
+
+    if (campo === 'tipo_socio' || campo === 'socio' || campo === 'id_socio') {
+        alert('El tipo de socio no se puede modificar desde el perfil.');
         return;
     }
 
@@ -130,7 +155,7 @@ function cancelarEdicion(campo) {
     }
 
     texto.style.display = 'block';
-    input.style.display = 'none';
+    if (input) input.style.display = 'none';
     form.classList.remove('edicion');
     form.querySelector('.editar-btn').style.display = 'inline-block';
     form.querySelector('.acciones-edicion').style.display = 'none';
@@ -140,10 +165,13 @@ function cancelarEdicion(campo) {
 function guardarCampo(campo) {
     const idUsuario = document.getElementById('usuario')?.value || '1';
     
-    if (campo === 'dni' || campo === 'numero_documento') return;
+    if (campo === 'dni' || campo === 'numero_documento' || campo === 'tipo_socio' || campo === 'socio' || campo === 'id_socio') return;
 
     const form = document.querySelector(`input[name="campo"][value="${campo}"]`)?.closest('form');
     if (!form) return;
+
+    const mensaje = document.getElementById('mensaje');
+    if (mensaje) mensaje.style.display = 'none';
 
     // Obtener el valor según el tipo de campo (si es carrera, lee el input hidden; si es texto, lee el input visible)
     let valorNuevo = '';
@@ -157,7 +185,7 @@ function guardarCampo(campo) {
         valorNuevo = input ? input.value.trim() : '';
     }
 
-    if (!valorNuevo && campo !== 'contrasena') {
+    if (!valorNuevo) {
         alert('El campo no puede estar vacío.');
         return;
     }
@@ -167,10 +195,10 @@ function guardarCampo(campo) {
     // ==========================================
 
     if (campo === 'email') {
-        if (!valorNuevo.includes('@')) {
-            const mensaje = document.getElementById('mensaje');
+        const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!regexEmail.test(valorNuevo)) {
             if (mensaje) {
-                mensaje.innerText = 'Debes colocar el arroba (@) para guardar los cambios en el e-mail.';
+                mensaje.innerText = 'Debes colocar un e-mail válido para guardar los cambios.';
                 mensaje.style.display = "block";
             }
             return;
@@ -178,25 +206,34 @@ function guardarCampo(campo) {
     }
 
     if (campo === 'telefono') {
-        const soloDigitos = /^\d{10}$/;
-        if (!soloDigitos.test(valorNuevo)) {
-            const mensaje = document.getElementById('mensaje');
+        const regexTelefono = /^[0-9+\-\s()]{6,20}$/;
+        const cantidadNumeros = (valorNuevo.match(/[0-9]/g) || []).length;
+        if (!regexTelefono.test(valorNuevo) || cantidadNumeros < 6) {
             if (mensaje) {
-                mensaje.innerText = 'El número de teléfono debe contener exactamente 10 dígitos numéricos.';
+                mensaje.innerText = 'El teléfono no puede contener letras y debe tener al menos 6 números.';
                 mensaje.style.display = "block";
             }
             return;
         }
     }
 
-    // Recopilar datos actuales del DOM
-    const dniActual = document.getElementById('editar_numero_documento')?.value || document.getElementById('ver_numerodocumento')?.textContent.trim();
-    const nombreActual = document.getElementById('editar_nombre_completo')?.value || document.getElementById('vernombrecompleto')?.textContent.trim();
-    const emailActual = document.getElementById('editar_email')?.value || document.getElementById('veremail')?.textContent.trim();
-    const telefonoActual = document.getElementById('editar_telefono')?.value || document.getElementById('vertelefono')?.textContent.trim();
-    const socioActual = document.getElementById('editar_tiposocio')?.value || '1';
-    const carreraActual = document.getElementById('editar_id_carrera')?.value || '1';
-    const mensaje = document.getElementById('mensaje');
+    if (campo === 'contrasena') {
+        if (valorNuevo.length < 6 || valorNuevo.length > 8) {
+            if (mensaje) {
+                mensaje.innerText = 'La contraseña debe tener entre 6 y 8 caracteres.';
+                mensaje.style.display = "block";
+            }
+            return;
+        }
+    }
+
+    // Recopilar datos actuales conservando los IDs reales de socio y carrera
+    const dniActual = datosUsuarioCache?.DNI || document.getElementById('editar_numero_documento')?.value || document.getElementById('ver_numerodocumento')?.textContent.trim();
+    const nombreActual = datosUsuarioCache?.nombre_completo || document.getElementById('editar_nombre_completo')?.value || document.getElementById('vernombrecompleto')?.textContent.trim();
+    const emailActual = datosUsuarioCache?.email || document.getElementById('editar_email')?.value || document.getElementById('veremail')?.textContent.trim();
+    const telefonoActual = datosUsuarioCache?.telefono || document.getElementById('editar_telefono')?.value || document.getElementById('vertelefono')?.textContent.trim();
+    const socioActual = datosUsuarioCache?.id_socio || 1;
+    const carreraActual = datosUsuarioCache?.id_carrera || null;
 
     // Construir payload completo para case "Update"
     const payload = {
@@ -217,7 +254,6 @@ function guardarCampo(campo) {
     if (campo === 'email') payload.email = valorNuevo;
     if (campo === 'telefono') payload.telefono = valorNuevo;
     if (campo === 'contrasena') payload.contrasena = valorNuevo;
-    if (campo === 'tipo_socio' || campo === 'socio') payload.socio = valorNuevo;
     if (campo === 'id_carrera' || campo === 'carrera') payload.carrera = valorNuevo;
 
     fetch('API.php', {
@@ -229,6 +265,13 @@ function guardarCampo(campo) {
     .then(respuestaData => {
         if (respuestaData && !respuestaData.error) {
             const textoElem = form.querySelector('.informacion p');
+
+            if (datosUsuarioCache) {
+                if (campo === 'nombre_completo') datosUsuarioCache.nombre_completo = valorNuevo;
+                if (campo === 'email') datosUsuarioCache.email = valorNuevo;
+                if (campo === 'telefono') datosUsuarioCache.telefono = valorNuevo;
+                if (campo === 'id_carrera' || campo === 'carrera') datosUsuarioCache.id_carrera = valorNuevo;
+            }
 
             // 1. Manejo para el Desplegable Personalizado de Carrera
             if (campo === 'id_carrera' || campo === 'carrera') {
@@ -254,7 +297,7 @@ function guardarCampo(campo) {
             cancelarEdicion(campo);
         } else {
             if (mensaje) {
-                mensaje.innerText = 'Error al actualizar.';
+                mensaje.innerText = respuestaData?.error || 'Error al actualizar.';
                 mensaje.style.display = "block";
             }
             console.error(respuestaData?.error);

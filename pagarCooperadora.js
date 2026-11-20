@@ -133,7 +133,7 @@ function obtenerDatosPagos() {
 }
 
 function evaluarVistasSegunEstado(estado) {
-   if (estado === 'Pendiente' || estado === 'Pago') {
+   if (estado === 'Pendiente' || estado === 'Pago' || estado === 'Pagado') {
       mostrar('pasarela');
       desactivarBotones(estado);
    } else {
@@ -147,7 +147,7 @@ function desactivarBotones(estado) {
    const btnComprobante = document.getElementById('BtnEnviarComprobante');
    const btnPago = document.getElementById('BtnEnviarPago');
 
-   if (estado === 'Pago') {
+   if (estado === 'Pago' || estado === 'Pagado') {
       if (btnPago) btnPago.disabled = true;
       if (btnComprobante) btnComprobante.disabled = true;
       if (btnFactura) btnFactura.disabled = false;

@@ -5,13 +5,17 @@
         session_start();
     }
 
-    if(!isset($_SESSION['usuario']) || !isset($_SESSION['id'])){
+    if (!isset($_SESSION['usuario']) || !isset($_SESSION['id'])) {
         header('Location: inicio.php');
         exit;
     }
     $id_usuario = $_SESSION['id'];
 
-    $idPago = $_POST['id_pago'];
+    $idPago = (int)($_POST['id_pago'] ?? 0);
+    if ($idPago <= 0) {
+        header('Location: registropagos.php');
+        exit;
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">

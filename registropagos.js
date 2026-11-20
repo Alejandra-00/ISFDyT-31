@@ -1,4 +1,14 @@
-  // Se ejecuta cuando todo el HTML y el nav.php han sido cargados en la pantalla
+function escapeHtml(str) {
+   if (str === null || str === undefined) return '';
+   return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+}
+
+// Se ejecuta cuando todo el HTML y el nav.php han sido cargados en la pantalla
 document.addEventListener('DOMContentLoaded', () => {
    cargarPagos();
 });
@@ -6,6 +16,9 @@ document.addEventListener('DOMContentLoaded', () => {
 function cargarPagos() {
    const inputUsuario = document.getElementById('usuario');
    const idUsuario = inputUsuario ? inputUsuario.value : 0;
+   const tbody = document.getElementById('tablapagos');
+
+   if (!tbody) return;
 
    if (!idUsuario || idUsuario === "0" || idUsuario === "") {
       console.error("No se encontró el ID de usuario en el nav.");
@@ -21,10 +34,11 @@ function cargarPagos() {
          id_usuario: parseInt(idUsuario) 
       })
    })
-   .then(response => response.json())
+   .then(response => {
+      if (!response.ok) throw new Error("Error HTTP: " + response.status);
+      return response.json();
+   })
    .then(data => {
-      const tbody = document.getElementById('tablapagos');
-      if (!tbody) return;
       tbody.innerHTML = '';
 
       if (!Array.isArray(data) || data.length === 0) {
@@ -35,13 +49,12 @@ function cargarPagos() {
       data.forEach(pago => { 
          const fila = document.createElement('tr');
          fila.innerHTML = `
-            <td>${pago.meses ?? ''}</td>
-            <td>${pago.monto ?? ''}</td>
-            <td>${pago.fecha ?? ''}</td>
-            <td>${pago.estadopago ?? ''}</td>
+            <td>${escapeHtml(pago.meses ?? '')}</td>
+            <td>${escapeHtml(pago.monto ?? '')}</td>
+            <td>${escapeHtml(pago.fecha ?? '')}</td>
+            <td>${escapeHtml(pago.estadopago ?? '')}</td>
          `;
 
-         
          fila.addEventListener('click', () => {
             const inputIdPago = document.getElementById('id_pago');
             if (inputIdPago) {
@@ -54,7 +67,7 @@ function cargarPagos() {
       });
    })
    .catch(error => { 
-      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Error al cargar tabla de pagos.</td></tr>',
-      console.error(error)
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Error al cargar tabla de pagos.</td></tr>';
+      console.error(error);
    });
 }

@@ -1,12 +1,14 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 if (!isset($_SESSION['usuario'])) {
-    header("Location: inicio.php");
+    header("Location: iniciarSesion.php");
     exit();
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,9 +17,6 @@ if (!isset($_SESSION['usuario'])) {
 </head>
 <body>
     <?php
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
         include("nav.php");
     ?>
     <div class="cont">

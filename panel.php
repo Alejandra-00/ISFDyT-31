@@ -160,7 +160,7 @@
                 <h3>Editar DNI</h3>
                 <div class="editar-dni-form">
                     <label for="nuevoDni">DNI</label>
-                    <input type="text" id="nuevoDni" placeholder="Nuevo DNI">
+                    <input type="text" id="nuevoDni" maxlength="8" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Nuevo DNI">
                     <button class="btn-editar" onclick="guardarDni()">Guardar cambios</button>
                     <p id="mensajeEditarDni"></p>
                 </div>

@@ -12,12 +12,12 @@
     $usuario = $_SESSION['usuario'] ?? null;  
     $admin = $_SESSION['admin'] ?? 0;
     
-    $pagina_actual = basename($_SERVER['PHP_SELF']); //$_SERVER['PHP_SELF']: Devuelve la ruta completa del script que se está ejecutando. basename(): Se queda solo con la última parte, el nombre del archivo
+    $pagina_actual = basename($_SERVER['PHP_SELF']); // $_SERVER['PHP_SELF']: Devuelve la ruta completa del script que se está ejecutando. basename(): Se queda solo con la última parte, el nombre del archivo
 ?>
 
 <link rel="stylesheet" href="nav.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<input type="hidden" id="usuario" value="<?php echo $_SESSION['id'] ?? ''; ?>">
+<input type="hidden" id="usuario" value="<?php echo htmlspecialchars($_SESSION['id'] ?? ''); ?>">
 <div class="nav-contenedor">
     <nav class="nav-barra">
 
@@ -36,19 +36,19 @@
 
         <ul class="nav-lista">
             <li>
-                <a href="inicio.php" onclick=CambioColor(this) class="<?= $pagina_actual == 'inicio.php' ? 'activo' : ''?>">
+                <a href="inicio.php" onclick="CambioColor(this)" class="<?= $pagina_actual == 'inicio.php' ? 'activo' : '' ?>">
                     Inicio
                 </a>
             </li>
 
             <li>
-                <a href="registropagos.php" onclick=CambioColor(this) class="<?= $pagina_actual == 'registropagos.php' ? 'activo' : '' ?>">
+                <a href="registropagos.php" onclick="CambioColor(this)" class="<?= $pagina_actual == 'registropagos.php' ? 'activo' : '' ?>">
                     Registro de pagos
                 </a>
             </li>
             
             <li>
-                <a href="registropagos.php" onclick=CambioColor(this) class="<?= $pagina_actual == 'pagarCooperadora.php' ? 'activo' : '' ?>">
+                <a href="registropagos.php" onclick="CambioColor(this)" class="<?= $pagina_actual == 'pagarCooperadora.php' ? 'activo' : '' ?>">
                     Pagar cooperadora
                 </a>
             </li>

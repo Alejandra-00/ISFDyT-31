@@ -25,34 +25,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     case 'GenerarCuotasAnuales':
                         $id_monto_inicial = (int)($datos['id_monto'] ?? 0);
 
-                            if ($id_monto_inicial === 0) {
-                                http_response_code(400);
-                                echo json_encode(["error" => "Debe indicar el id_monto inicial."]);
-                                break;
-                            }
+                        if ($id_monto_inicial <= 0) {
+                            http_response_code(400);
+                            echo json_encode(["error" => "Debe indicar el id_monto inicial."]);
+                            break;
+                        }
 
-                            // Insertar exactamente 10 cuotas (meses 1 al 10)
-                            $sql = "
-                                INSERT INTO registropagos (id_usuarios, id_monto, id_estado, id_mes)
-                                SELECT 
-                                    u.id,
-                                    ? AS id_monto,
-                                    COALESCE((SELECT id FROM estadopago WHERE nombre LIKE '%PENDIENTE%' OR nombre LIKE '%IMPAG%' LIMIT 1), 1) AS id_estado,
-                                    m.id_mes
-                                FROM usuarios u
-                                CROSS JOIN (
-                                    SELECT 1 AS id_mes UNION SELECT 2 
-                                    UNION SELECT 3 UNION SELECT 4 
-                                    UNION SELECT 5 UNION SELECT 6 
-                                    UNION SELECT 7 UNION SELECT 8 
-                                    UNION SELECT 9 UNION SELECT 10
-                                ) m
-                                WHERE u.activo = 1 AND u.admin = 0
-                                AND NOT EXISTS (
-                                    SELECT 1 FROM registropagos rp 
-                                    WHERE rp.id_usuarios = u.id AND rp.id_mes = m.id_mes
-                                )
-                            ";
+                        // Insertar exactamente 10 cuotas (meses 1 al 10)
+                        $sql = "
+                            INSERT INTO registropagos (id_usuarios, id_monto, id_estado, id_mes)
+                            SELECT 
+                                u.id,
+                                ? AS id_monto,
+                                COALESCE((SELECT id FROM estadopago WHERE nombre LIKE '%PENDIENTE%' OR nombre LIKE '%IMPAG%' LIMIT 1), 1) AS id_estado,
+                                m.id_mes
+                            FROM usuarios u
+                            CROSS JOIN (
+                                SELECT 1 AS id_mes UNION SELECT 2 
+                                UNION SELECT 3 UNION SELECT 4 
+                                UNION SELECT 5 UNION SELECT 6 
+                                UNION SELECT 7 UNION SELECT 8 
+                                UNION SELECT 9 UNION SELECT 10
+                            ) m
+                            WHERE u.activo = 1 AND u.admin = 0
+                            AND NOT EXISTS (
+                                SELECT 1 FROM registropagos rp 
+                                WHERE rp.id_usuarios = u.id AND rp.id_mes = m.id_mes
+                            )
+                        ";
 
                         $stmt = $conexion->prepare($sql);
                         if ($stmt) {
@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     case 'Readusuarios':
                         $id_usuarios = (int)($datos['id_usuario'] ?? 0);
 
-                        if ($id_usuarios === 0) {
+                        if ($id_usuarios <= 0) {
                             http_response_code(400);
                             echo json_encode(["error" => "El usuario no se encontró."]);
                             break;
@@ -88,7 +88,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $usrData = $resAdmin->fetch_assoc();
                             $stmtCheckAdmin->close();
 
-                            if ($usrData && (int)$usrData['admin'] === 1) {
+                            if (!$usrData) {
+                                http_response_code(404);
+                                echo json_encode(["error" => "El usuario no existe."]);
+                                break;
+                            }
+
+                            if ((int)$usrData['admin'] === 1) {
                                 echo json_encode([]);
                                 break;
                             }
@@ -161,7 +167,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     case 'Readpagos':
                         $id_pago = (int)($datos['id_pago'] ?? 0);
 
-                        if ($id_pago === 0) {
+                        if ($id_pago <= 0) {
                             http_response_code(400);
                             echo json_encode(["error" => "El pago no se encontró."]);
                             break;
@@ -210,9 +216,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $id_estado = (int)($datos["id_estado"] ?? 0);
                         $fotoBase64 = $datos["foto"] ?? ""; 
 
-                        if ($id_pago === 0 || empty($fotoBase64)) {
+                        if ($id_pago <= 0 || $id_estado <= 0 || empty($fotoBase64)) {
                             http_response_code(400);
-                            echo json_encode(["error" => "Faltan datos obligatorios (ID o Imagen)."]);
+                            echo json_encode(["error" => "Faltan datos obligatorios (ID, Estado o Imagen)."]);
                             break;
                         }
 
@@ -220,11 +226,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         if (strpos($fotoBase64, ',') !== false) {
                             @list(, $fotoBase64) = explode(',', $fotoBase64);
                         }
-                        $blobData = base64_decode($fotoBase64);
+                        $blobData = base64_decode($fotoBase64, true);
 
                         if ($blobData === false) {
                             http_response_code(400);
                             echo json_encode(["error" => "No se pudo procesar el formato de la imagen."]);
+                            break;
+                        }
+
+                        // Validar que sea una imagen real y no supere 5 MB
+                        if (strlen($blobData) > 5 * 1024 * 1024) {
+                            http_response_code(400);
+                            echo json_encode(["error" => "La imagen supera el tamaño máximo permitido (5 MB)."]);
+                            break;
+                        }
+
+                        $finfo = new finfo(FILEINFO_MIME_TYPE);
+                        $mimeType = $finfo->buffer($blobData);
+                        if (!in_array($mimeType, ['image/jpeg', 'image/png', 'image/webp'])) {
+                            http_response_code(400);
+                            echo json_encode(["error" => "El archivo enviado no es una imagen válida."]);
                             break;
                         }
 
@@ -262,8 +283,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     break;
 
                     case 'Read':
-                        // Indicamos que la respuesta SIEMPRE es JSON
-                        header('Content-Type: application/json; charset=utf-8');
                         $sql = "SELECT 
                             registropagos.id,
                             registropagos.id_estado,
@@ -306,8 +325,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $id_pago = (int)($datos["id_pago"] ?? 0);
                         $id_estado = (int)($datos["id_estado"] ?? 0);
 
-                        $stmt = $conexion->prepare("UPDATE registropagos SET id_estado = ? WHERE id = ?");
-                        $stmt->bind_param("ii", $id_estado, $id_pago);
+                        if ($id_pago <= 0 || $id_estado <= 0) {
+                            http_response_code(400);
+                            echo json_encode(["error" => "ID de pago o estado inválido."]);
+                            break;
+                        }
+
+                        // Verificar si el nuevo estado corresponde a IMPAGO
+                        $stmtEstado = $conexion->prepare("SELECT nombre FROM estadopago WHERE id = ?");
+                        $stmtEstado->bind_param("i", $id_estado);
+                        $stmtEstado->execute();
+                        $resEstado = $stmtEstado->get_result()->fetch_assoc();
+                        $stmtEstado->close();
+
+                        if (!$resEstado) {
+                            http_response_code(404);
+                            echo json_encode(["error" => "El estado especificado no existe."]);
+                            break;
+                        }
+
+                        // Verificamos si el nombre del estado contiene la palabra 'IMPAG' (sin importar mayúsculas/minúsculas)
+                        $esImpago = stripos($resEstado['nombre'], 'IMPAG') !== false;
+
+                        if ($esImpago) {
+                            // Si vuelve a Impago, se le asigna el último monto vigente y se limpia fecha/comprobante
+                            $resMonto = mysqli_query($conexion, "SELECT id FROM monto ORDER BY id DESC LIMIT 1");
+                            $filaMonto = mysqli_fetch_assoc($resMonto);
+                            $idMontoActual = (int)($filaMonto['id'] ?? 1);
+
+                            $stmt = $conexion->prepare("UPDATE registropagos SET id_estado = ?, id_monto = ?, fecha = NULL, id_comprobante = NULL WHERE id = ?");
+                            $stmt->bind_param("iii", $id_estado, $idMontoActual, $id_pago);
+                        } else {
+                            // Si se aprueba (Pagado), mantiene el id_monto con el que subió el comprobante
+                            $stmt = $conexion->prepare("UPDATE registropagos SET id_estado = ? WHERE id = ?");
+                            $stmt->bind_param("ii", $id_estado, $id_pago);
+                        }
 
                         if ($stmt->execute()) {
                             echo json_encode(["mensaje" => "Estado actualizado correctamente."]);
@@ -319,12 +371,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     break;
 
                     case 'ExportarExcelPagos':
-                        $fechaInicio = $datos['fechaInicio'];
-                        $fechaFinal = $datos['fechaFinal'];
+                        $fechaInicio = trim($datos['fechaInicio'] ?? '');
+                        $fechaFinal = trim($datos['fechaFinal'] ?? '');
 
                         if (empty($fechaInicio) || empty($fechaFinal)) {
                             http_response_code(400);
                             echo json_encode(["error" => "Debe ingresar una fecha de inicio y una fecha de fin."]);
+                            break;
+                        }
+
+                        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $fechaInicio) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $fechaFinal)) {
+                            http_response_code(400);
+                            echo json_encode(["error" => "Formato de fecha inválido (AAAA-MM-DD)."]);
                             break;
                         }
 
@@ -402,7 +460,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         // Obtener ID desde el JSON o desde la sesión PHP como fallback
                         $id_usuario = (int)($datos['id_usuario'] ?? $_SESSION['id'] ?? 0);
                         
-                        if ($id_usuario === 0) {
+                        if ($id_usuario <= 0) {
                             http_response_code(400);
                             echo json_encode(["error" => "ID de usuario no proporcionado o sesión inválida."]);
                             break;
@@ -415,6 +473,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     u.telefono,
                                     u.activo,
                                     u.admin,
+                                    u.id_socio,
+                                    u.id_carrera,
                                     s.nombre AS nombre_socio,
                                     COALESCE(c.nombre, 'Sin carrera') AS nombre_carrera
                                 FROM usuarios u
@@ -444,27 +504,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     break;
 
                     case "socios":
-                        $id_socio = $datos['id_socio'] ?? null;
-                        $sql ="SELECT usuarios.id, usuarios.nombre_completo, usuarios.email, usuarios.telefono, usuarios.DNI, usuarios.activo, socio.nombre AS nombre_socio, COALESCE(carrera.nombre, 'Sin carrera') AS nombre_carrera
+                        $id_socio = (int)($datos['id_socio'] ?? 0);
+                        $sql = "SELECT usuarios.id, usuarios.nombre_completo, usuarios.email, usuarios.telefono, usuarios.DNI, usuarios.activo, socio.nombre AS nombre_socio, COALESCE(carrera.nombre, 'Sin carrera') AS nombre_carrera
                                 FROM usuarios 
                                 LEFT JOIN socio ON usuarios.id_socio = socio.id
                                 LEFT JOIN carrera ON usuarios.id_carrera = carrera.id
                                 WHERE (usuarios.admin = 0)"; 
                            
-                           if ($id_socio) {
-                               $sql .= " AND usuarios.id_socio = " . intval($id_socio);
-                           }
-                           $resultado = mysqli_query($conexion, $sql);
-                           if ($resultado) {
-                               $usuarios = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
-                               echo json_encode($usuarios);
-                           } else {
-                               http_response_code(502);
-                               echo json_encode(["error" => "Error de lectura."]);
-                           }
+                        if ($id_socio > 0) {
+                            $sql .= " AND usuarios.id_socio = ?";
+                            $stmt = $conexion->prepare($sql);
+                            $stmt->bind_param("i", $id_socio);
+                            $stmt->execute();
+                            $resultado = $stmt->get_result();
+                            $usuarios = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
+                            $stmt->close();
+                            echo json_encode($usuarios);
+                        } else {
+                            $resultado = mysqli_query($conexion, $sql);
+                            if ($resultado) {
+                                $usuarios = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
+                                echo json_encode($usuarios);
+                            } else {
+                                http_response_code(502);
+                                echo json_encode(["error" => "Error de lectura."]);
+                            }
+                        }
                     break;
 
-                   case 'UpdateTipoSocio':
+                    case 'UpdateTipoSocio':
                         $id = (int)($datos["id"] ?? 0);
                         $idSocio = (int)($datos["id_socio"] ?? 0);
 
@@ -522,10 +590,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $nombre_completo = trim($datos["nombre_completo"]);
                         $email = trim($datos["email"]);
                         $telefono = trim($datos["telefono"]);
-                        $contrasena = password_hash($datos["contrasena"], PASSWORD_BCRYPT); // Encriptación segura de contraseña
+                        $contrasenaPlano = $datos["contrasena"];
                         $id_socio = (int)$datos["socio"];
                         $id_carrera = !empty($datos["carrera"]) ? (int)$datos["carrera"] : null;
                         $activo = 1;
+
+                        // Validaciones de formato
+                        if (!preg_match('/^\d{7,8}$/', $DNI)) {
+                            http_response_code(400);
+                            echo json_encode(["error" => "El DNI debe contener entre 7 y 8 dígitos numéricos."]);
+                            exit;
+                        }
+
+                        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                            http_response_code(400);
+                            echo json_encode(["error" => "El formato del e-mail no es válido."]);
+                            exit;
+                        }
+
+                        if (!preg_match('/^[0-9+\-\s()]{6,20}$/', $telefono) || preg_match_all('/[0-9]/', $telefono) < 6) {
+                            http_response_code(400);
+                            echo json_encode(["error" => "El teléfono no puede contener letras y debe tener al menos 6 números."]);
+                            exit;
+                        }
+
+                        if (strlen($contrasenaPlano) < 6 || strlen($contrasenaPlano) > 8) {
+                            http_response_code(400);
+                            echo json_encode(["error" => "La contraseña debe tener entre 6 y 8 caracteres."]);
+                            exit;
+                        }
+
+                        if ($id_socio === 1 && empty($id_carrera)) {
+                            http_response_code(400);
+                            echo json_encode(["error" => "Debe seleccionar una carrera para el tipo de socio Alumno."]);
+                            exit;
+                        }
+
+                        $contrasena = password_hash($contrasenaPlano, PASSWORD_BCRYPT); // Encriptación segura de contraseña
 
                         // Comprobar si el email o DNI ya existen con Prepared Statement
                         $stmt_check = $conexion->prepare("SELECT id FROM usuarios WHERE email = ? OR DNI = ?");
@@ -562,11 +663,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     break;
 
                     case "Update":
-                        $id = (int)$datos["id"];
-                        $DNI = $datos["dni"];
-                        $nombre_completo = $datos["nombre_completo"];
-                        $email = $datos["email"];
-                        $telefono = $datos["telefono"];
+                        $id = (int)($datos["id"] ?? 0);
+                        $DNI = trim($datos["dni"] ?? '');
+                        $nombre_completo = trim($datos["nombre_completo"] ?? '');
+                        $email = trim($datos["email"] ?? '');
+                        $telefono = trim($datos["telefono"] ?? '');
                         $contrasena = $datos["contrasena"] ?? '';
                         
                         // Asegurar que id_socio sea un número válido (mapeo rápido por seguridad)
@@ -575,31 +676,61 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         
                         $id_carrera = !empty($datos["carrera"]) ? (int)$datos["carrera"] : null;
 
-                        // Si la contraseña no está vacía, la hasheamos y la actualizamos. Si está vacía, no se toca.
-                        if (!empty($contrasena)) {
-                            $contrasenaHash = password_hash($contrasena, PASSWORD_BCRYPT);
-                            $sql = "UPDATE usuarios
-                                    SET DNI = '$DNI',
-                                        nombre_completo = '$nombre_completo',
-                                        email = '$email',
-                                        telefono = '$telefono',
-                                        contrasena = '$contrasenaHash',
-                                        id_socio = $id_socio,
-                                        id_carrera = $id_carrera
-                                    WHERE id = $id";
-                        } else {
-                            $sql = "UPDATE usuarios
-                                    SET DNI = '$DNI',
-                                        nombre_completo = '$nombre_completo',
-                                        email = '$email',
-                                        telefono = '$telefono',
-                                        id_socio = $id_socio,
-                                        id_carrera = $id_carrera
-                                    WHERE id = $id";
+                        if ($id <= 0 || empty($DNI) || empty($nombre_completo) || empty($email) || empty($telefono)) {
+                            http_response_code(400);
+                            echo json_encode(["error" => "Faltan datos obligatorios."]);
+                            break;
                         }
 
-                        $resultado = mysqli_query($conexion, $sql);
-                        if ($resultado) {
+                        if (!preg_match('/^\d{7,8}$/', $DNI)) {
+                            http_response_code(400);
+                            echo json_encode(["error" => "El DNI debe contener entre 7 y 8 dígitos numéricos."]);
+                            break;
+                        }
+
+                        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                            http_response_code(400);
+                            echo json_encode(["error" => "El formato del e-mail no es válido."]);
+                            break;
+                        }
+
+                        if (!preg_match('/^[0-9+\-\s()]{6,20}$/', $telefono) || preg_match_all('/[0-9]/', $telefono) < 6) {
+                            http_response_code(400);
+                            echo json_encode(["error" => "El teléfono no puede contener letras y debe tener al menos 6 números."]);
+                            break;
+                        }
+
+                        // Si la contraseña no está vacía, la hasheamos y la actualizamos. Si está vacía, no se toca.
+                        if (!empty($contrasena)) {
+                            if (strlen($contrasena) < 6 || strlen($contrasena) > 8) {
+                                http_response_code(400);
+                                echo json_encode(["error" => "La contraseña debe tener entre 6 y 8 caracteres."]);
+                                break;
+                            }
+                            $contrasenaHash = password_hash($contrasena, PASSWORD_BCRYPT);
+                            $stmt = $conexion->prepare("UPDATE usuarios
+                                    SET DNI = ?,
+                                        nombre_completo = ?,
+                                        email = ?,
+                                        telefono = ?,
+                                        contrasena = ?,
+                                        id_socio = ?,
+                                        id_carrera = ?
+                                    WHERE id = ?");
+                            $stmt->bind_param("sssssiii", $DNI, $nombre_completo, $email, $telefono, $contrasenaHash, $id_socio, $id_carrera, $id);
+                        } else {
+                            $stmt = $conexion->prepare("UPDATE usuarios
+                                    SET DNI = ?,
+                                        nombre_completo = ?,
+                                        email = ?,
+                                        telefono = ?,
+                                        id_socio = ?,
+                                        id_carrera = ?
+                                    WHERE id = ?");
+                            $stmt->bind_param("ssssiii", $DNI, $nombre_completo, $email, $telefono, $id_socio, $id_carrera, $id);
+                        }
+
+                        if ($stmt && $stmt->execute()) {
                             echo json_encode([
                                 "mensaje" => "Usuario actualizado correctamente."
                             ]);
@@ -609,10 +740,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 "error" => "Error: Usuario no actualizado."
                             ]);
                         }
+                        if ($stmt) $stmt->close();
                     break;
 
                     case "ReadByDNI":
                         $dni = trim($datos["dni"] ?? '');
+                        if (empty($dni)) {
+                            http_response_code(400);
+                            echo json_encode(["error" => "Debe indicar un DNI."]);
+                            break;
+                        }
+
                         $stmt = $conexion->prepare("SELECT * FROM usuarios WHERE DNI = ?");
                         $stmt->bind_param("s", $dni);
                         $stmt->execute();
@@ -628,8 +766,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     break;
 
                     case "UpdateDNI":
-                        $id = (int)$datos["id"];
-                        $dni = trim($datos["dni"]);
+                        $id = (int)($datos["id"] ?? 0);
+                        $dni = trim($datos["dni"] ?? '');
+
+                        if ($id <= 0 || !preg_match('/^\d{7,8}$/', $dni)) {
+                            http_response_code(400);
+                            echo json_encode(["error" => "El DNI debe contener entre 7 y 8 dígitos numéricos."]);
+                            break;
+                        }
 
                         // Verificar que el nuevo DNI no esté en uso por otro usuario
                         $stmt_check = $conexion->prepare("SELECT id FROM usuarios WHERE DNI = ? AND id != ?");
@@ -658,7 +802,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     break;
                     
                     case "Buscar":
-                        $busqueda = trim($datos["busqueda"] ?? ''); // obtener el la cadena de búsqueda del JSON
+                        $busqueda = trim($datos["busqueda"] ?? ''); // obtener la cadena de búsqueda del JSON
                         $id_socio = (int)($datos["id_socio"] ?? 0); // obtener el id_socio del JSON, si no viene, será 0
 
                         if ($busqueda === '') {
@@ -677,7 +821,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     usuarios.DNI,
                                     usuarios.activo,
                                     socio.nombre AS nombre_socio,
-                                    COALESCE(carrera.nombre, 'Sin carrera') AS nombre_carrera  /* Se utiliza COALESCE para manejar casos donde la carrera pueda ser NULL */
+                                    COALESCE(carrera.nombre, 'Sin carrera') AS nombre_carrera /* Se utiliza COALESCE para manejar casos donde la carrera pueda ser NULL */
                                 FROM usuarios 
                                 LEFT JOIN socio ON usuarios.id_socio = socio.id
                                 LEFT JOIN carrera ON usuarios.id_carrera = carrera.id
@@ -715,62 +859,84 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     case "Login":
                         $dni = trim($datos["dni"] ?? '');
-                        $contrasena = $datos["contrasena"] ?? '';
+                        $contrasena = trim($datos["contrasena"] ?? '');
 
-                        $stmt = $conexion->prepare("SELECT * FROM usuarios WHERE DNI = ? AND activo = 1");
+                        if (empty($dni) || empty($contrasena)) {
+                            http_response_code(400);
+                            echo json_encode(["error" => "Debe ingresar DNI y contraseña."]);
+                            break;
+                        }
+
+                        $stmt = $conexion->prepare("SELECT * FROM usuarios WHERE DNI = ?");
                         $stmt->bind_param("s", $dni);
                         $stmt->execute();
                         $resultado = $stmt->get_result();
 
                         if ($fila = $resultado->fetch_assoc()) {
-                            // Verificación de hash seguro
-                            if (password_verify($contrasena, $fila['contrasena']) || $contrasena === $fila['contrasena']) { 
-                                echo json_encode([
-                                    "mensaje" => "Ok",
-                                    "idUsuario" => $fila['id'],
-                                    "usuario" => $fila['nombre_completo'],
-                                    "admin" => $fila['admin'] ?? 0
-                                ]);
+                            $claveGuardada = trim($fila['contrasena'] ?? '');
+
+                            // Verificación de hash seguro o texto plano previo
+                            if (password_verify($contrasena, $claveGuardada) || $contrasena === $claveGuardada) {
+                                if ((int)$fila['activo'] !== 1) {
+                                    http_response_code(403);
+                                    echo json_encode(["error" => "Tu cuenta se encuentra inactiva. Acercate a biblioteca."]);
+                                } else {
+                                    echo json_encode([
+                                        "mensaje" => "Ok",
+                                        "idUsuario" => $fila['id'],
+                                        "usuario" => $fila['nombre_completo'],
+                                        "admin" => $fila['admin'] ?? 0
+                                    ]);
+                                }
                             } else {
                                 http_response_code(401);
                                 echo json_encode(["error" => "Contraseña incorrecta."]);
                             }
                         } else {
                             http_response_code(404);
-                            echo json_encode(["error" => "Usuario no encontrado o inactivo."]);
+                            echo json_encode(["error" => "No existe ningún usuario registrado con ese DNI."]);
                         }
                         $stmt->close();
                     break;
 
                     case "Inactivate":
-                        $id = $datos["id"];
-                        $sql = "UPDATE usuarios
-                                SET activo = 0
-                                WHERE id = $id";
-                        $resultado = mysqli_query($conexion, $sql);
-                        if ($resultado) {
+                        $id = (int)($datos["id"] ?? 0);
+                        if ($id <= 0) {
+                            http_response_code(400);
+                            echo json_encode(["error" => "ID de usuario inválido."]);
+                            break;
+                        }
+
+                        $stmt = $conexion->prepare("UPDATE usuarios SET activo = 0 WHERE id = ?");
+                        $stmt->bind_param("i", $id);
+                        if ($stmt->execute()) {
                             echo json_encode([
                                 "mensaje" => "Usuario inactivo."
                             ]);
                         } else {
                             http_response_code(500);
                         }
+                        $stmt->close();
                     break;
 
                     case "Activate":
-                        $id = $datos["id"];
-                        $sql = "UPDATE usuarios
-                                SET activo = 1
-                                WHERE id = $id";
-                        $resultado = mysqli_query($conexion, $sql);
-                        if ($resultado) {
+                        $id = (int)($datos["id"] ?? 0);
+                        if ($id <= 0) {
+                            http_response_code(400);
+                            echo json_encode(["error" => "ID de usuario inválido."]);
+                            break;
+                        }
+
+                        $stmt = $conexion->prepare("UPDATE usuarios SET activo = 1 WHERE id = ?");
+                        $stmt->bind_param("i", $id);
+                        if ($stmt->execute()) {
                             echo json_encode([
                                 "mensaje" => "Usuario activo."
                             ]);
                         } else {
                             http_response_code(500);
                         }
-                
+                        $stmt->close();
                     break;
 
                     case "ExportarExcelUsuarios":
@@ -842,7 +1008,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     case 'Delete':
                         $id = (int)($datos["id"] ?? 0);
-                        if ($id === 0) {
+                        if ($id <= 0) {
                             http_response_code(400);
                             echo json_encode(["error" => "ID de carrera no válido."]);
                             break;
@@ -866,7 +1032,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     case 'Update':
                         $id = (int)($datos["id"] ?? 0);
                         $nombre = trim($datos["nombre"] ?? '');
-                        if ($id === 0 || empty($nombre)) {
+                        if ($id <= 0 || empty($nombre)) {
                             http_response_code(400);
                             echo json_encode(["error" => "Datos de actualización vacíos o inválidos."]);
                             break;
@@ -923,7 +1089,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             while ($fila = mysqli_fetch_assoc($resultado)) {
                                 $montos[] = $fila;
                             }
-                        echo json_encode($montos);
+                            echo json_encode($montos);
                         } else {
                             http_response_code(500);
                             echo json_encode(["error" => "Error de lectura."]);
@@ -931,9 +1097,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     break;
 
                     case 'Update':
-                        $importe = $datos["importe"] ?? 0;
-                        $importeAnterior = $datos["importe_anterior"] ?? 0;
-                        $fechaEfecto = $datos["fecha_efecto"] ?? date('Y-m-d');
+                        $importe = (float)($datos["importe"] ?? 0);
+                        $importeAnterior = (float)($datos["importe_anterior"] ?? 0);
+                        $fechaEfecto = trim($datos["fecha_efecto"] ?? date('Y-m-d'));
 
                         if ($importe <= 0) {
                             http_response_code(400);
@@ -941,7 +1107,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             break;
                         }
 
-                        // 1. Insertamos un NUEVO precio en la tabla monto (generando el nuevo id_monto)
+                        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $fechaEfecto)) {
+                            http_response_code(400);
+                            echo json_encode(["error" => "La fecha de efecto debe tener el formato AAAA-MM-DD."]);
+                            break;
+                        }
+
+                        // Insertamos un NUEVO precio en la tabla monto (generando el nuevo id_monto)
                         $stmtMonto = $conexion->prepare("INSERT INTO monto (importe, importe_anterior, fecha_efecto) VALUES (?, ?, ?)");
                         $stmtMonto->bind_param("dds", $importe, $importeAnterior, $fechaEfecto);
 
@@ -949,23 +1121,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $nuevo_id_monto = $stmtMonto->insert_id;
                             $stmtMonto->close();
 
-                            // 2. Extraer el mes numérico desde la fecha_efecto (ej: '2026-05-01' -> mes 5)
+                            // Extraer el mes numérico desde la fecha_efecto (ej: '2026-05-01' -> mes 5)
                             $mesNumeroCalendario = (int)date('n', strtotime($fechaEfecto));
 
-                            // Mapeo flexible: Si tus meses en la BD van del 1 al 9 (1=Marzo, 3=Mayo, etc.)
+                            // Los meses en la BD van del 1 al 9 (1=Marzo, 3=Mayo, etc.)
                             // Convertimos el mes de calendario (ej. Mayo = 5) al id_mes de la BD (Mayo = 3).
-                            // Si en tu BD van del 1 al 9: Marzo(1), Abril(2), Mayo(3), Junio(4), Julio(5), Agosto(6), Septiembre(7), Octubre(8), Noviembre(9)
                             $idMesTarget = $mesNumeroCalendario - 2; 
                             if ($idMesTarget < 1) $idMesTarget = 1;
 
-                            // 3. Actualizamos registropagos:
-                            // Acepta tanto estados 'Impaga' como 'Pendiente' para asegurar el impacto
                             $sqlPagos = "
                                 UPDATE registropagos 
                                 SET id_monto = ? 
                                 WHERE id_mes >= ? 
                                 AND id_estado IN (
-                                    SELECT id FROM estadopago WHERE nombre LIKE '%IMPAG%' OR nombre LIKE '%PENDIENTE%'
+                                    SELECT id FROM estadopago WHERE nombre LIKE '%IMPAG%'
                                 )
                             ";
 
@@ -983,7 +1152,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 ]);
                             } else {
                                 http_response_code(500);
-                                echo json_encode(["error" => "Error al preparar actualización de registropagos."]);
+                                echo json_encode(["error" => "Error al preparar actualización del registro de pagos."]);
                             }
                         } else {
                             http_response_code(500);
@@ -998,7 +1167,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             break;
 
-            case 'meses';
+            case 'meses':
                 switch($consulta) {
                     case "Read":
                         $sql = "SELECT nombre FROM meses";

@@ -22,7 +22,7 @@
                     Monto Anterior<br>
                     <strong id="montoAnterior"></strong>
                 </p>
-                <p id="mensajeMonto1" style="display:none; text-align:center; font-family:Tamrin; font-size:5px; color: yellow; margin-top: 10px;"></p>
+                <p id="mensajeMonto2" style="display:none; text-align:center; font-family:Tamrin; font-size:5px; color: yellow; margin-top: 10px;"></p>
             </section>
         </div>
     </section>

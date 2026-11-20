@@ -41,17 +41,18 @@
         // Convertir a JSON
         $payload = json_encode($datos);
 
-        // Construir la URL codificando correctamente espacios y caracteres especiales
+        // Construir la URL hacia API.php
         $protocolo = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";
         $host = $_SERVER['HTTP_HOST'];
-        $rutaLimpia = implode('/', array_map('rawurlencode', explode('/', dirname($_SERVER['PHP_SELF']))));
-        $urlApi = $protocolo . $host . $rutaLimpia . "/API.php";
+        $dir = str_replace('\\', '/', dirname($_SERVER['PHP_SELF']));
+        $dir = ($dir === '/') ? '' : rtrim($dir, '/');
+        $urlApi = $protocolo . $host . $dir . "/API.php";
 
         // Configurar la petición HTTP hacia la API
         $opciones = [
             "http" => [
-                "header"  => "Content-Type: application/json\r\n",
-                "method"  => "POST",
+                "header" => "Content-Type: application/json\r\n",
+                "method" => "POST",
                 "content" => $payload,
                 "ignore_errors" => true
             ]
@@ -70,7 +71,7 @@
                 header("Location: inicio.php");
                 exit;
             } else {
-                $mensajeError = $respuesta['error'];
+                $mensajeError = $respuesta['error'] ?? "Error al registrar usuario.";
                 
                 $errorDetalle = $respuesta['error'] ?? "Respuesta de la API: " . htmlspecialchars($resultado);
                 $scriptConsola = consoleError($errorDetalle);
@@ -78,7 +79,7 @@
         } else {
             $mensajeError = "No se pudo realizar la llamada HTTP a la API.";
 
-            $errorDetalle = $errorDetalle = "Error de red o file_get_contents falló al conectar a: " . $urlApi;
+            $errorDetalle = "Error de red o file_get_contents falló al conectar a: " . $urlApi;
             $scriptConsola = consoleError($errorDetalle); 
         }
     }
@@ -121,12 +122,12 @@
 
                 <div class="campo"> 
                     <label>DNI</label>
-                    <input type="text" name="dni" maxlength="8" minlength="8" placeholder="Ingrese su DNI" required> 
+                    <input type="text" name="dni" maxlength="8" minlength="7" pattern="[0-9]{7,8}" inputmode="numeric" title="Ingrese entre 7 y 8 números sin puntos" placeholder="Ingrese su DNI" required> 
                 </div> 
 
                 <div class="campo">
                     <label>NOMBRE COMPLETO</label> 
-                    <input type="text" name="nombre_completo" placeholder="Ingrese su nombre completo" required> 
+                    <input type="text" name="nombre_completo" minlength="3" placeholder="Ingrese su nombre completo" required> 
                 </div> 
 
                 <div class="campo email"> 
@@ -149,7 +150,7 @@
 
                 <div class="campo"> 
                     <label>CARRERA</label>
-                    <select id="carrera" name="carrera" required> 
+                    <select id="carrera" name="carrera" disabled> 
                         <option value="" disabled selected hidden>Seleccione su carrera</option>
                         <?php 
                             $sql_carrera = "SELECT * FROM carrera";
@@ -162,13 +163,13 @@
 
                 <div class="campo"> 
                     <label>CONTRASEÑA</label> 
-                    <input type="password" name="contrasena" placeholder="Ingrese su contraseña" required>
+                    <input type="password" name="contrasena" minlength="6" maxlength="8" placeholder="Ingrese su contraseña (6 a 8 caracteres)" required>
                 </div> 
 
                 <div class="campo"> 
                     <label>TELÉFONO</label> 
-                    <input type="tel" name="telefono" placeholder="Ingrese su teléfono" required> 
-                </div> 
+                    <input type="tel" name="telefono" minlength="6" maxlength="20" pattern="[0-9+\-\s()]{6,20}" oninput="this.value = this.value.replace(/[^0-9+\-\s()]/g, '')" title="Ingrese solo números, espacios o guiones (sin letras)" placeholder="Ingrese su teléfono" required> 
+                </div>
 
                 <?php if (!empty($mensajeError)): ?>
                     <div class="error" style="color: red; margin-bottom: 10px;"><?= htmlspecialchars($mensajeError) ?></div>
